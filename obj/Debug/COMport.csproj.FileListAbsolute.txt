@@ -1,0 +1,10 @@
+C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_test_apps\COMport\bin\Debug\COMport.exe.config
+C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_test_apps\COMport\bin\Debug\COMport.exe
+C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_test_apps\COMport\bin\Debug\COMport.pdb
+C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_test_apps\COMport\obj\Debug\COMport.csproj.AssemblyReference.cache
+C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_test_apps\COMport\obj\Debug\COMport.COMportForm.resources
+C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_test_apps\COMport\obj\Debug\COMport.Properties.Resources.resources
+C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_test_apps\COMport\obj\Debug\COMport.csproj.GenerateResource.cache
+C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_test_apps\COMport\obj\Debug\COMport.csproj.CoreCompileInputs.cache
+C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_test_apps\COMport\obj\Debug\COMport.exe
+C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_test_apps\COMport\obj\Debug\COMport.pdb
