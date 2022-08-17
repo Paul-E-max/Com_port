@@ -40,6 +40,7 @@ namespace COMport
             this.VersionComboBox = new System.Windows.Forms.ComboBox();
             this.SerialPort = new System.IO.Ports.SerialPort(this.components);
             this.panel2 = new System.Windows.Forms.Panel();
+            this.HalfDuplexCheckBox = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -53,7 +54,7 @@ namespace COMport
             this.CommsTextBox.Font = new System.Drawing.Font("Courier New", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.CommsTextBox.ForeColor = System.Drawing.SystemColors.Window;
             this.CommsTextBox.Location = new System.Drawing.Point(0, 0);
-            this.CommsTextBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.CommsTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.CommsTextBox.MaxLength = 250000;
             this.CommsTextBox.Multiline = true;
             this.CommsTextBox.Name = "CommsTextBox";
@@ -78,8 +79,8 @@ namespace COMport
             "38400",
             "57600",
             "115200"});
-            this.BaudComboBox.Location = new System.Drawing.Point(308, 6);
-            this.BaudComboBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.BaudComboBox.Location = new System.Drawing.Point(355, 6);
+            this.BaudComboBox.Margin = new System.Windows.Forms.Padding(2);
             this.BaudComboBox.Name = "BaudComboBox";
             this.BaudComboBox.Size = new System.Drawing.Size(141, 21);
             this.BaudComboBox.TabIndex = 1;
@@ -88,8 +89,8 @@ namespace COMport
             // COMportComboBox
             // 
             this.COMportComboBox.FormattingEnabled = true;
-            this.COMportComboBox.Location = new System.Drawing.Point(228, 6);
-            this.COMportComboBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.COMportComboBox.Location = new System.Drawing.Point(275, 6);
+            this.COMportComboBox.Margin = new System.Windows.Forms.Padding(2);
             this.COMportComboBox.Name = "COMportComboBox";
             this.COMportComboBox.Size = new System.Drawing.Size(77, 21);
             this.COMportComboBox.TabIndex = 0;
@@ -99,7 +100,7 @@ namespace COMport
             // 
             this.ConnectButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ConnectButton.Location = new System.Drawing.Point(4, 4);
-            this.ConnectButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.ConnectButton.Margin = new System.Windows.Forms.Padding(2);
             this.ConnectButton.Name = "ConnectButton";
             this.ConnectButton.Size = new System.Drawing.Size(97, 24);
             this.ConnectButton.TabIndex = 2;
@@ -110,6 +111,7 @@ namespace COMport
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.panel1.Controls.Add(this.HalfDuplexCheckBox);
             this.panel1.Controls.Add(this.clearSreenButton);
             this.panel1.Controls.Add(this.VersionComboBox);
             this.panel1.Controls.Add(this.BaudComboBox);
@@ -124,7 +126,7 @@ namespace COMport
             // clearSreenButton
             // 
             this.clearSreenButton.Location = new System.Drawing.Point(823, 6);
-            this.clearSreenButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.clearSreenButton.Margin = new System.Windows.Forms.Padding(2);
             this.clearSreenButton.Name = "clearSreenButton";
             this.clearSreenButton.Size = new System.Drawing.Size(91, 24);
             this.clearSreenButton.TabIndex = 4;
@@ -135,17 +137,13 @@ namespace COMport
             // VersionComboBox
             // 
             this.VersionComboBox.FormattingEnabled = true;
-            this.VersionComboBox.Items.AddRange(new object[] {
-            "None",
-            "AARI",
-            "DISCOVER",
-            "PDi"});
             this.VersionComboBox.Location = new System.Drawing.Point(103, 6);
-            this.VersionComboBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.VersionComboBox.Margin = new System.Windows.Forms.Padding(2);
             this.VersionComboBox.Name = "VersionComboBox";
-            this.VersionComboBox.Size = new System.Drawing.Size(122, 21);
+            this.VersionComboBox.Size = new System.Drawing.Size(168, 21);
             this.VersionComboBox.TabIndex = 3;
-            this.VersionComboBox.Text = "DISCOVER";
+            this.VersionComboBox.Text = "Unknown";
+            this.VersionComboBox.SelectedIndexChanged += new System.EventHandler(this.VersionComboBox_SelectedIndexChanged);
             // 
             // SerialPort
             // 
@@ -163,6 +161,16 @@ namespace COMport
             this.panel2.Size = new System.Drawing.Size(921, 554);
             this.panel2.TabIndex = 5;
             // 
+            // HalfDuplexCheckBox
+            // 
+            this.HalfDuplexCheckBox.AutoSize = true;
+            this.HalfDuplexCheckBox.Location = new System.Drawing.Point(501, 8);
+            this.HalfDuplexCheckBox.Name = "HalfDuplexCheckBox";
+            this.HalfDuplexCheckBox.Size = new System.Drawing.Size(79, 17);
+            this.HalfDuplexCheckBox.TabIndex = 5;
+            this.HalfDuplexCheckBox.Text = "Half-duplex";
+            this.HalfDuplexCheckBox.UseVisualStyleBackColor = true;
+            // 
             // COMportForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -172,12 +180,14 @@ namespace COMport
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "COMportForm";
             this.Text = "COM port";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.COMportForm_FormClosed);
             this.Load += new System.EventHandler(this.COMportForm_Load);
             this.Shown += new System.EventHandler(this.COMportForm_Shown);
             this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.ResumeLayout(false);
@@ -195,6 +205,7 @@ namespace COMport
         private System.Windows.Forms.ComboBox VersionComboBox;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Button clearSreenButton;
+        private System.Windows.Forms.CheckBox HalfDuplexCheckBox;
     }
 }
 

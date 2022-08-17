@@ -8,3 +8,12 @@ C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_test_apps\COMport\obj\Debug\COM
 C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_test_apps\COMport\obj\Debug\COMport.csproj.CoreCompileInputs.cache
 C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_test_apps\COMport\obj\Debug\COMport.exe
 C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_test_apps\COMport\obj\Debug\COMport.pdb
+C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_COM_port\bin\Debug\COMport.exe.config
+C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_COM_port\bin\Debug\COMport.exe
+C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_COM_port\bin\Debug\COMport.pdb
+C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_COM_port\obj\Debug\COMport.COMportForm.resources
+C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_COM_port\obj\Debug\COMport.Properties.Resources.resources
+C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_COM_port\obj\Debug\COMport.csproj.GenerateResource.cache
+C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_COM_port\obj\Debug\COMport.csproj.CoreCompileInputs.cache
+C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_COM_port\obj\Debug\COMport.exe
+C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_COM_port\obj\Debug\COMport.pdb

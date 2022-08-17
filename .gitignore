@@ -1,0 +1,8 @@
+obj/*.*
+bin/debug/*.*
+bin/Release/*.LOG
+bin/Release/*.CFG
+*.exe.config
+*.cache
+*.pdb
+*.suo

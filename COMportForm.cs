@@ -9,6 +9,9 @@
 // @Tools:      Visual Studio 2019, C#
 //
 // @Revision:
+// 16.08.2022-MD V1.00.04 - Add half-duplex option.
+// 13.07.2022-MD Use CSV file to get identities.
+//               Environment variables can retain COM and project.
 // 28.04.2022-MD Clear screen button added.
 // 06.04.2022-MD Correction to BS when textbox is scrolled!
 // 01.04.2022-MD Handles BS coming from COM port.
@@ -37,7 +40,7 @@ namespace COMport
         // Constants
         //
         const string APP_NAME = "COMport";
-        const string VERSION = "V1.00.03";
+        const string VERSION = "V1.00.04";
         const string FILENAME_CSV = APP_NAME + ".CSV";
 
         const string CONNECT_LABEL = "Connect";
@@ -51,6 +54,23 @@ namespace COMport
         const int INTERVAL_RESPOND = 175;       // Period between TX and looking for RX.
 
         const byte BS = 0x08;
+
+        const int MAX_PROJECTS = 12;            // Reads through FILENAME_CSV file, but abandons data beyond this number of projects.
+
+        struct project
+        {
+            public string name;
+            public string baudrate;
+            public string echoOff;
+            public string echoOn;
+            public string getID;
+            public bool halfDuplex;
+        };
+
+        project[] projects = new project[MAX_PROJECTS];
+        string EchoOff = "";
+        string EchoOn = "";
+        string GetID = "";
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
@@ -70,6 +90,8 @@ namespace COMport
         private void COMportForm_Load(object sender, EventArgs e)
         {
             this.Text = APP_NAME + " - " + VERSION;
+            loadProjectInfo();
+            LoadEnviroment();
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -114,7 +136,7 @@ namespace COMport
         /// <param name="e"></param>
         private void ConnectButton_Click(object sender, EventArgs e)
         {
-            string versionIs;
+            string versionIs = "";
 
             if (CONNECT_LABEL == ConnectButton.Text)
             {
@@ -149,25 +171,29 @@ namespace COMport
                             SerialPort.WriteTimeout = TIMEOUT_NORMAL;
                             SerialPort.BaudRate = Convert.ToInt32(BaudComboBox.Text);
                             SerialPort.Open();
-                            if (VersionComboBox.Text != "None")
+                            if (GetID.Length > 0)
                             {
                                 serialPortWriteLine("");
-                                serialPortWriteLine("ECHO OFF");
-                                versionIs = serialPortCommandresponse("VERSION");
-                                if( versionIs.StartsWith(VersionComboBox.Text))
+                                if( EchoOff.Length > 0 ) serialPortWriteLine(EchoOff);
+                                if( GetID.Length > 0 ) versionIs = serialPortCommandresponse(GetID);
+                                if( versionIs.ToUpper().StartsWith( VersionComboBox.Text.ToUpper() ) )
                                 {
+                                    VersionComboBox.Enabled = false;
+                                    COMportComboBox.Enabled = false;
+                                    BaudComboBox.Enabled = false;
                                     ConnectButton.Text = DISCONNECT_LABEL;
                                     HighLightButton(ConnectButton);
                                     this.Text = APP_NAME + " - " + VERSION + " ---> " + versionIs;
-                                    COMportComboBox.Enabled = false;
-                                    serialPortWriteLine("ECHO ON");
+                                    if( EchoOn.Length > 0 ) serialPortWriteLine(EchoOn);
                                 }
                             }
                             else
                             {
+                                VersionComboBox.Enabled = false;
+                                COMportComboBox.Enabled = false;
+                                BaudComboBox.Enabled = false;
                                 ConnectButton.Text = DISCONNECT_LABEL;
                                 HighLightButton(ConnectButton);
-                                COMportComboBox.Enabled = false;
                                 this.Text = APP_NAME + " - " + VERSION + " connected";
                             }
                             CommsTextBox.Focus();
@@ -186,10 +212,12 @@ namespace COMport
             if( COMportComboBox.Enabled )
             {
                 if (SerialPort.IsOpen ) SerialPort.Close();
+                VersionComboBox.Enabled = true;
+                COMportComboBox.Enabled = true;
+                BaudComboBox.Enabled = true;
                 ConnectButton.Text = CONNECT_LABEL;
                 LowLightButton(ConnectButton);
                 this.Text = APP_NAME + " - " + VERSION;
-                COMportComboBox.Enabled = true;
             }
         }
 
@@ -336,17 +364,6 @@ namespace COMport
                 var inputs = new byte[readLength];
 
                 SerialPort.Read(inputs, 0, readLength);
-#if false
-                for (i = 0; i < readLength; i++)
-                {
-                    if (BS == inputs[i])
-                    {
-                        for( i=0; i<readLength; i++ ) CommsTextBox.AppendText("["+inputs[i].ToString()+"], "); // MJD2022
-                        //
-                        break;
-                    }
-                }
-#endif
                 for ( i=0; i<readLength; i++ )
                 {
                     if( BS == inputs[i] )
@@ -394,6 +411,7 @@ namespace COMport
         private void CommsTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             var buffer = new byte[1];
+            string chr = "";
 
             if (false == COMportComboBox.Enabled)
             {
@@ -402,6 +420,26 @@ namespace COMport
                 if (buffer[0] < 0x80)
                 {
                     SerialPort.Write(buffer, 0, 1);
+                    if( HalfDuplexCheckBox.Checked )
+                    {
+                        if (buffer[0] > 0x1F)
+                        {
+                            chr = Encoding.ASCII.GetString(buffer, 0, 1);
+                        }
+                        else
+                        {
+                            if (0x0D == buffer[0]) chr = " ";
+                        }
+                        if (chr.Length > 0)
+                        {
+                            // Need to echo this to the terminal since the serial device isn't going to!
+                            //
+                            CommsTextBox.AppendText(chr);
+                            //
+                            CommsTextBox.SelectionStart = CommsTextBox.Text.Length; // Place the curser at the end of the text.
+                            CommsTextBox.ScrollToCaret();
+                        }
+                    }
                 }
             }
         }
@@ -427,6 +465,151 @@ namespace COMport
         {
             CommsTextBox.Text = "";
             CommsTextBox.Focus();
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Replace in [input] all instance of [replace] with [withThis], repeat until no [replace] found.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="replace"></param>
+        /// <param name="withThis"></param>
+        /// <returns></returns>
+        private string recursiveReplace(string input, string replace, string withThis)
+        {
+            while (input.Contains(replace)) input = input.Replace(replace, withThis);
+            //
+            return input;
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Load project information from BOOTLOAD_app.csv file.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <returns></returns>
+        /// 
+        private void loadProjectInfo()
+        {
+            int n, ln;
+
+            if (File.Exists(FILENAME_CSV))
+            {
+                string[] lines = File.ReadAllLines(FILENAME_CSV);
+                //
+                for (n = 0; n < MAX_PROJECTS; n++) projects[n] = new project();
+                //
+                // Retrieve all the saved project and baudrate combinations available.
+                // These are also placed into the project names dropdown list for easy of selection.
+                //
+                // Blank lines and those that start with a ';' are ignored.
+                //
+                for (ln = 0, n = 0; ln < lines.Length; ln++)
+                {
+                    lines[ln] = lines[ln].Replace("\t", " ");
+                    lines[ln] = recursiveReplace(lines[ln], "  ", " ");
+                    lines[ln] = recursiveReplace(lines[ln], ", ", ",");
+                    lines[ln] = lines[ln].Trim();
+                    //
+                    if ((lines[ln].Length > 0) && !lines[ln].StartsWith(";"))
+                    {
+                        string[] info = lines[ln].Split(',', (char)11);
+                        //
+                        if (info.Length >= 5)
+                        {
+                            projects[n].name = info[0];
+                            projects[n].baudrate = info[1];
+                            projects[n].echoOff = info[2];
+                            projects[n].echoOn = info[3];
+                            projects[n].getID = info[4];
+                            if (info.Length > 5) projects[n].halfDuplex = info[5].ToUpper().StartsWith("Y");
+                            //
+                            VersionComboBox.Items.Add(projects[n].name);
+                            n++;
+                            if (MAX_PROJECTS == n) break; // Reached the upper limit for the drop down list.
+                        }
+                    }
+                }
+            }
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// If project is changed, then set the baud rate accordingly.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void VersionComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            foreach (project project in projects)
+            {
+                if (VersionComboBox.Text.ToUpper() == project.name.ToUpper() )
+                {
+                    VersionComboBox.Text = project.name;
+                    BaudComboBox.Text = project.baudrate;
+                    EchoOff = project.echoOff;
+                    EchoOn = project.echoOn;
+                    GetID = project.getID;
+                    HalfDuplexCheckBox.Checked = project.halfDuplex;
+                    //
+                    break;
+                }
+            }
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Load the environment values for project and COM port.
+        /// </summary>
+        private void LoadEnviroment()
+        {
+            VersionComboBox.Text = environmentRead("COMport_project", "Unknown");
+            COMportComboBox.Text = environmentRead("COMport_connection", "");
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Recover an environment variable if set.
+        /// </summary>
+        /// <param name="label">Environment variable name</param>
+        /// <param name="defaultTo">This if no environment variable set</param>
+        /// <returns></returns>
+        /// 
+        private string environmentRead(string label, string defaultTo)
+        {
+            string result = Environment.GetEnvironmentVariable(label, EnvironmentVariableTarget.User);
+
+            if (null == result)
+            {
+                result = defaultTo;
+            }
+            return result;
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Write an environment variable if not blank.
+        /// </summary>
+        /// <param name="label">Environment variable name</param>
+        /// <param name="variable">The string location to save in the environment variable</param>
+        /// <returns></returns>
+        /// 
+        private void environmentWrite(string label, string variable)
+        {
+            Environment.SetEnvironmentVariable(label, variable, EnvironmentVariableTarget.User);
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Save the project and COM port.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void COMportForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            environmentWrite("COMport_project", VersionComboBox.Text);
+            environmentWrite("COMport_connection", COMportComboBox.Text);
         }
     }
 }
