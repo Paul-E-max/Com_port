@@ -9,6 +9,7 @@
 // @Tools:      Visual Studio 2019, C#
 //
 // @Revision:
+// 17.08.2022-MD V1.00.05 - Add "Tx on Enter" option.
 // 16.08.2022-MD V1.00.04 - Add half-duplex option.
 // 13.07.2022-MD Use CSV file to get identities.
 //               Environment variables can retain COM and project.
@@ -40,7 +41,7 @@ namespace COMport
         // Constants
         //
         const string APP_NAME = "COMport";
-        const string VERSION = "V1.00.04";
+        const string VERSION = "V1.00.05";
         const string FILENAME_CSV = APP_NAME + ".CSV";
 
         const string CONNECT_LABEL = "Connect";
@@ -54,8 +55,10 @@ namespace COMport
         const int INTERVAL_RESPOND = 175;       // Period between TX and looking for RX.
 
         const byte BS = 0x08;
+        const byte LF = 0x0A;
+        const byte CR = 0x0D;
 
-        const int MAX_PROJECTS = 12;            // Reads through FILENAME_CSV file, but abandons data beyond this number of projects.
+        const int MAX_PROJECTS = 20;            // Reads through FILENAME_CSV file, but abandons data beyond this number of projects.
 
         struct project
         {
@@ -65,12 +68,15 @@ namespace COMport
             public string echoOn;
             public string getID;
             public bool halfDuplex;
+            public string EnterKey;
         };
 
         project[] projects = new project[MAX_PROJECTS];
         string EchoOff = "";
         string EchoOn = "";
         string GetID = "";
+
+        byte EnterKey = 0;
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
@@ -395,8 +401,24 @@ namespace COMport
                         i--;
                     }
                 }
-                if( readLength > 0 ) CommsTextBox.AppendText(Encoding.ASCII.GetString(inputs, 0, readLength));
-                //
+                if (readLength > 0)
+                {
+                    // This is actually adding the string character by character, which, if a little slow,
+                    // can be sped up by converting to a string, doing string convertion of EnterKey characters
+                    // and then appending the string on block to CommsTextBox.
+                    //
+                    for (int idx = 0; idx < readLength; idx++)
+                    {
+                        if ((EnterKey > 0) && (inputs[idx] == EnterKey))
+                        {
+                            CommsTextBox.AppendText(Environment.NewLine.ToString());
+                        }
+                        else
+                        {
+                            CommsTextBox.AppendText(Encoding.ASCII.GetString(inputs,idx,1));
+                        }
+                    }
+                }
                 CommsTextBox.SelectionStart = CommsTextBox.Text.Length; // Place the curser at the end of the text.
                 CommsTextBox.ScrollToCaret();
             }
@@ -410,25 +432,46 @@ namespace COMport
         /// <param name="e"></param>
         private void CommsTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            var buffer = new byte[1];
+            var TxBuffer = new byte[1];
+            byte RxChar;
             string chr = "";
 
             if (false == COMportComboBox.Enabled)
             {
-                buffer[0] = (byte)e.KeyChar;
+                RxChar = (byte)e.KeyChar;
+                TxBuffer[0] = RxChar;
 
-                if (buffer[0] < 0x80)
+                if (RxChar < 0x80)
                 {
-                    SerialPort.Write(buffer, 0, 1);
+                    if( (CR == RxChar) && onEnterComboBox.Text.StartsWith("0x") )
+                    {
+                        // ENTER has been hit and need to translate to some other value for this connected device.
+                        //
+                        try
+                        {
+                            TxBuffer[0] = Convert.ToByte(onEnterComboBox.Text.Substring(2),16);
+                        }
+                        catch
+                        {
+                            // Just ignore silly items in TxEnter text box.
+                        }
+                    }
+                    SerialPort.Write(TxBuffer, 0, 1);
                     if( HalfDuplexCheckBox.Checked )
                     {
-                        if (buffer[0] > 0x1F)
+                        // Half-duplex requires printable characters to be displayed on behalf of the
+                        // connected device, since it does not generate any echo'd characters.
+                        //
+                        if (RxChar > 0x1F)
                         {
-                            chr = Encoding.ASCII.GetString(buffer, 0, 1);
+                            chr = Encoding.ASCII.GetString(TxBuffer, 0, 1);
                         }
                         else
                         {
-                            if (0x0D == buffer[0]) chr = " ";
+                            // The ENTER key just needs a space to separate the typed input from the
+                            // connected device's output.
+                            //
+                            if (CR == RxChar) chr = " ";
                         }
                         if (chr.Length > 0)
                         {
@@ -524,6 +567,7 @@ namespace COMport
                             projects[n].echoOn = info[3];
                             projects[n].getID = info[4];
                             if (info.Length > 5) projects[n].halfDuplex = info[5].ToUpper().StartsWith("Y");
+                            if (info.Length > 6) projects[n].EnterKey = info[6];
                             //
                             VersionComboBox.Items.Add(projects[n].name);
                             n++;
@@ -552,6 +596,7 @@ namespace COMport
                     EchoOn = project.echoOn;
                     GetID = project.getID;
                     HalfDuplexCheckBox.Checked = project.halfDuplex;
+                    onEnterComboBox.Text = project.EnterKey;
                     //
                     break;
                 }
@@ -560,12 +605,15 @@ namespace COMport
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
-        /// Load the environment values for project and COM port.
+        /// Load the environment values for current settings.
         /// </summary>
         private void LoadEnviroment()
         {
             VersionComboBox.Text = environmentRead("COMport_project", "Unknown");
             COMportComboBox.Text = environmentRead("COMport_connection", "");
+            HalfDuplexCheckBox.Checked = ("True" == environmentRead("COMport_halfDuplex", "false"));
+            BaudComboBox.Text = environmentRead("COMport_baudrate", "");
+            onEnterComboBox.Text = environmentRead("COMport_onEnter", "");
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -610,6 +658,34 @@ namespace COMport
         {
             environmentWrite("COMport_project", VersionComboBox.Text);
             environmentWrite("COMport_connection", COMportComboBox.Text);
+            environmentWrite("COMport_baudrate", BaudComboBox.Text);
+            environmentWrite("COMport_halfDuplex", HalfDuplexCheckBox.Checked ? "True" : "False");
+            environmentWrite("COMport_onEnter", onEnterComboBox.Text);
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// If the Tx on ENTER changes, update the EnterKey value.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void onEnterComboBox_TextChanged(object sender, EventArgs e)
+        {
+            EnterKey = 0; // Assume that it is not set.
+
+            if (onEnterComboBox.Text.StartsWith("0x"))
+            {
+                // Any incoming characters of type onEnterComboBox.Text should be replaced by CR.
+                //
+                try
+                {
+                    EnterKey = Convert.ToByte(onEnterComboBox.Text.Substring(2), 16);
+                }
+                catch
+                {
+                    // Just ignore silly items in TxEnter text box.
+                }
+            }
         }
     }
 }

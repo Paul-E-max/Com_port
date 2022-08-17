@@ -36,11 +36,13 @@ namespace COMport
             this.COMportComboBox = new System.Windows.Forms.ComboBox();
             this.ConnectButton = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.HalfDuplexCheckBox = new System.Windows.Forms.CheckBox();
             this.clearSreenButton = new System.Windows.Forms.Button();
             this.VersionComboBox = new System.Windows.Forms.ComboBox();
             this.SerialPort = new System.IO.Ports.SerialPort(this.components);
             this.panel2 = new System.Windows.Forms.Panel();
-            this.HalfDuplexCheckBox = new System.Windows.Forms.CheckBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.onEnterComboBox = new System.Windows.Forms.ComboBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -60,6 +62,7 @@ namespace COMport
             this.CommsTextBox.Name = "CommsTextBox";
             this.CommsTextBox.ReadOnly = true;
             this.CommsTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.CommsTextBox.ShortcutsEnabled = false;
             this.CommsTextBox.Size = new System.Drawing.Size(921, 554);
             this.CommsTextBox.TabIndex = 3;
             this.CommsTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.CommsTextBox_KeyPress);
@@ -111,6 +114,8 @@ namespace COMport
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.panel1.Controls.Add(this.onEnterComboBox);
+            this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.HalfDuplexCheckBox);
             this.panel1.Controls.Add(this.clearSreenButton);
             this.panel1.Controls.Add(this.VersionComboBox);
@@ -122,6 +127,16 @@ namespace COMport
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(921, 34);
             this.panel1.TabIndex = 4;
+            // 
+            // HalfDuplexCheckBox
+            // 
+            this.HalfDuplexCheckBox.AutoSize = true;
+            this.HalfDuplexCheckBox.Location = new System.Drawing.Point(501, 11);
+            this.HalfDuplexCheckBox.Name = "HalfDuplexCheckBox";
+            this.HalfDuplexCheckBox.Size = new System.Drawing.Size(79, 17);
+            this.HalfDuplexCheckBox.TabIndex = 5;
+            this.HalfDuplexCheckBox.Text = "Half-duplex";
+            this.HalfDuplexCheckBox.UseVisualStyleBackColor = true;
             // 
             // clearSreenButton
             // 
@@ -161,15 +176,27 @@ namespace COMport
             this.panel2.Size = new System.Drawing.Size(921, 554);
             this.panel2.TabIndex = 5;
             // 
-            // HalfDuplexCheckBox
+            // label1
             // 
-            this.HalfDuplexCheckBox.AutoSize = true;
-            this.HalfDuplexCheckBox.Location = new System.Drawing.Point(501, 8);
-            this.HalfDuplexCheckBox.Name = "HalfDuplexCheckBox";
-            this.HalfDuplexCheckBox.Size = new System.Drawing.Size(79, 17);
-            this.HalfDuplexCheckBox.TabIndex = 5;
-            this.HalfDuplexCheckBox.Text = "Half-duplex";
-            this.HalfDuplexCheckBox.UseVisualStyleBackColor = true;
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(657, 12);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(77, 13);
+            this.label1.TabIndex = 6;
+            this.label1.Text = "Tx on ENTER:";
+            // 
+            // onEnterComboBox
+            // 
+            this.onEnterComboBox.FormattingEnabled = true;
+            this.onEnterComboBox.Items.AddRange(new object[] {
+            "0x0A",
+            "0x0D",
+            "0x1B"});
+            this.onEnterComboBox.Location = new System.Drawing.Point(740, 8);
+            this.onEnterComboBox.Name = "onEnterComboBox";
+            this.onEnterComboBox.Size = new System.Drawing.Size(78, 21);
+            this.onEnterComboBox.TabIndex = 7;
+            this.onEnterComboBox.TextChanged += new System.EventHandler(this.onEnterComboBox_TextChanged);
             // 
             // COMportForm
             // 
@@ -206,6 +233,8 @@ namespace COMport
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Button clearSreenButton;
         private System.Windows.Forms.CheckBox HalfDuplexCheckBox;
+        private System.Windows.Forms.ComboBox onEnterComboBox;
+        private System.Windows.Forms.Label label1;
     }
 }
 

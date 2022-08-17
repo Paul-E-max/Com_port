@@ -1,9 +1,8 @@
-﻿; Project Name		Baud	Echo off 	Echo on 	Get ID		Half-duplex
-; ------------		----	--------	------- 	------		-----------
-  BOOTLOAD,			9600,	,			,			VERSION,	No
-  DISCOVER,			115200,	ECHO OFF,	ECHO ON,	VERSION,	No
-  AARI,				9600,	ECHO OFF,	ECHO ON,	VERSION,	No
-  PDii,				9600,	ECHO OFF,	ECHO ON,	VERSION,	No
-  COMMAND_EXAMPLE,	115200,	ECHO OFF,	ECHO ON,	VERSION,	No
-  Unknown Tx/Rx,	115200, ,			,			,			No
-  Half-duplex,		9600,	,			,			,			Yes
+﻿; Project Name		Baud	Echo off 	Echo on 	Get ID		Half-duplex		Tx on ENTER
+; ------------		----	--------	------- 	------		-----------		-----------
+  Unknown,			115200, ,			,			,
+  AARI,				9600,	ECHO OFF,	ECHO ON,	VERSION
+  BOOTLOAD,			9600,	,			,			VERSION
+  DISCOVER,			115200,	ECHO OFF,	ECHO ON,	VERSION
+  MVC-FFLEX,		115200, ,			,			,			Yes,			0x0A
+  PDii,				9600,	ECHO OFF,	ECHO ON,	VERSION
