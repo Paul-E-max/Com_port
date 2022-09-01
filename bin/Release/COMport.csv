@@ -1,8 +1,56 @@
-﻿; Project Name		Baud	Echo off 	Echo on 	Get ID		Half-duplex		Tx on ENTER
-; ------------		----	--------	------- 	------		-----------		-----------
-  Unknown,			115200, ,			,			,
-  AARI,				9600,	ECHO OFF,	ECHO ON,	VERSION
-  BOOTLOAD,			9600,	,			,			VERSION
-  DISCOVER,			115200,	ECHO OFF,	ECHO ON,	VERSION
-  MVC_FFLEX,		115200, ,			,			,			Yes,			0x0A
-  PDii,				9600,	ECHO OFF,	ECHO ON,	VERSION
+﻿; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+; Filename:		COMport.CSV
+; Project:		DISCOVER_COM_port
+; Author:		Foster & Freeman Ltd - Michael Dodd
+; Created:		13.07.2022
+;
+; All lines beginning with a semi-colon are ignored.
+;
+; All devices this application can communicate with are listed below, one line
+; per device.  Each line is made up of parameters separated by commas. Blank
+; fields consist of just a comma and can be dropped altogether if no more
+; parameters are to be supplied on that line.
+;
+; Parameters for each line are as follows:-
+;
+; Parameter		Description
+; ---------		-----------
+;
+; Project:		This is displayed in a drop-down box and used to select the
+;				device that this application should talk to.
+;
+; Baud:			Baudrate used in communications with the connected device.
+;
+; Echo off:		Echo off command, blank if not available.
+;
+; Echo on:		Echo on command, blank if not available.
+;
+; Get ID:		Command to get the device identification, blank if not available.
+;
+; Response:		Used where response to Get ID differs from the Project name.
+;				Note that the response only has to begin with the Project name
+;				or this entry to be accepted.  The whole response is placed on
+;				the title bar to indicate what is connected.
+;
+; Half-duplex:	Enter Yes for devices that do not echo each character typed by
+;				the user.  Use No or leave blank for full-duplex communications.
+;
+; Tx on Enter:	On hitting ENTER on the keyboard, an alternative to CR (0x0D)
+;				can be sent.  This is supplied as a hexadecimal code using the
+;				drop-down box.  A bespoke value can be typed in, again using
+;				the same hexadecimal format.  Note that since this code is
+;				used to send a command, the implication is that the target
+;				device will use the same code to indicate the end of a
+;				response.  For example, MVC_FFLEX uses LF (0x0A) to indicate a
+;				command line is to be executed and sends LF at the end of a
+;				response.
+;
+;
+; Project		Baud	Echo off 	Echo on 	Get ID		Response	Half-duplex		Tx on ENTER
+; -------		----	--------	------- 	------		--------	-----------		-----------
+  Unknown,		115200
+  AARI,			9600,	ECHO OFF,	ECHO ON,	VERSION,
+  BOOTLOAD,		9600,	,			,			VERSION,
+  DISCOVER,		115200,	ECHO OFF,	ECHO ON,	VERSION,
+  MVC_FFLEX,	115200, ,			,			VERSION,	0 03,		Yes,			0x0A
+  PDii,			9600,	ECHO OFF,	ECHO ON,	VERSION,

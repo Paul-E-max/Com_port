@@ -17,3 +17,4 @@ C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_COM_port\obj\Debug\COMport.cspr
 C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_COM_port\obj\Debug\COMport.csproj.CoreCompileInputs.cache
 C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_COM_port\obj\Debug\COMport.exe
 C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_COM_port\obj\Debug\COMport.pdb
+C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_COM_port\obj\Debug\COMport.csproj.AssemblyReference.cache

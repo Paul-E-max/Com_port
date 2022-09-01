@@ -1,6 +1,6 @@
 ﻿// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // @File:       COMportForm.cs
-// @Project:    DISCOVER_UTIL\COMport
+// @Project:    DISCOVER_COM_port
 // @Author:     Foster & Freeman Ltd - Michael Dodd
 // @Created:    31.03.2022
 //
@@ -9,6 +9,9 @@
 // @Tools:      Visual Studio 2019, C#
 //
 // @Revision:
+// 18.08.2022-MD V1.00.06 - Option to use a response to "Version" where it
+//               differs from project name.  Discard version 1.00.05 because
+//               "Half-duplex" is shifted right by the new "Response" parameter.
 // 17.08.2022-MD V1.00.05 - Add "Tx on Enter" option.
 // 16.08.2022-MD V1.00.04 - Add half-duplex option.
 // 13.07.2022-MD Use CSV file to get identities.
@@ -41,7 +44,7 @@ namespace COMport
         // Constants
         //
         const string APP_NAME = "COMport";
-        const string VERSION = "V1.00.05";
+        const string VERSION = "V1.00.06";
         const string FILENAME_CSV = APP_NAME + ".CSV";
 
         const string CONNECT_LABEL = "Connect";
@@ -52,7 +55,7 @@ namespace COMport
         const int TIMEOUT_CLEARS = 20;          // Number of times to attempt clear of buffer.
         const int TIMEOUT_NORMAL = 200;         // Normal period to wait for TX or RX to complete (use -1 for debugging, gives infinite period).
         const int TIMEOUT_MAY = 50;             // If not sure that a response is due.
-        const int INTERVAL_RESPOND = 175;       // Period between TX and looking for RX.
+        const int INTERVAL_RESPOND = 175;       // Period between TX and looking for RX (but surely this doesn't need to be this large).
 
         const byte BS = 0x08;
         const byte LF = 0x0A;
@@ -67,16 +70,17 @@ namespace COMport
             public string echoOff;
             public string echoOn;
             public string getID;
+            public string response;
             public bool halfDuplex;
-            public string EnterKey;
+            public string enterKey;
         };
 
         project[] projects = new project[MAX_PROJECTS];
         string EchoOff = "";
         string EchoOn = "";
         string GetID = "";
-
-        byte EnterKey = 0;
+        string Response = "";
+        string EnterKey = "";
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
@@ -98,6 +102,21 @@ namespace COMport
             this.Text = APP_NAME + " - " + VERSION;
             loadProjectInfo();
             LoadEnviroment();
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Save the project and COM port.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void COMportForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            environmentWrite("COMport_project", VersionComboBox.Text);
+            environmentWrite("COMport_connection", COMportComboBox.Text);
+            environmentWrite("COMport_baudrate", BaudComboBox.Text);
+            environmentWrite("COMport_halfDuplex", HalfDuplexCheckBox.Checked ? "True" : "False");
+            environmentWrite("COMport_onEnter", onEnterComboBox.Text);
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -179,28 +198,27 @@ namespace COMport
                             SerialPort.Open();
                             if (GetID.Length > 0)
                             {
+                                // Attempt to connect to a device with a specific response.
+                                //
                                 serialPortWriteLine("");
                                 if( EchoOff.Length > 0 ) serialPortWriteLine(EchoOff);
                                 if( GetID.Length > 0 ) versionIs = serialPortCommandresponse(GetID);
-                                if( versionIs.ToUpper().StartsWith( VersionComboBox.Text.ToUpper() ) )
+                                if( versionIs.ToUpper().StartsWith( Response ) )
                                 {
-                                    VersionComboBox.Enabled = false;
-                                    COMportComboBox.Enabled = false;
-                                    BaudComboBox.Enabled = false;
-                                    ConnectButton.Text = DISCONNECT_LABEL;
-                                    HighLightButton(ConnectButton);
-                                    this.Text = APP_NAME + " - " + VERSION + " ---> " + versionIs;
+                                    connectedTo(true);
+                                    this.Text += " ---> ";
+                                    if( VersionComboBox.Text != Response ) this.Text += VersionComboBox.Text + " ";
+                                    this.Text += versionIs;
                                     if( EchoOn.Length > 0 ) serialPortWriteLine(EchoOn);
                                 }
                             }
                             else
                             {
-                                VersionComboBox.Enabled = false;
-                                COMportComboBox.Enabled = false;
-                                BaudComboBox.Enabled = false;
-                                ConnectButton.Text = DISCONNECT_LABEL;
-                                HighLightButton(ConnectButton);
-                                this.Text = APP_NAME + " - " + VERSION + " connected";
+                                // With no GetID command, just connected to anything!
+                                //
+                                connectedTo(true);
+                                this.Text += " connected";
+                                if (EchoOn.Length > 0) serialPortWriteLine(EchoOn);
                             }
                             CommsTextBox.Focus();
                         }
@@ -217,14 +235,38 @@ namespace COMport
             }
             if( COMportComboBox.Enabled )
             {
-                if (SerialPort.IsOpen ) SerialPort.Close();
-                VersionComboBox.Enabled = true;
-                COMportComboBox.Enabled = true;
-                BaudComboBox.Enabled = true;
+                if (SerialPort.IsOpen)
+                {
+                    SerialPort.DiscardInBuffer();
+                    SerialPort.DiscardOutBuffer();
+                    //
+                    SerialPort.Close();
+                }
+                connectedTo(false);
+            }
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Connect/disconnect to a device.
+        /// </summary>
+        /// <param name="state">True to connect, false to disconnect</param>
+        private void connectedTo(bool state)
+        {
+            VersionComboBox.Enabled = !state;
+            COMportComboBox.Enabled = !state;
+            BaudComboBox.Enabled = !state;
+            if (state)
+            {
+                ConnectButton.Text = DISCONNECT_LABEL;
+                HighLightButton(ConnectButton);
+            }
+            else
+            {
                 ConnectButton.Text = CONNECT_LABEL;
                 LowLightButton(ConnectButton);
-                this.Text = APP_NAME + " - " + VERSION;
             }
+            this.Text = APP_NAME + " - " + VERSION;
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -403,21 +445,9 @@ namespace COMport
                 }
                 if (readLength > 0)
                 {
-                    // This is actually adding the string character by character, which, if a little slow,
-                    // can be sped up by converting to a string, doing string convertion of EnterKey characters
-                    // and then appending the string on block to CommsTextBox.
-                    //
-                    for (int idx = 0; idx < readLength; idx++)
-                    {
-                        if ((EnterKey > 0) && (inputs[idx] == EnterKey))
-                        {
-                            CommsTextBox.AppendText(Environment.NewLine.ToString());
-                        }
-                        else
-                        {
-                            CommsTextBox.AppendText(Encoding.ASCII.GetString(inputs,idx,1));
-                        }
-                    }
+                    string toSend = Encoding.ASCII.GetString(inputs, 0, readLength);
+                    if( EnterKey.Length > 0 ) while( toSend.Contains(EnterKey) ) toSend = toSend.Replace(EnterKey, Environment.NewLine);
+                    CommsTextBox.AppendText(toSend);
                 }
                 CommsTextBox.SelectionStart = CommsTextBox.Text.Length; // Place the curser at the end of the text.
                 CommsTextBox.ScrollToCaret();
@@ -541,8 +571,18 @@ namespace COMport
             {
                 string[] lines = File.ReadAllLines(FILENAME_CSV);
                 //
-                for (n = 0; n < MAX_PROJECTS; n++) projects[n] = new project();
-                //
+                for (n = 0; n < MAX_PROJECTS; n++)
+                {
+                    projects[n] = new project();
+                    projects[n].name = "";
+                    projects[n].baudrate = "";
+                    projects[n].echoOff = "";
+                    projects[n].echoOn = "";
+                    projects[n].getID = "";
+                    projects[n].response = "";
+                    projects[n].halfDuplex = false;
+                    projects[n].enterKey = "";
+                }
                 // Retrieve all the saved project and baudrate combinations available.
                 // These are also placed into the project names dropdown list for easy of selection.
                 //
@@ -557,22 +597,22 @@ namespace COMport
                     //
                     if ((lines[ln].Length > 0) && !lines[ln].StartsWith(";"))
                     {
+                        // Something left on the line to look at and it isn't a commant.
+                        //
                         string[] info = lines[ln].Split(',', (char)11);
                         //
-                        if (info.Length >= 5)
-                        {
-                            projects[n].name = info[0];
-                            projects[n].baudrate = info[1];
-                            projects[n].echoOff = info[2];
-                            projects[n].echoOn = info[3];
-                            projects[n].getID = info[4];
-                            if (info.Length > 5) projects[n].halfDuplex = info[5].ToUpper().StartsWith("Y");
-                            if (info.Length > 6) projects[n].EnterKey = info[6];
-                            //
-                            VersionComboBox.Items.Add(projects[n].name);
-                            n++;
-                            if (MAX_PROJECTS == n) break; // Reached the upper limit for the drop down list.
-                        }
+                        if (info.Length > 0) projects[n].name = info[0];
+                        if (info.Length > 1) projects[n].baudrate = info[1];
+                        if (info.Length > 2) projects[n].echoOff = info[2];
+                        if (info.Length > 3) projects[n].echoOn = info[3];
+                        if (info.Length > 4) projects[n].getID = info[4];
+                        if (info.Length > 5) projects[n].response = info[5];
+                        if (info.Length > 6) projects[n].halfDuplex = info[6].ToUpper().StartsWith("Y");
+                        if (info.Length > 7) projects[n].enterKey = info[7];
+                        //
+                        VersionComboBox.Items.Add(projects[n].name);
+                        n++;
+                        if (MAX_PROJECTS == n) break; // Reached the upper limit for the drop down list.
                     }
                 }
             }
@@ -595,8 +635,11 @@ namespace COMport
                     EchoOff = project.echoOff;
                     EchoOn = project.echoOn;
                     GetID = project.getID;
+                    Response = project.response;
+                    if (0 == Response.Length) Response = VersionComboBox.Text;
+                    Response = Response.ToUpper();
                     HalfDuplexCheckBox.Checked = project.halfDuplex;
-                    onEnterComboBox.Text = project.EnterKey;
+                    onEnterComboBox.Text = project.enterKey;
                     //
                     break;
                 }
@@ -650,28 +693,13 @@ namespace COMport
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
-        /// Save the project and COM port.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void COMportForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            environmentWrite("COMport_project", VersionComboBox.Text);
-            environmentWrite("COMport_connection", COMportComboBox.Text);
-            environmentWrite("COMport_baudrate", BaudComboBox.Text);
-            environmentWrite("COMport_halfDuplex", HalfDuplexCheckBox.Checked ? "True" : "False");
-            environmentWrite("COMport_onEnter", onEnterComboBox.Text);
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
         /// If the Tx on ENTER changes, update the EnterKey value.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void onEnterComboBox_TextChanged(object sender, EventArgs e)
         {
-            EnterKey = 0; // Assume that it is not set.
+            EnterKey = ""; // Assume that it is not set.
 
             if (onEnterComboBox.Text.StartsWith("0x"))
             {
@@ -679,7 +707,8 @@ namespace COMport
                 //
                 try
                 {
-                    EnterKey = Convert.ToByte(onEnterComboBox.Text.Substring(2), 16);
+                    EnterKey = Convert.ToChar(Convert.ToUInt32(onEnterComboBox.Text.Substring(2), 16)).ToString();
+                    if (Environment.NewLine == EnterKey) EnterKey = ""; // No need to change it to itself!
                 }
                 catch
                 {
