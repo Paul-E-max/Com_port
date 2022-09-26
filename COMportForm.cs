@@ -9,6 +9,7 @@
 // @Tools:      Visual Studio 2019, C#
 //
 // @Revision:
+// 26.09.2022-MD V1.00.07 - Correction to thread handling fault that showed up with MVC_FFLEX comms!
 // 18.08.2022-MD V1.00.06 - Option to use a response to "Version" where it
 //               differs from project name.  Discard version 1.00.05 because
 //               "Half-duplex" is shifted right by the new "Response" parameter.
@@ -420,7 +421,7 @@ namespace COMport
                         {
                             // Need to handle the characters in front of the BS.
                             //
-                            CommsTextBox.AppendText(Encoding.ASCII.GetString(inputs, 0, i));
+                            updateCommsTextBox(Encoding.ASCII.GetString(inputs, 0, i));
                             //
                             // And force the byte array to have BS as the first character.
                             //
@@ -433,8 +434,12 @@ namespace COMport
                         }
                         // The BS causes the CommsTextBox to loose a character at the end of the existing content.
                         //
-                        if(CommsTextBox.TextLength > 0) CommsTextBox.Text = CommsTextBox.Text.Substring(0, CommsTextBox.TextLength - 1);
-                        //
+                        if (CommsTextBox.TextLength > 0)
+                        {
+                            CommsTextBox.Text = CommsTextBox.Text.Substring(0, CommsTextBox.TextLength - 1);
+                            CommsTextBox.SelectionStart = CommsTextBox.Text.Length; // Place the curser at the end of the text.
+                            CommsTextBox.ScrollToCaret();
+                        }
                         for ( int shift=1; shift<readLength; shift++)
                         {
                             inputs[shift - 1] = inputs[shift];
@@ -446,11 +451,41 @@ namespace COMport
                 if (readLength > 0)
                 {
                     string toSend = Encoding.ASCII.GetString(inputs, 0, readLength);
-                    if( EnterKey.Length > 0 ) while( toSend.Contains(EnterKey) ) toSend = toSend.Replace(EnterKey, Environment.NewLine);
-                    CommsTextBox.AppendText(toSend);
+                    //
+                    // If any enter keys appear, replace them with the standard CRLF sequence used
+                    // by the environment.
+                    //
+                    if (EnterKey.Length > 0)
+                    {
+                        for( i=0; i<(toSend.Length - EnterKey.Length + 1); i++ )
+                        {
+                            if( toSend.Substring(i).StartsWith(EnterKey) )
+                            {
+                                toSend = toSend.Substring(0, i) + Environment.NewLine + toSend.Substring(i + EnterKey.Length);
+                                i += (Environment.NewLine.Length - 1);
+                            }
+                        }
+                    }
+                    updateCommsTextBox(toSend);
                 }
-                CommsTextBox.SelectionStart = CommsTextBox.Text.Length; // Place the curser at the end of the text.
-                CommsTextBox.ScrollToCaret();
+            }
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Update the comms text box with a new string to be appended.
+        /// </summary>
+        /// <param name="append"></param>
+        void updateCommsTextBox( string append )
+        {
+            if( InvokeRequired )
+            {
+                Invoke(new Action<string>(updateCommsTextBox), new object[] { append });
+            }
+            else
+            {
+                int oldLength = CommsTextBox.TextLength;
+                CommsTextBox.AppendText(append);
             }
         }
 
@@ -657,6 +692,7 @@ namespace COMport
             HalfDuplexCheckBox.Checked = ("True" == environmentRead("COMport_halfDuplex", "false"));
             BaudComboBox.Text = environmentRead("COMport_baudrate", "");
             onEnterComboBox.Text = environmentRead("COMport_onEnter", "");
+            checkEnterChar(); // Avoid endless loop.
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -703,18 +739,38 @@ namespace COMport
 
             if (onEnterComboBox.Text.StartsWith("0x"))
             {
-                // Any incoming characters of type onEnterComboBox.Text should be replaced by CR.
-                //
-                try
-                {
-                    EnterKey = Convert.ToChar(Convert.ToUInt32(onEnterComboBox.Text.Substring(2), 16)).ToString();
-                    if (Environment.NewLine == EnterKey) EnterKey = ""; // No need to change it to itself!
-                }
-                catch
-                {
-                    // Just ignore silly items in TxEnter text box.
-                }
+                checkEnterChar();
             }
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Any incoming characters of type onEnterComboBox.Text should be replaced by CR.
+        /// </summary>
+        private void checkEnterChar()
+        {
+            try
+            {
+                EnterKey = Convert.ToChar(Convert.ToUInt32(onEnterComboBox.Text.Substring(2), 16)).ToString();
+                if (Environment.NewLine == EnterKey) EnterKey = ""; // No need to change it to itself!
+            }
+            catch
+            {
+                // Just ignore silly items in TxEnter text box.
+            }
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CommsTextBox_TextChanged(object sender, EventArgs e)
+        {
+            CommsTextBox.SelectionStart = CommsTextBox.Text.Length; // Place the curser at the end of the text.
+            CommsTextBox.ScrollToCaret();
+            //CommsTextBox.Select( CommsTextBox.Text.Length, 0 );
         }
     }
 }
