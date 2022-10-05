@@ -36,6 +36,11 @@ namespace COMport
             this.COMportComboBox = new System.Windows.Forms.ComboBox();
             this.ConnectButton = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.label2 = new System.Windows.Forms.Label();
+            this.DelayTextBox = new System.Windows.Forms.TextBox();
+            this.QuickTextBox3 = new System.Windows.Forms.TextBox();
+            this.QuickTextBox2 = new System.Windows.Forms.TextBox();
+            this.QuickTextBox1 = new System.Windows.Forms.TextBox();
             this.onEnterComboBox = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.HalfDuplexCheckBox = new System.Windows.Forms.CheckBox();
@@ -63,7 +68,7 @@ namespace COMport
             this.CommsTextBox.ReadOnly = true;
             this.CommsTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.CommsTextBox.ShortcutsEnabled = false;
-            this.CommsTextBox.Size = new System.Drawing.Size(921, 554);
+            this.CommsTextBox.Size = new System.Drawing.Size(922, 554);
             this.CommsTextBox.TabIndex = 3;
             this.CommsTextBox.TextChanged += new System.EventHandler(this.CommsTextBox_TextChanged);
             this.CommsTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.CommsTextBox_KeyPress);
@@ -83,10 +88,10 @@ namespace COMport
             "38400",
             "57600",
             "115200"});
-            this.BaudComboBox.Location = new System.Drawing.Point(355, 6);
+            this.BaudComboBox.Location = new System.Drawing.Point(339, 6);
             this.BaudComboBox.Margin = new System.Windows.Forms.Padding(2);
             this.BaudComboBox.Name = "BaudComboBox";
-            this.BaudComboBox.Size = new System.Drawing.Size(141, 21);
+            this.BaudComboBox.Size = new System.Drawing.Size(72, 21);
             this.BaudComboBox.TabIndex = 1;
             this.BaudComboBox.Text = "115200";
             // 
@@ -96,7 +101,7 @@ namespace COMport
             this.COMportComboBox.Location = new System.Drawing.Point(275, 6);
             this.COMportComboBox.Margin = new System.Windows.Forms.Padding(2);
             this.COMportComboBox.Name = "COMportComboBox";
-            this.COMportComboBox.Size = new System.Drawing.Size(77, 21);
+            this.COMportComboBox.Size = new System.Drawing.Size(59, 21);
             this.COMportComboBox.TabIndex = 0;
             this.COMportComboBox.DropDown += new System.EventHandler(this.COMportComboBox_DropDown);
             // 
@@ -115,6 +120,11 @@ namespace COMport
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.panel1.Controls.Add(this.label2);
+            this.panel1.Controls.Add(this.DelayTextBox);
+            this.panel1.Controls.Add(this.QuickTextBox3);
+            this.panel1.Controls.Add(this.QuickTextBox2);
+            this.panel1.Controls.Add(this.QuickTextBox1);
             this.panel1.Controls.Add(this.onEnterComboBox);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.HalfDuplexCheckBox);
@@ -126,8 +136,50 @@ namespace COMport
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(921, 34);
+            this.panel1.Size = new System.Drawing.Size(922, 34);
             this.panel1.TabIndex = 4;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(554, 11);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(62, 13);
+            this.label2.TabIndex = 12;
+            this.label2.Text = "Char Delay:";
+            // 
+            // DelayTextBox
+            // 
+            this.DelayTextBox.Location = new System.Drawing.Point(619, 8);
+            this.DelayTextBox.Name = "DelayTextBox";
+            this.DelayTextBox.Size = new System.Drawing.Size(52, 20);
+            this.DelayTextBox.TabIndex = 11;
+            this.DelayTextBox.Text = "0";
+            this.DelayTextBox.TextChanged += new System.EventHandler(this.NLDelayTextBox_TextChanged);
+            // 
+            // QuickTextBox3
+            // 
+            this.QuickTextBox3.Location = new System.Drawing.Point(1221, 8);
+            this.QuickTextBox3.Name = "QuickTextBox3";
+            this.QuickTextBox3.Size = new System.Drawing.Size(140, 20);
+            this.QuickTextBox3.TabIndex = 10;
+            this.QuickTextBox3.DoubleClick += new System.EventHandler(this.QuickTextBox3_DoubleClick);
+            // 
+            // QuickTextBox2
+            // 
+            this.QuickTextBox2.Location = new System.Drawing.Point(1075, 8);
+            this.QuickTextBox2.Name = "QuickTextBox2";
+            this.QuickTextBox2.Size = new System.Drawing.Size(140, 20);
+            this.QuickTextBox2.TabIndex = 9;
+            this.QuickTextBox2.DoubleClick += new System.EventHandler(this.QuickTextBox2_DoubleClick);
+            // 
+            // QuickTextBox1
+            // 
+            this.QuickTextBox1.Location = new System.Drawing.Point(929, 8);
+            this.QuickTextBox1.Name = "QuickTextBox1";
+            this.QuickTextBox1.Size = new System.Drawing.Size(140, 20);
+            this.QuickTextBox1.TabIndex = 8;
+            this.QuickTextBox1.DoubleClick += new System.EventHandler(this.QuickTextBox1_DoubleClick);
             // 
             // onEnterComboBox
             // 
@@ -136,16 +188,16 @@ namespace COMport
             "0x0A",
             "0x0D",
             "0x1B"});
-            this.onEnterComboBox.Location = new System.Drawing.Point(740, 8);
+            this.onEnterComboBox.Location = new System.Drawing.Point(762, 8);
             this.onEnterComboBox.Name = "onEnterComboBox";
-            this.onEnterComboBox.Size = new System.Drawing.Size(78, 21);
+            this.onEnterComboBox.Size = new System.Drawing.Size(56, 21);
             this.onEnterComboBox.TabIndex = 7;
             this.onEnterComboBox.TextChanged += new System.EventHandler(this.onEnterComboBox_TextChanged);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(657, 12);
+            this.label1.Location = new System.Drawing.Point(680, 12);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(77, 13);
             this.label1.TabIndex = 6;
@@ -154,7 +206,7 @@ namespace COMport
             // HalfDuplexCheckBox
             // 
             this.HalfDuplexCheckBox.AutoSize = true;
-            this.HalfDuplexCheckBox.Location = new System.Drawing.Point(501, 11);
+            this.HalfDuplexCheckBox.Location = new System.Drawing.Point(415, 11);
             this.HalfDuplexCheckBox.Name = "HalfDuplexCheckBox";
             this.HalfDuplexCheckBox.Size = new System.Drawing.Size(79, 17);
             this.HalfDuplexCheckBox.TabIndex = 5;
@@ -186,9 +238,9 @@ namespace COMport
             // SerialPort
             // 
             this.SerialPort.DtrEnable = true;
-            this.SerialPort.ReadTimeout = 5000;
+            this.SerialPort.ReadTimeout = 100;
             this.SerialPort.RtsEnable = true;
-            this.SerialPort.WriteTimeout = 5000;
+            this.SerialPort.WriteTimeout = 100;
             this.SerialPort.DataReceived += new System.IO.Ports.SerialDataReceivedEventHandler(this.SerialPort_DataReceived);
             // 
             // panel2
@@ -198,7 +250,7 @@ namespace COMport
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(0, 34);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(921, 554);
+            this.panel2.Size = new System.Drawing.Size(922, 554);
             this.panel2.TabIndex = 5;
             // 
             // COMportForm
@@ -206,7 +258,7 @@ namespace COMport
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.ClientSize = new System.Drawing.Size(921, 588);
+            this.ClientSize = new System.Drawing.Size(922, 588);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -238,6 +290,11 @@ namespace COMport
         private System.Windows.Forms.CheckBox HalfDuplexCheckBox;
         private System.Windows.Forms.ComboBox onEnterComboBox;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox QuickTextBox3;
+        private System.Windows.Forms.TextBox QuickTextBox2;
+        private System.Windows.Forms.TextBox QuickTextBox1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox DelayTextBox;
     }
 }
 

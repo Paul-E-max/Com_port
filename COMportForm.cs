@@ -9,6 +9,7 @@
 // @Tools:      Visual Studio 2019, C#
 //
 // @Revision:
+// 05.10.2022-MD V1.00.08 - Add quick text boxes hidden off on far right.
 // 26.09.2022-MD V1.00.07 - Correction to thread handling fault that showed up with MVC_FFLEX comms!
 // 18.08.2022-MD V1.00.06 - Option to use a response to "Version" where it
 //               differs from project name.  Discard version 1.00.05 because
@@ -45,7 +46,7 @@ namespace COMport
         // Constants
         //
         const string APP_NAME = "COMport";
-        const string VERSION = "V1.00.06";
+        const string VERSION = "V1.00.08";
         const string FILENAME_CSV = APP_NAME + ".CSV";
 
         const string CONNECT_LABEL = "Connect";
@@ -74,6 +75,7 @@ namespace COMport
             public string response;
             public bool halfDuplex;
             public string enterKey;
+            public string NLDelay;
         };
 
         project[] projects = new project[MAX_PROJECTS];
@@ -82,6 +84,7 @@ namespace COMport
         string GetID = "";
         string Response = "";
         string EnterKey = "";
+        int InterCharDelay = 0; // Millisecond delay between characters sent to target.
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
@@ -118,6 +121,10 @@ namespace COMport
             environmentWrite("COMport_baudrate", BaudComboBox.Text);
             environmentWrite("COMport_halfDuplex", HalfDuplexCheckBox.Checked ? "True" : "False");
             environmentWrite("COMport_onEnter", onEnterComboBox.Text);
+            environmentWrite("COMport_delay", DelayTextBox.Text);
+            environmentWrite("COMport_QuickText1", QuickTextBox1.Text);
+            environmentWrite("COMport_QuickText2", QuickTextBox2.Text);
+            environmentWrite("COMport_QuickText3", QuickTextBox3.Text);
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -548,6 +555,7 @@ namespace COMport
                             CommsTextBox.ScrollToCaret();
                         }
                     }
+                    if( InterCharDelay > 0 ) Thread.Sleep(InterCharDelay);
                 }
             }
         }
@@ -617,6 +625,7 @@ namespace COMport
                     projects[n].response = "";
                     projects[n].halfDuplex = false;
                     projects[n].enterKey = "";
+                    projects[n].NLDelay = "";
                 }
                 // Retrieve all the saved project and baudrate combinations available.
                 // These are also placed into the project names dropdown list for easy of selection.
@@ -644,6 +653,7 @@ namespace COMport
                         if (info.Length > 5) projects[n].response = info[5];
                         if (info.Length > 6) projects[n].halfDuplex = info[6].ToUpper().StartsWith("Y");
                         if (info.Length > 7) projects[n].enterKey = info[7];
+                        if (info.Length > 8) projects[n].NLDelay = info[8];
                         //
                         VersionComboBox.Items.Add(projects[n].name);
                         n++;
@@ -675,7 +685,14 @@ namespace COMport
                     Response = Response.ToUpper();
                     HalfDuplexCheckBox.Checked = project.halfDuplex;
                     onEnterComboBox.Text = project.enterKey;
-                    //
+                    try
+                    {
+                        InterCharDelay = Convert.ToInt32(project.NLDelay);
+                    }
+                    catch
+                    {
+                        InterCharDelay = 0;
+                    }
                     break;
                 }
             }
@@ -692,6 +709,13 @@ namespace COMport
             HalfDuplexCheckBox.Checked = ("True" == environmentRead("COMport_halfDuplex", "false"));
             BaudComboBox.Text = environmentRead("COMport_baudrate", "");
             onEnterComboBox.Text = environmentRead("COMport_onEnter", "");
+            string temp = environmentRead("COMport_delay", "X");
+            if (temp != "X") DelayTextBox.Text = temp;
+            //
+            QuickTextBox1.Text = environmentRead("COMport_QuickText1", "");
+            QuickTextBox2.Text = environmentRead("COMport_QuickText2", "");
+            QuickTextBox3.Text = environmentRead("COMport_QuickText3", "");
+            //
             checkEnterChar(); // Avoid endless loop.
         }
 
@@ -762,7 +786,7 @@ namespace COMport
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
-        /// 
+        /// Place the cursor at the end of the text box.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -770,7 +794,96 @@ namespace COMport
         {
             CommsTextBox.SelectionStart = CommsTextBox.Text.Length; // Place the curser at the end of the text.
             CommsTextBox.ScrollToCaret();
-            //CommsTextBox.Select( CommsTextBox.Text.Length, 0 );
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Send a text strings to the keyboard buffer, doing newline with '\n'.
+        /// </summary>
+        /// <param name="toSend"></param>
+        private void sendLinesToKeyboard(string toSend)
+        {
+            string aline;
+            int idx;
+
+            while (toSend.Contains("\\n"))
+            {
+                idx = toSend.IndexOf("\\n");
+                aline = toSend.Substring(0, idx);
+                toSend = toSend.Substring(idx + 2);
+                //
+                sendToKeyboard(aline + Environment.NewLine);
+            }
+            if (toSend.Length > 0) sendToKeyboard(toSend);
+            CommsTextBox.Focus();
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Pump a single string to the keyboard buffer.
+        /// </summary>
+        /// <param name="toSend"></param>
+        private void sendToKeyboard( string toSend )
+        {
+            object sender = null;
+            KeyPressEventArgs e = new KeyPressEventArgs((char)Keys.Enter);
+
+            for (int idx = 0; idx < toSend.Length; idx++)
+            {
+                e.KeyChar = Convert.ToChar(toSend.Substring(idx, 1));
+                CommsTextBox_KeyPress(sender, e);
+            }
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Send QuickText box 1 to keyboard.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void QuickTextBox1_DoubleClick(object sender, EventArgs e)
+        {
+            sendLinesToKeyboard(QuickTextBox1.Text);
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Send QuickText box 2 to keyboard.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void QuickTextBox2_DoubleClick(object sender, EventArgs e)
+        {
+            sendLinesToKeyboard(QuickTextBox2.Text);
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Send QuickText box 3 to keyboard.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void QuickTextBox3_DoubleClick(object sender, EventArgs e)
+        {
+            sendLinesToKeyboard(QuickTextBox3.Text);
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Update InterCharDelay with value of NLDelayTextBox.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void NLDelayTextBox_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                InterCharDelay = Convert.ToInt32(DelayTextBox.Text);
+            }
+            catch
+            {
+                InterCharDelay = 0;
+            }
         }
     }
 }

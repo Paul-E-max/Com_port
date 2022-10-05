@@ -45,13 +45,15 @@
 ;				command line is to be executed and sends LF at the end of a
 ;				response.
 ;
+; NL delay:		If a delay is required between enter, set it here.  Blank is zero.
 ;
-; Project		Baud	Echo off 	Echo on 	Get ID		Response	Half-duplex		Tx on ENTER
-; -------		----	--------	------- 	------		--------	-----------		-----------
+;
+; Project		Baud	Echo off 	Echo on 	Get ID		Response	Half-duplex		Tx on ENTER	 N.L. delay
+; -------		----	--------	------- 	------		--------	-----------		-----------	 ----------
   Unknown,		115200
   AARI,			9600,	ECHO OFF,	ECHO ON,	VERSION,
   BOOTLOAD,		9600,	,			,			VERSION,
   DISCOVER,		115200,	ECHO OFF,	ECHO ON,	VERSION,
-  MVC_FFLEX,	115200, ,			,			VERSION,	0 03,		Yes,			0x0A
+  MVC_FFLEX,	115200, ,			,			VERSION,	0 03,		Yes,			0x0A,			0
   PDii,			9600,	ECHO OFF,	ECHO ON,	VERSION,
-  I2C,			9600,	ECHO OFF,	ECHO ON,	ID,
+  
