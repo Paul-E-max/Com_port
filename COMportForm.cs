@@ -9,6 +9,7 @@
 // @Tools:      Visual Studio 2019, C#
 //
 // @Revision:
+// 06.10.2022-MD V1.01.01 - Extend the number of quick text boxes.
 // 06.10.2022-MD V1.01.00 - Move quick text into a sub-menu by itself - this can be positioned anywhere on the screen.
 // 05.10.2022-MD V1.00.08 - Add quick text boxes hidden off on far right.
 // 26.09.2022-MD V1.00.07 - Correction to thread handling fault that showed up with MVC_FFLEX comms!
@@ -862,7 +863,7 @@ namespace COMport
             menu.StartPosition = FormStartPosition.Manual;
             //
             menu.Location = Location;
-            menu.Left += ClientSize.Width + 20; // To place it on far right of parent.
+            menu.Left += ClientSize.Width + 10; // To place it on far right of parent.
             //
             menu.Show();
         }

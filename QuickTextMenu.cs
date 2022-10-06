@@ -159,6 +159,83 @@ namespace COMport
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
+        /// Save the current text configuration
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SaveButton_Click(object sender, EventArgs e)
+        {
+            saveEnvironment(1, CommandLine1TextBox.Text, ManualEnter1CheckBox);
+            saveEnvironment(2, CommandLine2TextBox.Text, ManualEnter2CheckBox);
+            saveEnvironment(3, CommandLine3TextBox.Text, ManualEnter3CheckBox);
+            saveEnvironment(4, CommandLine4TextBox.Text, ManualEnter4CheckBox);
+            saveEnvironment(5, CommandLine5TextBox.Text, ManualEnter5CheckBox);
+            saveEnvironment(6, CommandLine6TextBox.Text, ManualEnter6CheckBox);
+            saveEnvironment(7, CommandLine7TextBox.Text, ManualEnter7CheckBox);
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Save an environment variable with trailing "\n" if necessary.
+        /// </summary>
+        /// <param name="idx"></param>
+        /// <param name="textbox"></param>
+        /// <param name="checkbox"></param>
+        private void saveEnvironment( int idx, string textbox, CheckBox checkbox )
+        {
+            if (!checkbox.Checked && (textbox.Length > 0)) textbox += "\\n";
+            COMportForm.environmentWrite(("COMport_QuickText" + idx), textbox );
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Exit the menu.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ExitButton_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CharDelayTextBox_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                COMportForm.InterCharDelay = Convert.ToInt32(CharDelayTextBox.Text);
+            }
+            catch
+            {
+                COMportForm.InterCharDelay = 0;
+            }
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void NLDelaytextBox_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                COMportForm.InterLineDelay = Convert.ToInt32(NLDelayTextBox.Text);
+            }
+            catch
+            {
+                COMportForm.InterLineDelay = 0;
+            }
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
         /// Execute the quick text (1).
         /// </summary>
         /// <param name="sender"></param>
@@ -234,81 +311,137 @@ namespace COMport
             Program.comportform.sendLinesToKeyboard(CommandLine7TextBox.Text + (ManualEnter7CheckBox.Checked ? "" : "\\n"));
         }
 
+
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
-        /// Save the current text configuration
+        /// Execute the quick text (8).
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void SaveButton_Click(object sender, EventArgs e)
+        private void CommandLine8TextBox_Click(object sender, EventArgs e)
         {
-            saveEnvironment(1, CommandLine1TextBox.Text, ManualEnter1CheckBox);
-            saveEnvironment(2, CommandLine2TextBox.Text, ManualEnter2CheckBox);
-            saveEnvironment(3, CommandLine3TextBox.Text, ManualEnter3CheckBox);
-            saveEnvironment(4, CommandLine4TextBox.Text, ManualEnter4CheckBox);
-            saveEnvironment(5, CommandLine5TextBox.Text, ManualEnter5CheckBox);
-            saveEnvironment(6, CommandLine6TextBox.Text, ManualEnter6CheckBox);
-            saveEnvironment(7, CommandLine7TextBox.Text, ManualEnter7CheckBox);
+            Program.comportform.sendLinesToKeyboard(CommandLine8TextBox.Text + (ManualEnter8CheckBox.Checked ? "" : "\\n"));
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
-        /// Save an environment variable with trailing "\n" if necessary.
+        /// Execute the quick text (9).
         /// </summary>
-        /// <param name="idx"></param>
-        /// <param name="textbox"></param>
-        /// <param name="checkbox"></param>
-        private void saveEnvironment( int idx, string textbox, CheckBox checkbox )
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CommandLine9TextBox_Click(object sender, EventArgs e)
         {
-            if (!checkbox.Checked && (textbox.Length > 0)) textbox += "\\n";
-            COMportForm.environmentWrite(("COMport_QuickText" + idx), textbox );
+            Program.comportform.sendLinesToKeyboard(CommandLine9TextBox.Text + (ManualEnter9CheckBox.Checked ? "" : "\\n"));
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
-        /// Exit the menu.
+        /// Execute the quick text (10).
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ExitButton_Click(object sender, EventArgs e)
+        private void CommandLine10TextBox_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Program.comportform.sendLinesToKeyboard(CommandLine10TextBox.Text + (ManualEnter10CheckBox.Checked ? "" : "\\n"));
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
-        /// 
+        /// Execute the quick text (11).
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CharDelayTextBox_TextChanged(object sender, EventArgs e)
+        private void CommandLine11TextBox_Click(object sender, EventArgs e)
         {
-            try
-            {
-                COMportForm.InterCharDelay = Convert.ToInt32(CharDelayTextBox.Text);
-            }
-            catch
-            {
-                COMportForm.InterCharDelay = 0;
-            }
+            Program.comportform.sendLinesToKeyboard(CommandLine11TextBox.Text + (ManualEnter11CheckBox.Checked ? "" : "\\n"));
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
-        /// 
+        /// Execute the quick text (12).
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void NLDelaytextBox_TextChanged(object sender, EventArgs e)
+        private void CommandLine12TextBox_Click(object sender, EventArgs e)
         {
-            try
-            {
-                COMportForm.InterLineDelay = Convert.ToInt32(NLDelayTextBox.Text);
-            }
-            catch
-            {
-                COMportForm.InterLineDelay = 0;
-            }
+            Program.comportform.sendLinesToKeyboard(CommandLine12TextBox.Text + (ManualEnter12CheckBox.Checked ? "" : "\\n"));
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Execute the quick text (13).
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CommandLine13TextBox_Click(object sender, EventArgs e)
+        {
+            Program.comportform.sendLinesToKeyboard(CommandLine13TextBox.Text + (ManualEnter13CheckBox.Checked ? "" : "\\n"));
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Execute the quick text (14).
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CommandLine14TextBox_Click(object sender, EventArgs e)
+        {
+            Program.comportform.sendLinesToKeyboard(CommandLine14TextBox.Text + (ManualEnter14CheckBox.Checked ? "" : "\\n"));
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Execute the quick text (15).
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CommandLine15TextBox_Click(object sender, EventArgs e)
+        {
+            Program.comportform.sendLinesToKeyboard(CommandLine15TextBox.Text + (ManualEnter15CheckBox.Checked ? "" : "\\n"));
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Execute the quick text (16).
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CommandLine16TextBox_Click(object sender, EventArgs e)
+        {
+            Program.comportform.sendLinesToKeyboard(CommandLine16TextBox.Text + (ManualEnter16CheckBox.Checked ? "" : "\\n"));
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Execute the quick text (17).
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CommandLine17TextBox_Click(object sender, EventArgs e)
+        {
+            Program.comportform.sendLinesToKeyboard(CommandLine17TextBox.Text + (ManualEnter17CheckBox.Checked ? "" : "\\n"));
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Execute the quick text (18).
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CommandLine18TextBox_Click(object sender, EventArgs e)
+        {
+            Program.comportform.sendLinesToKeyboard(CommandLine18TextBox.Text + (ManualEnter18CheckBox.Checked ? "" : "\\n"));
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Execute the quick text (19).
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CommandLine19TextBox_Click(object sender, EventArgs e)
+        {
+            Program.comportform.sendLinesToKeyboard(CommandLine19TextBox.Text + (ManualEnter19CheckBox.Checked ? "" : "\\n"));
         }
     }
 }
