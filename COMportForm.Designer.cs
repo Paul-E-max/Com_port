@@ -36,11 +36,7 @@ namespace COMport
             this.COMportComboBox = new System.Windows.Forms.ComboBox();
             this.ConnectButton = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.label2 = new System.Windows.Forms.Label();
-            this.DelayTextBox = new System.Windows.Forms.TextBox();
-            this.QuickTextBox3 = new System.Windows.Forms.TextBox();
-            this.QuickTextBox2 = new System.Windows.Forms.TextBox();
-            this.QuickTextBox1 = new System.Windows.Forms.TextBox();
+            this.QuickTextMenuButton = new System.Windows.Forms.Button();
             this.onEnterComboBox = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.HalfDuplexCheckBox = new System.Windows.Forms.CheckBox();
@@ -68,7 +64,7 @@ namespace COMport
             this.CommsTextBox.ReadOnly = true;
             this.CommsTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.CommsTextBox.ShortcutsEnabled = false;
-            this.CommsTextBox.Size = new System.Drawing.Size(922, 554);
+            this.CommsTextBox.Size = new System.Drawing.Size(923, 554);
             this.CommsTextBox.TabIndex = 3;
             this.CommsTextBox.TextChanged += new System.EventHandler(this.CommsTextBox_TextChanged);
             this.CommsTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.CommsTextBox_KeyPress);
@@ -120,11 +116,7 @@ namespace COMport
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.panel1.Controls.Add(this.label2);
-            this.panel1.Controls.Add(this.DelayTextBox);
-            this.panel1.Controls.Add(this.QuickTextBox3);
-            this.panel1.Controls.Add(this.QuickTextBox2);
-            this.panel1.Controls.Add(this.QuickTextBox1);
+            this.panel1.Controls.Add(this.QuickTextMenuButton);
             this.panel1.Controls.Add(this.onEnterComboBox);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.HalfDuplexCheckBox);
@@ -136,50 +128,18 @@ namespace COMport
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(922, 34);
+            this.panel1.Size = new System.Drawing.Size(923, 34);
             this.panel1.TabIndex = 4;
             // 
-            // label2
+            // QuickTextMenuButton
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(554, 11);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(62, 13);
-            this.label2.TabIndex = 12;
-            this.label2.Text = "Char Delay:";
-            // 
-            // DelayTextBox
-            // 
-            this.DelayTextBox.Location = new System.Drawing.Point(619, 8);
-            this.DelayTextBox.Name = "DelayTextBox";
-            this.DelayTextBox.Size = new System.Drawing.Size(52, 20);
-            this.DelayTextBox.TabIndex = 11;
-            this.DelayTextBox.Text = "0";
-            this.DelayTextBox.TextChanged += new System.EventHandler(this.NLDelayTextBox_TextChanged);
-            // 
-            // QuickTextBox3
-            // 
-            this.QuickTextBox3.Location = new System.Drawing.Point(1221, 8);
-            this.QuickTextBox3.Name = "QuickTextBox3";
-            this.QuickTextBox3.Size = new System.Drawing.Size(140, 20);
-            this.QuickTextBox3.TabIndex = 10;
-            this.QuickTextBox3.DoubleClick += new System.EventHandler(this.QuickTextBox3_DoubleClick);
-            // 
-            // QuickTextBox2
-            // 
-            this.QuickTextBox2.Location = new System.Drawing.Point(1075, 8);
-            this.QuickTextBox2.Name = "QuickTextBox2";
-            this.QuickTextBox2.Size = new System.Drawing.Size(140, 20);
-            this.QuickTextBox2.TabIndex = 9;
-            this.QuickTextBox2.DoubleClick += new System.EventHandler(this.QuickTextBox2_DoubleClick);
-            // 
-            // QuickTextBox1
-            // 
-            this.QuickTextBox1.Location = new System.Drawing.Point(929, 8);
-            this.QuickTextBox1.Name = "QuickTextBox1";
-            this.QuickTextBox1.Size = new System.Drawing.Size(140, 20);
-            this.QuickTextBox1.TabIndex = 8;
-            this.QuickTextBox1.DoubleClick += new System.EventHandler(this.QuickTextBox1_DoubleClick);
+            this.QuickTextMenuButton.Location = new System.Drawing.Point(556, 7);
+            this.QuickTextMenuButton.Name = "QuickTextMenuButton";
+            this.QuickTextMenuButton.Size = new System.Drawing.Size(103, 23);
+            this.QuickTextMenuButton.TabIndex = 13;
+            this.QuickTextMenuButton.Text = "Quick text menu";
+            this.QuickTextMenuButton.UseVisualStyleBackColor = true;
+            this.QuickTextMenuButton.Click += new System.EventHandler(this.QuickTextMenuButton_Click);
             // 
             // onEnterComboBox
             // 
@@ -250,7 +210,7 @@ namespace COMport
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(0, 34);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(922, 554);
+            this.panel2.Size = new System.Drawing.Size(923, 554);
             this.panel2.TabIndex = 5;
             // 
             // COMportForm
@@ -258,7 +218,7 @@ namespace COMport
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.ClientSize = new System.Drawing.Size(922, 588);
+            this.ClientSize = new System.Drawing.Size(923, 588);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -290,11 +250,7 @@ namespace COMport
         private System.Windows.Forms.CheckBox HalfDuplexCheckBox;
         private System.Windows.Forms.ComboBox onEnterComboBox;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox QuickTextBox3;
-        private System.Windows.Forms.TextBox QuickTextBox2;
-        private System.Windows.Forms.TextBox QuickTextBox1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox DelayTextBox;
+        private System.Windows.Forms.Button QuickTextMenuButton;
     }
 }
 

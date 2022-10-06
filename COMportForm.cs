@@ -9,6 +9,7 @@
 // @Tools:      Visual Studio 2019, C#
 //
 // @Revision:
+// 06.10.2022-MD V1.01.00 - Move quick text into a sub-menu by itself - this can be positioned anywhere on the screen.
 // 05.10.2022-MD V1.00.08 - Add quick text boxes hidden off on far right.
 // 26.09.2022-MD V1.00.07 - Correction to thread handling fault that showed up with MVC_FFLEX comms!
 // 18.08.2022-MD V1.00.06 - Option to use a response to "Version" where it
@@ -46,7 +47,7 @@ namespace COMport
         // Constants
         //
         const string APP_NAME = "COMport";
-        const string VERSION = "V1.00.08";
+        const string VERSION = "V1.01.00";
         const string FILENAME_CSV = APP_NAME + ".CSV";
 
         const string CONNECT_LABEL = "Connect";
@@ -76,6 +77,7 @@ namespace COMport
             public bool halfDuplex;
             public string enterKey;
             public string NLDelay;
+            public string ChDelay;
         };
 
         project[] projects = new project[MAX_PROJECTS];
@@ -84,7 +86,8 @@ namespace COMport
         string GetID = "";
         string Response = "";
         string EnterKey = "";
-        int InterCharDelay = 0; // Millisecond delay between characters sent to target.
+        static public int InterLineDelay = 0; // Milliseconds delay following an enter sent to target.
+        static public int InterCharDelay = 0; // Millisecond delay between characters sent to target.
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
@@ -121,10 +124,6 @@ namespace COMport
             environmentWrite("COMport_baudrate", BaudComboBox.Text);
             environmentWrite("COMport_halfDuplex", HalfDuplexCheckBox.Checked ? "True" : "False");
             environmentWrite("COMport_onEnter", onEnterComboBox.Text);
-            environmentWrite("COMport_delay", DelayTextBox.Text);
-            environmentWrite("COMport_QuickText1", QuickTextBox1.Text);
-            environmentWrite("COMport_QuickText2", QuickTextBox2.Text);
-            environmentWrite("COMport_QuickText3", QuickTextBox3.Text);
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -555,7 +554,21 @@ namespace COMport
                             CommsTextBox.ScrollToCaret();
                         }
                     }
-                    if( InterCharDelay > 0 ) Thread.Sleep(InterCharDelay);
+                    if (CR == RxChar)
+                    {
+                        if (InterLineDelay > 0)
+                        {
+                            Thread.Sleep(InterLineDelay);
+                        }
+                        else
+                        {
+                            Thread.Sleep(InterCharDelay);
+                        }
+                    }
+                    else
+                    {
+                        if (InterCharDelay > 0) Thread.Sleep(InterCharDelay);
+                    }
                 }
             }
         }
@@ -641,7 +654,7 @@ namespace COMport
                     //
                     if ((lines[ln].Length > 0) && !lines[ln].StartsWith(";"))
                     {
-                        // Something left on the line to look at and it isn't a commant.
+                        // Something left on the line to look at and it isn't a comment.
                         //
                         string[] info = lines[ln].Split(',', (char)11);
                         //
@@ -654,6 +667,7 @@ namespace COMport
                         if (info.Length > 6) projects[n].halfDuplex = info[6].ToUpper().StartsWith("Y");
                         if (info.Length > 7) projects[n].enterKey = info[7];
                         if (info.Length > 8) projects[n].NLDelay = info[8];
+                        if (info.Length > 9) projects[n].ChDelay = info[9];
                         //
                         VersionComboBox.Items.Add(projects[n].name);
                         n++;
@@ -687,7 +701,15 @@ namespace COMport
                     onEnterComboBox.Text = project.enterKey;
                     try
                     {
-                        InterCharDelay = Convert.ToInt32(project.NLDelay);
+                        InterLineDelay = Convert.ToInt32(project.NLDelay);
+                    }
+                    catch
+                    {
+                        InterLineDelay = 0;
+                    }
+                    try
+                    {
+                        InterCharDelay = Convert.ToInt32(project.ChDelay);
                     }
                     catch
                     {
@@ -709,13 +731,6 @@ namespace COMport
             HalfDuplexCheckBox.Checked = ("True" == environmentRead("COMport_halfDuplex", "false"));
             BaudComboBox.Text = environmentRead("COMport_baudrate", "");
             onEnterComboBox.Text = environmentRead("COMport_onEnter", "");
-            string temp = environmentRead("COMport_delay", "X");
-            if (temp != "X") DelayTextBox.Text = temp;
-            //
-            QuickTextBox1.Text = environmentRead("COMport_QuickText1", "");
-            QuickTextBox2.Text = environmentRead("COMport_QuickText2", "");
-            QuickTextBox3.Text = environmentRead("COMport_QuickText3", "");
-            //
             checkEnterChar(); // Avoid endless loop.
         }
 
@@ -727,7 +742,7 @@ namespace COMport
         /// <param name="defaultTo">This if no environment variable set</param>
         /// <returns></returns>
         /// 
-        private string environmentRead(string label, string defaultTo)
+        static public string environmentRead(string label, string defaultTo)
         {
             string result = Environment.GetEnvironmentVariable(label, EnvironmentVariableTarget.User);
 
@@ -746,7 +761,7 @@ namespace COMport
         /// <param name="variable">The string location to save in the environment variable</param>
         /// <returns></returns>
         /// 
-        private void environmentWrite(string label, string variable)
+        static public void environmentWrite(string label, string variable)
         {
             Environment.SetEnvironmentVariable(label, variable, EnvironmentVariableTarget.User);
         }
@@ -801,7 +816,7 @@ namespace COMport
         /// Send a text strings to the keyboard buffer, doing newline with '\n'.
         /// </summary>
         /// <param name="toSend"></param>
-        private void sendLinesToKeyboard(string toSend)
+        public void sendLinesToKeyboard(string toSend)
         {
             string aline;
             int idx;
@@ -820,7 +835,7 @@ namespace COMport
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
-        /// Pump a single string to the keyboard buffer.
+        /// Pump a single string to the keyboard buffer of CommTextBox.
         /// </summary>
         /// <param name="toSend"></param>
         private void sendToKeyboard( string toSend )
@@ -837,53 +852,19 @@ namespace COMport
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
-        /// Send QuickText box 1 to keyboard.
+        /// Display the quick text menu.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void QuickTextBox1_DoubleClick(object sender, EventArgs e)
+        private void QuickTextMenuButton_Click(object sender, EventArgs e)
         {
-            sendLinesToKeyboard(QuickTextBox1.Text);
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// Send QuickText box 2 to keyboard.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void QuickTextBox2_DoubleClick(object sender, EventArgs e)
-        {
-            sendLinesToKeyboard(QuickTextBox2.Text);
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// Send QuickText box 3 to keyboard.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void QuickTextBox3_DoubleClick(object sender, EventArgs e)
-        {
-            sendLinesToKeyboard(QuickTextBox3.Text);
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// Update InterCharDelay with value of NLDelayTextBox.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void NLDelayTextBox_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                InterCharDelay = Convert.ToInt32(DelayTextBox.Text);
-            }
-            catch
-            {
-                InterCharDelay = 0;
-            }
+            QuickTextMenu menu = new QuickTextMenu();
+            menu.StartPosition = FormStartPosition.Manual;
+            //
+            menu.Location = Location;
+            menu.Left += ClientSize.Width + 20; // To place it on far right of parent.
+            //
+            menu.Show();
         }
     }
 }

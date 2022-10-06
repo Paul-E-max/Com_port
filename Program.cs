@@ -8,6 +8,8 @@ namespace COMport
 {
     static class Program
     {
+        public static COMportForm comportform;
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -16,7 +18,7 @@ namespace COMport
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new COMportForm());
+            Application.Run(comportform = new COMportForm());
         }
     }
 }

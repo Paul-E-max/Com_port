@@ -29,7 +29,7 @@
 ;
 ; Response:		Used where response to Get ID differs from the Project name.
 ;				Note that the response only has to begin with the Project name
-;				or this entry to be accepted.  The whole response is placed on
+;				for this entry to be accepted.  The whole response is placed on
 ;				the title bar to indicate what is connected.
 ;
 ; Half-duplex:	Enter Yes for devices that do not echo each character typed by
@@ -45,15 +45,17 @@
 ;				command line is to be executed and sends LF at the end of a
 ;				response.
 ;
-; NL delay:		If a delay is required between enter, set it here.  Blank is zero.
+; NL delay:		Delay following an enter in milliseconds, defaults to zero.
+;
+; Char delay:	Delay between characters in milliseconds, defaults to zero.
 ;
 ;
-; Project		Baud	Echo off 	Echo on 	Get ID		Response	Half-duplex		Tx on ENTER	 N.L. delay
-; -------		----	--------	------- 	------		--------	-----------		-----------	 ----------
+; Project		Baud	Echo off 	Echo on 	Get ID		Response	Half-duplex		Tx on ENTER	 N.L. delay	Char delay
+; -------		----	--------	------- 	------		--------	-----------		-----------	 ----------	----------
   Unknown,		115200
   AARI,			9600,	ECHO OFF,	ECHO ON,	VERSION,
   BOOTLOAD,		9600,	,			,			VERSION,
   DISCOVER,		115200,	ECHO OFF,	ECHO ON,	VERSION,
-  MVC_FFLEX,	115200, ,			,			VERSION,	0 03,		Yes,			0x0A,			0
+  MVC_FFLEX,	115200, ,			,			VERSION,	0 03,		Yes,			0x0A,			10
   PDii,			9600,	ECHO OFF,	ECHO ON,	VERSION,
   
