@@ -29,6 +29,7 @@ namespace COMport
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.CommandLine1TextBox = new System.Windows.Forms.TextBox();
             this.ExeText1Button = new System.Windows.Forms.Button();
             this.ManualEnter1CheckBox = new System.Windows.Forms.CheckBox();
@@ -94,6 +95,12 @@ namespace COMport
             this.ManualEnter19CheckBox = new System.Windows.Forms.CheckBox();
             this.ExeText19Button = new System.Windows.Forms.Button();
             this.CommandLine19TextBox = new System.Windows.Forms.TextBox();
+            this.StartRepeatButton = new System.Windows.Forms.Button();
+            this.RepeatEveryTextBox = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.StopRepeatButton = new System.Windows.Forms.Button();
+            this.label6 = new System.Windows.Forms.Label();
+            this.RepeatCommandTimer = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // CommandLine1TextBox
@@ -308,7 +315,7 @@ namespace COMport
             // 
             // CharDelayTextBox
             // 
-            this.CharDelayTextBox.Location = new System.Drawing.Point(71, 550);
+            this.CharDelayTextBox.Location = new System.Drawing.Point(74, 550);
             this.CharDelayTextBox.Name = "CharDelayTextBox";
             this.CharDelayTextBox.Size = new System.Drawing.Size(56, 20);
             this.CharDelayTextBox.TabIndex = 58;
@@ -662,12 +669,70 @@ namespace COMport
             this.CommandLine19TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine19TextBox.TabIndex = 19;
             // 
+            // StartRepeatButton
+            // 
+            this.StartRepeatButton.Location = new System.Drawing.Point(74, 587);
+            this.StartRepeatButton.Name = "StartRepeatButton";
+            this.StartRepeatButton.Size = new System.Drawing.Size(57, 55);
+            this.StartRepeatButton.TabIndex = 61;
+            this.StartRepeatButton.Text = "Repeat next Execute";
+            this.StartRepeatButton.UseVisualStyleBackColor = true;
+            this.StartRepeatButton.Click += new System.EventHandler(this.StartRepeatButton_Click);
+            // 
+            // RepeatEveryTextBox
+            // 
+            this.RepeatEveryTextBox.Location = new System.Drawing.Point(176, 606);
+            this.RepeatEveryTextBox.Name = "RepeatEveryTextBox";
+            this.RepeatEveryTextBox.Size = new System.Drawing.Size(37, 20);
+            this.RepeatEveryTextBox.TabIndex = 62;
+            this.RepeatEveryTextBox.Text = "1";
+            this.RepeatEveryTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.RepeatEveryTextBox.TextChanged += new System.EventHandler(this.RepeatEveryTextBox_TextChanged);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(219, 609);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(47, 13);
+            this.label3.TabIndex = 63;
+            this.label3.Text = "seconds";
+            // 
+            // StopRepeatButton
+            // 
+            this.StopRepeatButton.Location = new System.Drawing.Point(12, 587);
+            this.StopRepeatButton.Name = "StopRepeatButton";
+            this.StopRepeatButton.Size = new System.Drawing.Size(57, 55);
+            this.StopRepeatButton.TabIndex = 64;
+            this.StopRepeatButton.Text = "STOP repeats";
+            this.StopRepeatButton.UseVisualStyleBackColor = true;
+            this.StopRepeatButton.Click += new System.EventHandler(this.StopRepeatButton_Click);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(140, 609);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(33, 13);
+            this.label6.TabIndex = 65;
+            this.label6.Text = "every";
+            // 
+            // RepeatCommandTimer
+            // 
+            this.RepeatCommandTimer.Interval = 1000;
+            this.RepeatCommandTimer.Tick += new System.EventHandler(this.RepeatCommandTimer_Tick);
+            // 
             // QuickTextMenu
             // 
             this.AcceptButton = this.ExitButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(481, 588);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.StopRepeatButton);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.RepeatEveryTextBox);
+            this.Controls.Add(this.StartRepeatButton);
             this.Controls.Add(this.ManualEnter19CheckBox);
             this.Controls.Add(this.ExeText19Button);
             this.Controls.Add(this.CommandLine19TextBox);
@@ -810,5 +875,11 @@ namespace COMport
         private System.Windows.Forms.CheckBox ManualEnter19CheckBox;
         private System.Windows.Forms.Button ExeText19Button;
         private System.Windows.Forms.TextBox CommandLine19TextBox;
+        private System.Windows.Forms.Button StartRepeatButton;
+        private System.Windows.Forms.TextBox RepeatEveryTextBox;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button StopRepeatButton;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Timer RepeatCommandTimer;
     }
 }

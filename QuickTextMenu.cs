@@ -30,6 +30,11 @@ namespace COMport
 {
     public partial class QuickTextMenu : Form
     {
+        const int REPEAT_DISABLED = 0;
+
+        bool RepeatCommandPrimmed = false;
+        int RepeatCommand = REPEAT_DISABLED;
+
         public QuickTextMenu()
         {
             InitializeComponent();
@@ -165,7 +170,8 @@ namespace COMport
         /// <param name="e"></param>
         public void ExeText1Button_Click(object sender, EventArgs e)
         {
-            Program.comportform.sendLinesToKeyboard(CommandLine1TextBox.Text + (ManualEnter1CheckBox.Checked ? "" : "\\n"));
+            executeCommand(1);
+            MaySetNewRepeatCommand(1);
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -176,7 +182,8 @@ namespace COMport
         /// <param name="e"></param>
         private void ExeText2Button_Click(object sender, EventArgs e)
         {
-            Program.comportform.sendLinesToKeyboard(CommandLine2TextBox.Text + (ManualEnter2CheckBox.Checked ? "" : "\\n"));
+            executeCommand(2);
+            MaySetNewRepeatCommand(2);
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -187,7 +194,8 @@ namespace COMport
         /// <param name="e"></param>
         private void ExeText3Button_Click(object sender, EventArgs e)
         {
-            Program.comportform.sendLinesToKeyboard(CommandLine3TextBox.Text + (ManualEnter3CheckBox.Checked ? "" : "\\n"));
+            executeCommand(3);
+            MaySetNewRepeatCommand(3);
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -198,7 +206,8 @@ namespace COMport
         /// <param name="e"></param>
         private void ExeText4Button_Click(object sender, EventArgs e)
         {
-            Program.comportform.sendLinesToKeyboard(CommandLine4TextBox.Text + (ManualEnter4CheckBox.Checked ? "" : "\\n"));
+            executeCommand(4);
+            MaySetNewRepeatCommand(4);
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -209,7 +218,8 @@ namespace COMport
         /// <param name="e"></param>
         private void ExeText5Button_Click(object sender, EventArgs e)
         {
-            Program.comportform.sendLinesToKeyboard(CommandLine5TextBox.Text + (ManualEnter5CheckBox.Checked ? "" : "\\n"));
+            executeCommand(3);
+            MaySetNewRepeatCommand(5);
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -220,7 +230,8 @@ namespace COMport
         /// <param name="e"></param>
         private void ExeText6Button_Click(object sender, EventArgs e)
         {
-            Program.comportform.sendLinesToKeyboard(CommandLine6TextBox.Text + (ManualEnter6CheckBox.Checked ? "" : "\\n"));
+            executeCommand(3);
+            MaySetNewRepeatCommand(6);
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -231,7 +242,8 @@ namespace COMport
         /// <param name="e"></param>
         private void ExeText7Button_Click(object sender, EventArgs e)
         {
-            Program.comportform.sendLinesToKeyboard(CommandLine7TextBox.Text + (ManualEnter7CheckBox.Checked ? "" : "\\n"));
+            executeCommand(3);
+            MaySetNewRepeatCommand(7);
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -242,7 +254,8 @@ namespace COMport
         /// <param name="e"></param>
         private void ExeText8Button_Click(object sender, EventArgs e)
         {
-            Program.comportform.sendLinesToKeyboard(CommandLine8TextBox.Text + (ManualEnter8CheckBox.Checked ? "" : "\\n"));
+            executeCommand(3);
+            MaySetNewRepeatCommand(8);
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -253,7 +266,8 @@ namespace COMport
         /// <param name="e"></param>
         private void ExeText9Button_Click(object sender, EventArgs e)
         {
-            Program.comportform.sendLinesToKeyboard(CommandLine9TextBox.Text + (ManualEnter9CheckBox.Checked ? "" : "\\n"));
+            executeCommand(3);
+            MaySetNewRepeatCommand(9);
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -264,7 +278,8 @@ namespace COMport
         /// <param name="e"></param>
         private void ExeText10Button_Click(object sender, EventArgs e)
         {
-            Program.comportform.sendLinesToKeyboard(CommandLine10TextBox.Text + (ManualEnter10CheckBox.Checked ? "" : "\\n"));
+            executeCommand(3);
+            MaySetNewRepeatCommand(10);
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -275,7 +290,8 @@ namespace COMport
         /// <param name="e"></param>
         private void ExeText11Button_Click(object sender, EventArgs e)
         {
-            Program.comportform.sendLinesToKeyboard(CommandLine11TextBox.Text + (ManualEnter11CheckBox.Checked ? "" : "\\n"));
+            executeCommand(3);
+            MaySetNewRepeatCommand(11);
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -286,7 +302,8 @@ namespace COMport
         /// <param name="e"></param>
         private void ExeText12Button_Click(object sender, EventArgs e)
         {
-            Program.comportform.sendLinesToKeyboard(CommandLine12TextBox.Text + (ManualEnter12CheckBox.Checked ? "" : "\\n"));
+            executeCommand(3);
+            MaySetNewRepeatCommand(12);
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -297,7 +314,8 @@ namespace COMport
         /// <param name="e"></param>
         private void ExeText13Button_Click(object sender, EventArgs e)
         {
-            Program.comportform.sendLinesToKeyboard(CommandLine13TextBox.Text + (ManualEnter13CheckBox.Checked ? "" : "\\n"));
+            executeCommand(3);
+            MaySetNewRepeatCommand(13);
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -308,7 +326,8 @@ namespace COMport
         /// <param name="e"></param>
         private void ExeText14Button_Click(object sender, EventArgs e)
         {
-            Program.comportform.sendLinesToKeyboard(CommandLine14TextBox.Text + (ManualEnter14CheckBox.Checked ? "" : "\\n"));
+            executeCommand(3);
+            MaySetNewRepeatCommand(14);
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -319,7 +338,8 @@ namespace COMport
         /// <param name="e"></param>
         private void ExeText15Button_Click(object sender, EventArgs e)
         {
-            Program.comportform.sendLinesToKeyboard(CommandLine15TextBox.Text + (ManualEnter15CheckBox.Checked ? "" : "\\n"));
+            executeCommand(3);
+            MaySetNewRepeatCommand(15);
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -330,7 +350,8 @@ namespace COMport
         /// <param name="e"></param>
         private void ExeText16Button_Click(object sender, EventArgs e)
         {
-            Program.comportform.sendLinesToKeyboard(CommandLine16TextBox.Text + (ManualEnter16CheckBox.Checked ? "" : "\\n"));
+            executeCommand(3);
+            MaySetNewRepeatCommand(16);
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -341,7 +362,8 @@ namespace COMport
         /// <param name="e"></param>
         private void ExeText17Button_Click(object sender, EventArgs e)
         {
-            Program.comportform.sendLinesToKeyboard(CommandLine17TextBox.Text + (ManualEnter17CheckBox.Checked ? "" : "\\n"));
+            executeCommand(3);
+            MaySetNewRepeatCommand(17);
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -352,7 +374,8 @@ namespace COMport
         /// <param name="e"></param>
         private void ExeText18Button_Click(object sender, EventArgs e)
         {
-            Program.comportform.sendLinesToKeyboard(CommandLine18TextBox.Text + (ManualEnter18CheckBox.Checked ? "" : "\\n"));
+            executeCommand(3);
+            MaySetNewRepeatCommand(18);
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -363,7 +386,170 @@ namespace COMport
         /// <param name="e"></param>
         private void ExeText19Button_Click(object sender, EventArgs e)
         {
-            Program.comportform.sendLinesToKeyboard(CommandLine19TextBox.Text + (ManualEnter19CheckBox.Checked ? "" : "\\n"));
+            executeCommand(3);
+            MaySetNewRepeatCommand(19);
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Start button for repeat next command every N seconds . . .
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void StartRepeatButton_Click(object sender, EventArgs e)
+        {
+            RepeatCommandPrimmed = true;
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Stop button for repeat commands.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void StopRepeatButton_Click(object sender, EventArgs e)
+        {
+            RepeatCommandPrimmed = false;
+            untickExecuteButton();
+            RepeatCommandTimer.Enabled = false;
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Start the repeat command if primed to do so . . .
+        /// </summary>
+        /// <param name="command"></param>
+        private void MaySetNewRepeatCommand( int command )
+        {
+            if( RepeatCommandPrimmed )
+            {
+                RepeatCommandPrimmed = false;
+                untickExecuteButton();
+                RepeatCommandTimer.Enabled = false;
+                RepeatCommand = command;
+                RepeatCommandTimer.Enabled = true;
+                tickExecuteButton();
+            }
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Untick the last repeat command (put it back to grey).
+        /// </summary>
+        private void untickExecuteButton()
+        {
+            if( RepeatCommand != REPEAT_DISABLED )
+            {
+                setColourExecuteButton(RepeatCommand, false);
+                RepeatCommand = REPEAT_DISABLED;
+            }
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Tick the repeat command (colour it green).
+        /// </summary>
+        private void tickExecuteButton()
+        {
+            setColourExecuteButton(RepeatCommand, true);
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Set the background colour of command to green (true) or button grey (false).
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="state"></param>
+        private void setColourExecuteButton( int command, bool state )
+        {
+            Color ofButton = (state ? System.Drawing.Color.LimeGreen : System.Drawing.SystemColors.ControlLight);
+
+            switch ( command )
+            {
+                case 1: ExeText1Button.BackColor = ofButton; break;
+                case 2: ExeText2Button.BackColor = ofButton; break;
+                case 3: ExeText3Button.BackColor = ofButton; break;
+                case 4: ExeText4Button.BackColor = ofButton; break;
+                case 5: ExeText5Button.BackColor = ofButton; break;
+                case 6: ExeText6Button.BackColor = ofButton; break;
+                case 7: ExeText7Button.BackColor = ofButton; break;
+                case 8: ExeText8Button.BackColor = ofButton; break;
+                case 9: ExeText9Button.BackColor = ofButton; break;
+                case 10: ExeText10Button.BackColor = ofButton; break;
+                case 11: ExeText11Button.BackColor = ofButton; break;
+                case 12: ExeText12Button.BackColor = ofButton; break;
+                case 13: ExeText13Button.BackColor = ofButton; break;
+                case 14: ExeText14Button.BackColor = ofButton; break;
+                case 15: ExeText15Button.BackColor = ofButton; break;
+                case 16: ExeText16Button.BackColor = ofButton; break;
+                case 17: ExeText17Button.BackColor = ofButton; break;
+                case 18: ExeText18Button.BackColor = ofButton; break;
+                case 19: ExeText19Button.BackColor = ofButton; break;
+                //
+                default: break;
+            }
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Repeat last command timer has gone off.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void RepeatCommandTimer_Tick(object sender, EventArgs e)
+        {
+            executeCommand(RepeatCommand);
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Execute a command in one of the prepared text boxes.
+        /// </summary>
+        /// <param name="command"></param>
+        private void executeCommand( int command )
+        {
+            switch( command )
+            {
+                case 1: Program.comportform.sendLinesToKeyboard(CommandLine1TextBox.Text + (ManualEnter1CheckBox.Checked ? "" : "\\n")); break;
+                case 2: Program.comportform.sendLinesToKeyboard(CommandLine2TextBox.Text + (ManualEnter2CheckBox.Checked ? "" : "\\n")); break;
+                case 3: Program.comportform.sendLinesToKeyboard(CommandLine3TextBox.Text + (ManualEnter3CheckBox.Checked ? "" : "\\n")); break;
+                case 4: Program.comportform.sendLinesToKeyboard(CommandLine4TextBox.Text + (ManualEnter4CheckBox.Checked ? "" : "\\n")); break;
+                case 5: Program.comportform.sendLinesToKeyboard(CommandLine5TextBox.Text + (ManualEnter5CheckBox.Checked ? "" : "\\n")); break;
+                case 6: Program.comportform.sendLinesToKeyboard(CommandLine6TextBox.Text + (ManualEnter6CheckBox.Checked ? "" : "\\n")); break;
+                case 7: Program.comportform.sendLinesToKeyboard(CommandLine7TextBox.Text + (ManualEnter7CheckBox.Checked ? "" : "\\n")); break;
+                case 8: Program.comportform.sendLinesToKeyboard(CommandLine8TextBox.Text + (ManualEnter8CheckBox.Checked ? "" : "\\n")); break;
+                case 9: Program.comportform.sendLinesToKeyboard(CommandLine9TextBox.Text + (ManualEnter9CheckBox.Checked ? "" : "\\n")); break;
+                case 10: Program.comportform.sendLinesToKeyboard(CommandLine10TextBox.Text + (ManualEnter10CheckBox.Checked ? "" : "\\n")); break;
+                case 11: Program.comportform.sendLinesToKeyboard(CommandLine11TextBox.Text + (ManualEnter11CheckBox.Checked ? "" : "\\n")); break;
+                case 12: Program.comportform.sendLinesToKeyboard(CommandLine12TextBox.Text + (ManualEnter12CheckBox.Checked ? "" : "\\n")); break;
+                case 13: Program.comportform.sendLinesToKeyboard(CommandLine13TextBox.Text + (ManualEnter13CheckBox.Checked ? "" : "\\n")); break;
+                case 14: Program.comportform.sendLinesToKeyboard(CommandLine14TextBox.Text + (ManualEnter14CheckBox.Checked ? "" : "\\n")); break;
+                case 15: Program.comportform.sendLinesToKeyboard(CommandLine15TextBox.Text + (ManualEnter15CheckBox.Checked ? "" : "\\n")); break;
+                case 16: Program.comportform.sendLinesToKeyboard(CommandLine16TextBox.Text + (ManualEnter16CheckBox.Checked ? "" : "\\n")); break;
+                case 17: Program.comportform.sendLinesToKeyboard(CommandLine17TextBox.Text + (ManualEnter17CheckBox.Checked ? "" : "\\n")); break;
+                case 18: Program.comportform.sendLinesToKeyboard(CommandLine18TextBox.Text + (ManualEnter18CheckBox.Checked ? "" : "\\n")); break;
+                case 19: Program.comportform.sendLinesToKeyboard(CommandLine19TextBox.Text + (ManualEnter19CheckBox.Checked ? "" : "\\n")); break;
+                //
+                default: RepeatCommandTimer.Enabled = false; break;
+            }
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Set the repeat period.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void RepeatEveryTextBox_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                RepeatCommandTimer.Interval = Convert.ToInt32(RepeatEveryTextBox.Text) * 1000; // Timer uses milliseconds.
+            }
+            catch
+            {
+                RepeatCommandTimer.Interval = 1000; // Just use a reasonable value.
+            }
         }
     }
 }
