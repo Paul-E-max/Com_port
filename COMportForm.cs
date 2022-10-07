@@ -9,7 +9,7 @@
 // @Tools:      Visual Studio 2019, C#
 //
 // @Revision:
-// 06.10.2022-MD V1.01.01 - Extend the number of quick text boxes.
+// 06.10.2022-MD V1.01.01 - Extend the number of quick text boxes, change back to Execute button and add log option.
 // 06.10.2022-MD V1.01.00 - Move quick text into a sub-menu by itself - this can be positioned anywhere on the screen.
 // 05.10.2022-MD V1.00.08 - Add quick text boxes hidden off on far right.
 // 26.09.2022-MD V1.00.07 - Correction to thread handling fault that showed up with MVC_FFLEX comms!
@@ -48,13 +48,16 @@ namespace COMport
         // Constants
         //
         const string APP_NAME = "COMport";
-        const string VERSION = "V1.01.00";
+        const string VERSION = "V1.01.01";
         const string FILENAME_CSV = APP_NAME + ".CSV";
 
         const string CONNECT_LABEL = "Connect";
         const string SCANNING_LABEL = "Connecting";
         const string DISCONNECT_LABEL = "Disconnect";
-        
+
+        const string LOG_START_LABEL = "Start log";
+        const string LOG_STOP_LABEL = "Stop log";
+
         const int TIMEOUT_IMMEDIATE = 1;        // Timeout during clearing of buffer.
         const int TIMEOUT_CLEARS = 20;          // Number of times to attempt clear of buffer.
         const int TIMEOUT_NORMAL = 200;         // Normal period to wait for TX or RX to complete (use -1 for debugging, gives infinite period).
@@ -89,6 +92,9 @@ namespace COMport
         string EnterKey = "";
         static public int InterLineDelay = 0; // Milliseconds delay following an enter sent to target.
         static public int InterCharDelay = 0; // Millisecond delay between characters sent to target.
+
+        string OutputLogFile = "";
+        string typedCommandLine = "";
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
@@ -493,6 +499,14 @@ namespace COMport
             {
                 int oldLength = CommsTextBox.TextLength;
                 CommsTextBox.AppendText(append);
+                //
+                if( OutputLogFile.Length > 0 )
+                {
+                    using (StreamWriter logFile = File.AppendText(OutputLogFile))
+                    {
+                        logFile.Write(append);
+                    }
+                }
             }
         }
 
@@ -550,7 +564,18 @@ namespace COMport
                             // Need to echo this to the terminal since the serial device isn't going to!
                             //
                             CommsTextBox.AppendText(chr);
-                            //
+                            typedCommandLine += chr;
+                            if( CR == RxChar )
+                            {
+                                if (OutputLogFile.Length > 0)
+                                {
+                                    using (StreamWriter logFile = File.AppendText(OutputLogFile))
+                                    {
+                                        logFile.Write(typedCommandLine);
+                                    }
+                                }
+                                typedCommandLine = "";
+                            }
                             CommsTextBox.SelectionStart = CommsTextBox.Text.Length; // Place the curser at the end of the text.
                             CommsTextBox.ScrollToCaret();
                         }
@@ -866,6 +891,39 @@ namespace COMport
             menu.Left += ClientSize.Width + 10; // To place it on far right of parent.
             //
             menu.Show();
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Start or restart a log file - if already logging, then stop that one and
+        /// start a new one with current timestamp.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void StartLogButton_Click(object sender, EventArgs e)
+        {
+            if (LOG_START_LABEL == StartLogButton.Text)
+            {
+                OutputLogFile = APP_NAME + DateTime.Now.ToString("_yyyyMMdd_HHmmss") + ".LOG";
+                try
+                {
+                    using (StreamWriter LogFile = File.CreateText(OutputLogFile))
+                    {
+                        // Just need to ensure that it has been created . . .
+                    }
+                    StartLogButton.Text = LOG_STOP_LABEL;
+                }
+                catch
+                {
+                    OutputLogFile = "";
+                    StartLogButton.Text = LOG_START_LABEL;
+                }
+            }
+            else
+            {
+                OutputLogFile = "";
+                StartLogButton.Text = LOG_START_LABEL;
+            }
         }
     }
 }

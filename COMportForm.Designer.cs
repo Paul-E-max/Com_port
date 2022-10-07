@@ -44,6 +44,7 @@ namespace COMport
             this.VersionComboBox = new System.Windows.Forms.ComboBox();
             this.SerialPort = new System.IO.Ports.SerialPort(this.components);
             this.panel2 = new System.Windows.Forms.Panel();
+            this.StartLogButton = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -116,6 +117,7 @@ namespace COMport
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.panel1.Controls.Add(this.StartLogButton);
             this.panel1.Controls.Add(this.QuickTextMenuButton);
             this.panel1.Controls.Add(this.onEnterComboBox);
             this.panel1.Controls.Add(this.label1);
@@ -133,9 +135,9 @@ namespace COMport
             // 
             // QuickTextMenuButton
             // 
-            this.QuickTextMenuButton.Location = new System.Drawing.Point(556, 7);
+            this.QuickTextMenuButton.Location = new System.Drawing.Point(581, 6);
             this.QuickTextMenuButton.Name = "QuickTextMenuButton";
-            this.QuickTextMenuButton.Size = new System.Drawing.Size(103, 23);
+            this.QuickTextMenuButton.Size = new System.Drawing.Size(94, 23);
             this.QuickTextMenuButton.TabIndex = 13;
             this.QuickTextMenuButton.Text = "Quick text menu";
             this.QuickTextMenuButton.UseVisualStyleBackColor = true;
@@ -213,6 +215,16 @@ namespace COMport
             this.panel2.Size = new System.Drawing.Size(923, 554);
             this.panel2.TabIndex = 5;
             // 
+            // StartLogButton
+            // 
+            this.StartLogButton.Location = new System.Drawing.Point(500, 6);
+            this.StartLogButton.Name = "StartLogButton";
+            this.StartLogButton.Size = new System.Drawing.Size(75, 23);
+            this.StartLogButton.TabIndex = 14;
+            this.StartLogButton.Text = "Start log";
+            this.StartLogButton.UseVisualStyleBackColor = true;
+            this.StartLogButton.Click += new System.EventHandler(this.StartLogButton_Click);
+            // 
             // COMportForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -251,6 +263,7 @@ namespace COMport
         private System.Windows.Forms.ComboBox onEnterComboBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button QuickTextMenuButton;
+        private System.Windows.Forms.Button StartLogButton;
     }
 }
 

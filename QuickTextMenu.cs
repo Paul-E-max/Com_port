@@ -82,83 +82,6 @@ namespace COMport
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
-        /// Execute the quick text (1).
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public void EditText1Button_Click(object sender, EventArgs e)
-        {
-            CommandLine1TextBox.Focus();
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// Execute the quick text (2).
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void EditText2Button_Click(object sender, EventArgs e)
-        {
-            CommandLine2TextBox.Focus();
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// Execute the quick text (3).
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void EditText3Button_Click(object sender, EventArgs e)
-        {
-            CommandLine3TextBox.Focus();
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// Execute the quick text (4).
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void EditText4Button_Click(object sender, EventArgs e)
-        {
-            CommandLine4TextBox.Focus();
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// Execute the quick text (5).
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void EditText5Button_Click(object sender, EventArgs e)
-        {
-            CommandLine5TextBox.Focus();
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// Execute the quick text (6).
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void EditText6Button_Click(object sender, EventArgs e)
-        {
-            CommandLine6TextBox.Focus();
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// Execute the quick text (7).
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void EditText7Button_Click(object sender, EventArgs e)
-        {
-            CommandLine7TextBox.Focus();
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
         /// Save the current text configuration
         /// </summary>
         /// <param name="sender"></param>
@@ -240,7 +163,7 @@ namespace COMport
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CommandLine1TextBox_Click(object sender, EventArgs e)
+        public void ExeText1Button_Click(object sender, EventArgs e)
         {
             Program.comportform.sendLinesToKeyboard(CommandLine1TextBox.Text + (ManualEnter1CheckBox.Checked ? "" : "\\n"));
         }
@@ -251,7 +174,7 @@ namespace COMport
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CommandLine2TextBox_Click(object sender, EventArgs e)
+        private void ExeText2Button_Click(object sender, EventArgs e)
         {
             Program.comportform.sendLinesToKeyboard(CommandLine2TextBox.Text + (ManualEnter2CheckBox.Checked ? "" : "\\n"));
         }
@@ -262,7 +185,7 @@ namespace COMport
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CommandLine3TextBox_Click(object sender, EventArgs e)
+        private void ExeText3Button_Click(object sender, EventArgs e)
         {
             Program.comportform.sendLinesToKeyboard(CommandLine3TextBox.Text + (ManualEnter3CheckBox.Checked ? "" : "\\n"));
         }
@@ -273,7 +196,7 @@ namespace COMport
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CommandLine4TextBox_Click(object sender, EventArgs e)
+        private void ExeText4Button_Click(object sender, EventArgs e)
         {
             Program.comportform.sendLinesToKeyboard(CommandLine4TextBox.Text + (ManualEnter4CheckBox.Checked ? "" : "\\n"));
         }
@@ -284,7 +207,7 @@ namespace COMport
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CommandLine5TextBox_Click(object sender, EventArgs e)
+        private void ExeText5Button_Click(object sender, EventArgs e)
         {
             Program.comportform.sendLinesToKeyboard(CommandLine5TextBox.Text + (ManualEnter5CheckBox.Checked ? "" : "\\n"));
         }
@@ -295,7 +218,7 @@ namespace COMport
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CommandLine6TextBox_Click(object sender, EventArgs e)
+        private void ExeText6Button_Click(object sender, EventArgs e)
         {
             Program.comportform.sendLinesToKeyboard(CommandLine6TextBox.Text + (ManualEnter6CheckBox.Checked ? "" : "\\n"));
         }
@@ -306,11 +229,10 @@ namespace COMport
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CommandLine7TextBox_Click(object sender, EventArgs e)
+        private void ExeText7Button_Click(object sender, EventArgs e)
         {
             Program.comportform.sendLinesToKeyboard(CommandLine7TextBox.Text + (ManualEnter7CheckBox.Checked ? "" : "\\n"));
         }
-
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
@@ -318,7 +240,7 @@ namespace COMport
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CommandLine8TextBox_Click(object sender, EventArgs e)
+        private void ExeText8Button_Click(object sender, EventArgs e)
         {
             Program.comportform.sendLinesToKeyboard(CommandLine8TextBox.Text + (ManualEnter8CheckBox.Checked ? "" : "\\n"));
         }
@@ -329,7 +251,7 @@ namespace COMport
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CommandLine9TextBox_Click(object sender, EventArgs e)
+        private void ExeText9Button_Click(object sender, EventArgs e)
         {
             Program.comportform.sendLinesToKeyboard(CommandLine9TextBox.Text + (ManualEnter9CheckBox.Checked ? "" : "\\n"));
         }
@@ -340,7 +262,7 @@ namespace COMport
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CommandLine10TextBox_Click(object sender, EventArgs e)
+        private void ExeText10Button_Click(object sender, EventArgs e)
         {
             Program.comportform.sendLinesToKeyboard(CommandLine10TextBox.Text + (ManualEnter10CheckBox.Checked ? "" : "\\n"));
         }
@@ -351,7 +273,7 @@ namespace COMport
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CommandLine11TextBox_Click(object sender, EventArgs e)
+        private void ExeText11Button_Click(object sender, EventArgs e)
         {
             Program.comportform.sendLinesToKeyboard(CommandLine11TextBox.Text + (ManualEnter11CheckBox.Checked ? "" : "\\n"));
         }
@@ -362,7 +284,7 @@ namespace COMport
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CommandLine12TextBox_Click(object sender, EventArgs e)
+        private void ExeText12Button_Click(object sender, EventArgs e)
         {
             Program.comportform.sendLinesToKeyboard(CommandLine12TextBox.Text + (ManualEnter12CheckBox.Checked ? "" : "\\n"));
         }
@@ -373,7 +295,7 @@ namespace COMport
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CommandLine13TextBox_Click(object sender, EventArgs e)
+        private void ExeText13Button_Click(object sender, EventArgs e)
         {
             Program.comportform.sendLinesToKeyboard(CommandLine13TextBox.Text + (ManualEnter13CheckBox.Checked ? "" : "\\n"));
         }
@@ -384,7 +306,7 @@ namespace COMport
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CommandLine14TextBox_Click(object sender, EventArgs e)
+        private void ExeText14Button_Click(object sender, EventArgs e)
         {
             Program.comportform.sendLinesToKeyboard(CommandLine14TextBox.Text + (ManualEnter14CheckBox.Checked ? "" : "\\n"));
         }
@@ -395,7 +317,7 @@ namespace COMport
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CommandLine15TextBox_Click(object sender, EventArgs e)
+        private void ExeText15Button_Click(object sender, EventArgs e)
         {
             Program.comportform.sendLinesToKeyboard(CommandLine15TextBox.Text + (ManualEnter15CheckBox.Checked ? "" : "\\n"));
         }
@@ -406,7 +328,7 @@ namespace COMport
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CommandLine16TextBox_Click(object sender, EventArgs e)
+        private void ExeText16Button_Click(object sender, EventArgs e)
         {
             Program.comportform.sendLinesToKeyboard(CommandLine16TextBox.Text + (ManualEnter16CheckBox.Checked ? "" : "\\n"));
         }
@@ -417,7 +339,7 @@ namespace COMport
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CommandLine17TextBox_Click(object sender, EventArgs e)
+        private void ExeText17Button_Click(object sender, EventArgs e)
         {
             Program.comportform.sendLinesToKeyboard(CommandLine17TextBox.Text + (ManualEnter17CheckBox.Checked ? "" : "\\n"));
         }
@@ -428,7 +350,7 @@ namespace COMport
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CommandLine18TextBox_Click(object sender, EventArgs e)
+        private void ExeText18Button_Click(object sender, EventArgs e)
         {
             Program.comportform.sendLinesToKeyboard(CommandLine18TextBox.Text + (ManualEnter18CheckBox.Checked ? "" : "\\n"));
         }
@@ -439,7 +361,7 @@ namespace COMport
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CommandLine19TextBox_Click(object sender, EventArgs e)
+        private void ExeText19Button_Click(object sender, EventArgs e)
         {
             Program.comportform.sendLinesToKeyboard(CommandLine19TextBox.Text + (ManualEnter19CheckBox.Checked ? "" : "\\n"));
         }
