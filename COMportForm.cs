@@ -9,6 +9,7 @@
 // @Tools:      Visual Studio 2019, C#
 //
 // @Revision:
+// 11.10.2022-MD V1.01.03 - Correct Execute buttons - oops, 5 to 19 all indexed button 3!
 // 07.10.2022-MD V1.01.02 - Add repeat command buttons off the bottom of the quick text menu.
 // 06.10.2022-MD V1.01.01 - Extend the number of quick text boxes, change back to Execute button and add log option.
 // 06.10.2022-MD V1.01.00 - Move quick text into a sub-menu by itself - this can be positioned anywhere on the screen.
@@ -49,7 +50,7 @@ namespace COMport
         // Constants
         //
         const string APP_NAME = "COMport";
-        const string VERSION = "V1.01.02";
+        const string VERSION = "V1.01.03";
         const string FILENAME_CSV = APP_NAME + ".CSV";
 
         const string CONNECT_LABEL = "Connect";

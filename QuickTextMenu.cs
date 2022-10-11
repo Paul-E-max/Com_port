@@ -9,6 +9,7 @@
 // @Tools:      Visual Studio 2019, C#
 //
 // @Revision:
+// 11.10.2022-MD Correct Execute buttons - oops, 5 to 19 all indexed button 3!
 // 05.10.2022-MD Initial version.
 //
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -218,7 +219,7 @@ namespace COMport
         /// <param name="e"></param>
         private void ExeText5Button_Click(object sender, EventArgs e)
         {
-            executeCommand(3);
+            executeCommand(5);
             MaySetNewRepeatCommand(5);
         }
 
@@ -230,7 +231,7 @@ namespace COMport
         /// <param name="e"></param>
         private void ExeText6Button_Click(object sender, EventArgs e)
         {
-            executeCommand(3);
+            executeCommand(6);
             MaySetNewRepeatCommand(6);
         }
 
@@ -242,7 +243,7 @@ namespace COMport
         /// <param name="e"></param>
         private void ExeText7Button_Click(object sender, EventArgs e)
         {
-            executeCommand(3);
+            executeCommand(7);
             MaySetNewRepeatCommand(7);
         }
 
@@ -254,7 +255,7 @@ namespace COMport
         /// <param name="e"></param>
         private void ExeText8Button_Click(object sender, EventArgs e)
         {
-            executeCommand(3);
+            executeCommand(8);
             MaySetNewRepeatCommand(8);
         }
 
@@ -266,7 +267,7 @@ namespace COMport
         /// <param name="e"></param>
         private void ExeText9Button_Click(object sender, EventArgs e)
         {
-            executeCommand(3);
+            executeCommand(9);
             MaySetNewRepeatCommand(9);
         }
 
@@ -278,7 +279,7 @@ namespace COMport
         /// <param name="e"></param>
         private void ExeText10Button_Click(object sender, EventArgs e)
         {
-            executeCommand(3);
+            executeCommand(10);
             MaySetNewRepeatCommand(10);
         }
 
@@ -290,7 +291,7 @@ namespace COMport
         /// <param name="e"></param>
         private void ExeText11Button_Click(object sender, EventArgs e)
         {
-            executeCommand(3);
+            executeCommand(11);
             MaySetNewRepeatCommand(11);
         }
 
@@ -302,7 +303,7 @@ namespace COMport
         /// <param name="e"></param>
         private void ExeText12Button_Click(object sender, EventArgs e)
         {
-            executeCommand(3);
+            executeCommand(12);
             MaySetNewRepeatCommand(12);
         }
 
@@ -314,7 +315,7 @@ namespace COMport
         /// <param name="e"></param>
         private void ExeText13Button_Click(object sender, EventArgs e)
         {
-            executeCommand(3);
+            executeCommand(13);
             MaySetNewRepeatCommand(13);
         }
 
@@ -326,7 +327,7 @@ namespace COMport
         /// <param name="e"></param>
         private void ExeText14Button_Click(object sender, EventArgs e)
         {
-            executeCommand(3);
+            executeCommand(14);
             MaySetNewRepeatCommand(14);
         }
 
@@ -338,7 +339,7 @@ namespace COMport
         /// <param name="e"></param>
         private void ExeText15Button_Click(object sender, EventArgs e)
         {
-            executeCommand(3);
+            executeCommand(15);
             MaySetNewRepeatCommand(15);
         }
 
@@ -350,7 +351,7 @@ namespace COMport
         /// <param name="e"></param>
         private void ExeText16Button_Click(object sender, EventArgs e)
         {
-            executeCommand(3);
+            executeCommand(16);
             MaySetNewRepeatCommand(16);
         }
 
@@ -362,7 +363,7 @@ namespace COMport
         /// <param name="e"></param>
         private void ExeText17Button_Click(object sender, EventArgs e)
         {
-            executeCommand(3);
+            executeCommand(17);
             MaySetNewRepeatCommand(17);
         }
 
@@ -374,7 +375,7 @@ namespace COMport
         /// <param name="e"></param>
         private void ExeText18Button_Click(object sender, EventArgs e)
         {
-            executeCommand(3);
+            executeCommand(18);
             MaySetNewRepeatCommand(18);
         }
 
@@ -386,7 +387,7 @@ namespace COMport
         /// <param name="e"></param>
         private void ExeText19Button_Click(object sender, EventArgs e)
         {
-            executeCommand(3);
+            executeCommand(19);
             MaySetNewRepeatCommand(19);
         }
 
