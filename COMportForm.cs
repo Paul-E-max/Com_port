@@ -50,7 +50,7 @@ namespace COMport
         // Constants
         //
         const string APP_NAME = "COMport";
-        const string VERSION = "V1.01.03";
+        const string VERSION = "V1.01.04";
         const string FILENAME_CSV = APP_NAME + ".CSV";
 
         const string CONNECT_LABEL = "Connect";

@@ -30,6 +30,7 @@ namespace COMport
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(QuickTextMenu));
             this.CommandLine1TextBox = new System.Windows.Forms.TextBox();
             this.ExeText1Button = new System.Windows.Forms.Button();
             this.ManualEnter1CheckBox = new System.Windows.Forms.CheckBox();
@@ -798,6 +799,7 @@ namespace COMport
             this.Controls.Add(this.ManualEnter1CheckBox);
             this.Controls.Add(this.ExeText1Button);
             this.Controls.Add(this.CommandLine1TextBox);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "QuickTextMenu";

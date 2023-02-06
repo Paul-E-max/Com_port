@@ -59,6 +59,18 @@ namespace COMport
             CommandLine5TextBox.Text = setText(5, ManualEnter5CheckBox);
             CommandLine6TextBox.Text = setText(6, ManualEnter6CheckBox);
             CommandLine7TextBox.Text = setText(7, ManualEnter7CheckBox);
+            CommandLine8TextBox.Text = setText(8, ManualEnter8CheckBox);
+            CommandLine9TextBox.Text = setText(9, ManualEnter9CheckBox);
+            CommandLine10TextBox.Text = setText(10, ManualEnter10CheckBox);
+            CommandLine11TextBox.Text = setText(11, ManualEnter11CheckBox);
+            CommandLine12TextBox.Text = setText(12, ManualEnter12CheckBox);
+            CommandLine13TextBox.Text = setText(13, ManualEnter13CheckBox);
+            CommandLine14TextBox.Text = setText(14, ManualEnter14CheckBox);
+            CommandLine15TextBox.Text = setText(15, ManualEnter15CheckBox);
+            CommandLine16TextBox.Text = setText(16, ManualEnter16CheckBox);
+            CommandLine17TextBox.Text = setText(17, ManualEnter17CheckBox);
+            CommandLine18TextBox.Text = setText(18, ManualEnter18CheckBox);
+            CommandLine19TextBox.Text = setText(19, ManualEnter19CheckBox);
             //
             CharDelayTextBox.Text = COMportForm.InterCharDelay.ToString();
             NLDelayTextBox.Text = COMportForm.InterLineDelay.ToString();
@@ -101,6 +113,18 @@ namespace COMport
             saveEnvironment(5, CommandLine5TextBox.Text, ManualEnter5CheckBox);
             saveEnvironment(6, CommandLine6TextBox.Text, ManualEnter6CheckBox);
             saveEnvironment(7, CommandLine7TextBox.Text, ManualEnter7CheckBox);
+            saveEnvironment(8, CommandLine8TextBox.Text, ManualEnter8CheckBox);
+            saveEnvironment(9, CommandLine9TextBox.Text, ManualEnter9CheckBox);
+            saveEnvironment(10, CommandLine10TextBox.Text, ManualEnter10CheckBox);
+            saveEnvironment(11, CommandLine11TextBox.Text, ManualEnter11CheckBox);
+            saveEnvironment(12, CommandLine12TextBox.Text, ManualEnter12CheckBox);
+            saveEnvironment(13, CommandLine13TextBox.Text, ManualEnter13CheckBox);
+            saveEnvironment(14, CommandLine14TextBox.Text, ManualEnter14CheckBox);
+            saveEnvironment(15, CommandLine15TextBox.Text, ManualEnter15CheckBox);
+            saveEnvironment(16, CommandLine16TextBox.Text, ManualEnter16CheckBox);
+            saveEnvironment(17, CommandLine17TextBox.Text, ManualEnter17CheckBox);
+            saveEnvironment(18, CommandLine18TextBox.Text, ManualEnter18CheckBox);
+            saveEnvironment(19, CommandLine19TextBox.Text, ManualEnter19CheckBox);
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

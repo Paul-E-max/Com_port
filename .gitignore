@@ -1,4 +1,5 @@
 obj/*.*
+obj/Release/*.*
 bin/debug/*.*
 bin/Release/*.LOG
 bin/Release/*.CFG
