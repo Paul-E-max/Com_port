@@ -58,7 +58,10 @@
   CSU,			9600,   ,           ,           VERSION,    What
   DISCOVER,		115200,	ECHO OFF,	ECHO ON,	VERSION,
   I2C,			115200,	ECHO OFF,	ECHO ON,	VERSION
-  MVC_FFLEX,	115200, ,			,			VERSION,	0 03,		Yes,			0x0A,			10
+  LAMP_TRAY,	9600,	,			,			,			,			Yes,			0x0A,			10
+  MVC_FFLEX,	115200, ,			,			VERSION,	0 03,		Yes,			0x0A,			10,		5
+  MVC_X001,		9600,	,			,			VERSION?,	MVC,		Yes,			0x0A,			10
   PDii,			9600,	ECHO OFF,	ECHO ON,	VERSION,
   VSC900,		9600,	,			,			TYPE,		,			Yes,			0x0A
+  
   

@@ -102,6 +102,7 @@ namespace COMport
             this.StopRepeatButton = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.RepeatCommandTimer = new System.Windows.Forms.Timer(this.components);
+            this.MoreCheckBox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // CommandLine1TextBox
@@ -334,7 +335,7 @@ namespace COMport
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(162, 554);
+            this.label5.Location = new System.Drawing.Point(148, 554);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(43, 13);
             this.label5.TabIndex = 28;
@@ -342,7 +343,7 @@ namespace COMport
             // 
             // NLDelayTextBox
             // 
-            this.NLDelayTextBox.Location = new System.Drawing.Point(211, 550);
+            this.NLDelayTextBox.Location = new System.Drawing.Point(197, 550);
             this.NLDelayTextBox.Name = "NLDelayTextBox";
             this.NLDelayTextBox.Size = new System.Drawing.Size(56, 20);
             this.NLDelayTextBox.TabIndex = 59;
@@ -350,7 +351,7 @@ namespace COMport
             // 
             // SaveButton
             // 
-            this.SaveButton.Location = new System.Drawing.Point(327, 548);
+            this.SaveButton.Location = new System.Drawing.Point(338, 548);
             this.SaveButton.Name = "SaveButton";
             this.SaveButton.Size = new System.Drawing.Size(51, 23);
             this.SaveButton.TabIndex = 60;
@@ -695,9 +696,9 @@ namespace COMport
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(219, 609);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(47, 13);
+            this.label3.Size = new System.Drawing.Size(53, 13);
             this.label3.TabIndex = 63;
-            this.label3.Text = "seconds";
+            this.label3.Text = "second(s)";
             // 
             // StopRepeatButton
             // 
@@ -723,12 +724,25 @@ namespace COMport
             this.RepeatCommandTimer.Interval = 1000;
             this.RepeatCommandTimer.Tick += new System.EventHandler(this.RepeatCommandTimer_Tick);
             // 
+            // MoreCheckBox
+            // 
+            this.MoreCheckBox.AutoSize = true;
+            this.MoreCheckBox.Location = new System.Drawing.Point(272, 552);
+            this.MoreCheckBox.Name = "MoreCheckBox";
+            this.MoreCheckBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.MoreCheckBox.Size = new System.Drawing.Size(49, 17);
+            this.MoreCheckBox.TabIndex = 66;
+            this.MoreCheckBox.Text = "more";
+            this.MoreCheckBox.UseVisualStyleBackColor = true;
+            this.MoreCheckBox.CheckedChanged += new System.EventHandler(this.MoreCheckBox_CheckedChanged);
+            // 
             // QuickTextMenu
             // 
             this.AcceptButton = this.ExitButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(481, 588);
+            this.Controls.Add(this.MoreCheckBox);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.StopRepeatButton);
             this.Controls.Add(this.label3);
@@ -883,5 +897,6 @@ namespace COMport
         private System.Windows.Forms.Button StopRepeatButton;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Timer RepeatCommandTimer;
+        private System.Windows.Forms.CheckBox MoreCheckBox;
     }
 }

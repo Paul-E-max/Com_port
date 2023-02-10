@@ -32,6 +32,10 @@ namespace COMport
     public partial class QuickTextMenu : Form
     {
         const int REPEAT_DISABLED = 0;
+        const int FORM_BAR = 39;
+        const int QUICK_TEXT_WIDTH = 481;
+        const int QUICK_TEXT_LESS_HEIGHT = 627 - FORM_BAR;
+        const int QUICK_TEXT_MORE_HEIGHT = 691 - FORM_BAR;
 
         bool RepeatCommandPrimmed = false;
         int RepeatCommand = REPEAT_DISABLED;
@@ -49,9 +53,6 @@ namespace COMport
         /// <param name="e"></param>
         private void QuickTextMenu_Load(object sender, EventArgs e)
         {
-            string temp = COMportForm.environmentRead("COMport_delay", "X");
-            if (temp != "X") CharDelayTextBox.Text = temp;
-            //
             CommandLine1TextBox.Text = setText(1, ManualEnter1CheckBox);
             CommandLine2TextBox.Text = setText(2, ManualEnter2CheckBox);
             CommandLine3TextBox.Text = setText(3, ManualEnter3CheckBox);
@@ -575,6 +576,28 @@ namespace COMport
             {
                 RepeatCommandTimer.Interval = 1000; // Just use a reasonable value.
             }
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Extend or shrink the menu to handle the extra commands at the bottom.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MoreCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            SuspendLayout();
+            //
+            if ( MoreCheckBox.Checked )
+            {
+                ClientSize = new System.Drawing.Size(QUICK_TEXT_WIDTH, QUICK_TEXT_MORE_HEIGHT);
+            }
+            else
+            {
+                ClientSize = new System.Drawing.Size(QUICK_TEXT_WIDTH, QUICK_TEXT_LESS_HEIGHT);
+            }
+            ResumeLayout(false);
+            PerformLayout();
         }
     }
 }

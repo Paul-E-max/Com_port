@@ -9,6 +9,9 @@
 // @Tools:      Visual Studio 2019, C#
 //
 // @Revision:
+// 10.02.2023-MD V1.01.05 - More option at the mottom of Quick Text menu.
+//                          Disconnect if serial device fails.
+// 21.10.2022-MD V1.01.04 - Extend the quick message buttons (only put into DevOps on 06.02.2023)
 // 11.10.2022-MD V1.01.03 - Correct Execute buttons - oops, 5 to 19 all indexed button 3!
 // 07.10.2022-MD V1.01.02 - Add repeat command buttons off the bottom of the quick text menu.
 // 06.10.2022-MD V1.01.01 - Extend the number of quick text boxes, change back to Execute button and add log option.
@@ -50,7 +53,7 @@ namespace COMport
         // Constants
         //
         const string APP_NAME = "COMport";
-        const string VERSION = "V1.01.04";
+        const string VERSION = "V1.01.05";
         const string FILENAME_CSV = APP_NAME + ".CSV";
 
         const string CONNECT_LABEL = "Connect";
@@ -544,8 +547,22 @@ namespace COMport
                             // Just ignore silly items in TxEnter text box.
                         }
                     }
-                    SerialPort.Write(TxBuffer, 0, 1);
-                    if( HalfDuplexCheckBox.Checked )
+                    try
+                    {
+                        // Attempt to send this out to the serial device - hope it is still connected.
+                        //
+                        SerialPort.Write(TxBuffer, 0, 1);
+                    }
+                    catch
+                    {
+                        // Failed to talk so close that port and apologise for the break in communication.
+                        //
+                        SerialPort.Close();
+                        connectedTo(false);
+                        CommsTextBox.AppendText("\r\nERROR: lost connection\r\n\r\n");
+                        RxChar = 0; // Effectively killing off whatever was typed in.
+                    }
+                    if ( HalfDuplexCheckBox.Checked )
                     {
                         // Half-duplex requires printable characters to be displayed on behalf of the
                         // connected device, since it does not generate any echo'd characters.
