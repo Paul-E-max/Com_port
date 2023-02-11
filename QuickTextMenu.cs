@@ -38,6 +38,7 @@ namespace COMport
         const int QUICK_TEXT_MORE_HEIGHT = 691 - FORM_BAR;
 
         bool RepeatCommandPrimmed = false;
+        bool CheckEnvironmentVariables = true; // Assume that environment variables can be used if necessary.
         int RepeatCommand = REPEAT_DISABLED;
 
         public QuickTextMenu()
@@ -53,25 +54,32 @@ namespace COMport
         /// <param name="e"></param>
         private void QuickTextMenu_Load(object sender, EventArgs e)
         {
-            CommandLine1TextBox.Text = setText(1, ManualEnter1CheckBox);
-            CommandLine2TextBox.Text = setText(2, ManualEnter2CheckBox);
-            CommandLine3TextBox.Text = setText(3, ManualEnter3CheckBox);
-            CommandLine4TextBox.Text = setText(4, ManualEnter4CheckBox);
-            CommandLine5TextBox.Text = setText(5, ManualEnter5CheckBox);
-            CommandLine6TextBox.Text = setText(6, ManualEnter6CheckBox);
-            CommandLine7TextBox.Text = setText(7, ManualEnter7CheckBox);
-            CommandLine8TextBox.Text = setText(8, ManualEnter8CheckBox);
-            CommandLine9TextBox.Text = setText(9, ManualEnter9CheckBox);
-            CommandLine10TextBox.Text = setText(10, ManualEnter10CheckBox);
-            CommandLine11TextBox.Text = setText(11, ManualEnter11CheckBox);
-            CommandLine12TextBox.Text = setText(12, ManualEnter12CheckBox);
-            CommandLine13TextBox.Text = setText(13, ManualEnter13CheckBox);
-            CommandLine14TextBox.Text = setText(14, ManualEnter14CheckBox);
-            CommandLine15TextBox.Text = setText(15, ManualEnter15CheckBox);
-            CommandLine16TextBox.Text = setText(16, ManualEnter16CheckBox);
-            CommandLine17TextBox.Text = setText(17, ManualEnter17CheckBox);
-            CommandLine18TextBox.Text = setText(18, ManualEnter18CheckBox);
-            CommandLine19TextBox.Text = setText(19, ManualEnter19CheckBox);
+            string[] lines = new string[0];
+
+            if (File.Exists(COMportForm.QUICK_TXT))
+            {
+                lines = File.ReadAllLines(COMportForm.QUICK_TXT);
+                if (lines.Length > 0) CheckEnvironmentVariables = false;
+            }
+            CommandLine1TextBox.Text = setText( lines, 1, ManualEnter1CheckBox);
+            CommandLine2TextBox.Text = setText(lines, 2, ManualEnter2CheckBox);
+            CommandLine3TextBox.Text = setText(lines, 3, ManualEnter3CheckBox);
+            CommandLine4TextBox.Text = setText(lines, 4, ManualEnter4CheckBox);
+            CommandLine5TextBox.Text = setText(lines, 5, ManualEnter5CheckBox);
+            CommandLine6TextBox.Text = setText(lines, 6, ManualEnter6CheckBox);
+            CommandLine7TextBox.Text = setText(lines, 7, ManualEnter7CheckBox);
+            CommandLine8TextBox.Text = setText(lines, 8, ManualEnter8CheckBox);
+            CommandLine9TextBox.Text = setText(lines, 9, ManualEnter9CheckBox);
+            CommandLine10TextBox.Text = setText(lines, 10, ManualEnter10CheckBox);
+            CommandLine11TextBox.Text = setText(lines, 11, ManualEnter11CheckBox);
+            CommandLine12TextBox.Text = setText(lines, 12, ManualEnter12CheckBox);
+            CommandLine13TextBox.Text = setText(lines, 13, ManualEnter13CheckBox);
+            CommandLine14TextBox.Text = setText(lines, 14, ManualEnter14CheckBox);
+            CommandLine15TextBox.Text = setText(lines, 15, ManualEnter15CheckBox);
+            CommandLine16TextBox.Text = setText(lines, 16, ManualEnter16CheckBox);
+            CommandLine17TextBox.Text = setText(lines, 17, ManualEnter17CheckBox);
+            CommandLine18TextBox.Text = setText(lines, 18, ManualEnter18CheckBox);
+            CommandLine19TextBox.Text = setText(lines, 19, ManualEnter19CheckBox);
             //
             CharDelayTextBox.Text = COMportForm.InterCharDelay.ToString();
             NLDelayTextBox.Text = COMportForm.InterLineDelay.ToString();
@@ -79,15 +87,16 @@ namespace COMport
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
-        /// Read from environment the previous command line stored.
+        /// Read from lines found in Quick Text menu file.
         /// </summary>
-        /// <param name="idx">One of seven different entries to update</param>
+        /// <param name="index">One of seven different entries to update</param>
         /// <param name="checkbox">If read item doesn't end in "\n", tick this as "No Enter" required</param>
         /// <returns></returns>
-        private string setText( int idx, CheckBox checkbox )
+        private string setText( string[] lines, int index, CheckBox checkbox )
         {
-            string toRead = COMportForm.environmentRead(("COMport_QuickText" + idx), "");
+            string toRead = findParameterIn( lines, index, "");
 
+            if (null == toRead) toRead = "";
             if( toRead.EndsWith("\\n") )
             {
                 toRead = toRead.Substring(0, toRead.Length - 2);
@@ -101,44 +110,75 @@ namespace COMport
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
+        /// Recover an entry in the file lines already read in and return variable.
+        /// </summary>
+        /// <param name="lines">Source data array</param>
+        /// <param name="index">Parameter's index in lines array</param>
+        /// <param name="defaultTo">This if label not found</param>
+        /// <returns></returns>
+        /// 
+        string findParameterIn( string[] lines, int index, string defaultTo)
+        {
+            string result = defaultTo;
+
+            if (index <= lines.Length)
+            {
+                result = lines[index - 1];
+            }
+            // If not found in the source file, then check environment varibles as per previous version of COMport.exe
+            //
+            if( ( 0 == result.Length ) && CheckEnvironmentVariables)
+            {
+                result = Environment.GetEnvironmentVariable("COMport_QuickText" + index, EnvironmentVariableTarget.User);
+            }
+            return result;
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
         /// Save the current text configuration
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void SaveButton_Click(object sender, EventArgs e)
         {
-            saveEnvironment(1, CommandLine1TextBox.Text, ManualEnter1CheckBox);
-            saveEnvironment(2, CommandLine2TextBox.Text, ManualEnter2CheckBox);
-            saveEnvironment(3, CommandLine3TextBox.Text, ManualEnter3CheckBox);
-            saveEnvironment(4, CommandLine4TextBox.Text, ManualEnter4CheckBox);
-            saveEnvironment(5, CommandLine5TextBox.Text, ManualEnter5CheckBox);
-            saveEnvironment(6, CommandLine6TextBox.Text, ManualEnter6CheckBox);
-            saveEnvironment(7, CommandLine7TextBox.Text, ManualEnter7CheckBox);
-            saveEnvironment(8, CommandLine8TextBox.Text, ManualEnter8CheckBox);
-            saveEnvironment(9, CommandLine9TextBox.Text, ManualEnter9CheckBox);
-            saveEnvironment(10, CommandLine10TextBox.Text, ManualEnter10CheckBox);
-            saveEnvironment(11, CommandLine11TextBox.Text, ManualEnter11CheckBox);
-            saveEnvironment(12, CommandLine12TextBox.Text, ManualEnter12CheckBox);
-            saveEnvironment(13, CommandLine13TextBox.Text, ManualEnter13CheckBox);
-            saveEnvironment(14, CommandLine14TextBox.Text, ManualEnter14CheckBox);
-            saveEnvironment(15, CommandLine15TextBox.Text, ManualEnter15CheckBox);
-            saveEnvironment(16, CommandLine16TextBox.Text, ManualEnter16CheckBox);
-            saveEnvironment(17, CommandLine17TextBox.Text, ManualEnter17CheckBox);
-            saveEnvironment(18, CommandLine18TextBox.Text, ManualEnter18CheckBox);
-            saveEnvironment(19, CommandLine19TextBox.Text, ManualEnter19CheckBox);
+            if (File.Exists(COMportForm.QUICK_TXT)) File.Delete(COMportForm.QUICK_TXT);
+            //
+            using (StreamWriter output = File.CreateText(COMportForm.QUICK_TXT))
+            {
+                saveToQuickTextFile(output, CommandLine1TextBox.Text, ManualEnter1CheckBox);
+                saveToQuickTextFile(output, CommandLine2TextBox.Text, ManualEnter2CheckBox);
+                saveToQuickTextFile(output, CommandLine3TextBox.Text, ManualEnter3CheckBox);
+                saveToQuickTextFile(output, CommandLine4TextBox.Text, ManualEnter4CheckBox);
+                saveToQuickTextFile(output, CommandLine5TextBox.Text, ManualEnter5CheckBox);
+                saveToQuickTextFile(output, CommandLine6TextBox.Text, ManualEnter6CheckBox);
+                saveToQuickTextFile(output, CommandLine7TextBox.Text, ManualEnter7CheckBox);
+                saveToQuickTextFile(output, CommandLine8TextBox.Text, ManualEnter8CheckBox);
+                saveToQuickTextFile(output, CommandLine9TextBox.Text, ManualEnter9CheckBox);
+                saveToQuickTextFile(output, CommandLine10TextBox.Text, ManualEnter10CheckBox);
+                saveToQuickTextFile(output, CommandLine11TextBox.Text, ManualEnter11CheckBox);
+                saveToQuickTextFile(output, CommandLine12TextBox.Text, ManualEnter12CheckBox);
+                saveToQuickTextFile(output, CommandLine13TextBox.Text, ManualEnter13CheckBox);
+                saveToQuickTextFile(output, CommandLine14TextBox.Text, ManualEnter14CheckBox);
+                saveToQuickTextFile(output, CommandLine15TextBox.Text, ManualEnter15CheckBox);
+                saveToQuickTextFile(output, CommandLine16TextBox.Text, ManualEnter16CheckBox);
+                saveToQuickTextFile(output, CommandLine17TextBox.Text, ManualEnter17CheckBox);
+                saveToQuickTextFile(output, CommandLine18TextBox.Text, ManualEnter18CheckBox);
+                saveToQuickTextFile(output, CommandLine19TextBox.Text, ManualEnter19CheckBox);
+            }
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
-        /// Save an environment variable with trailing "\n" if necessary.
+        /// Save a variable with trailing "\n" if necessary to the Quick Text file.
         /// </summary>
         /// <param name="idx"></param>
         /// <param name="textbox"></param>
         /// <param name="checkbox"></param>
-        private void saveEnvironment( int idx, string textbox, CheckBox checkbox )
+        private void saveToQuickTextFile(StreamWriter output, string textbox, CheckBox checkbox )
         {
             if (!checkbox.Checked && (textbox.Length > 0)) textbox += "\\n";
-            COMportForm.environmentWrite(("COMport_QuickText" + idx), textbox );
+            output.WriteLine(textbox );
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

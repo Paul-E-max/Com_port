@@ -9,6 +9,7 @@
 // @Tools:      Visual Studio 2019, C#
 //
 // @Revision:
+// 11.02.2023-MD V1.01.06 - Drop environmental values in favour of file storage.
 // 10.02.2023-MD V1.01.05 - More option at the mottom of Quick Text menu.
 //                          Disconnect if serial device fails.
 // 21.10.2022-MD V1.01.04 - Extend the quick message buttons (only put into DevOps on 06.02.2023)
@@ -53,8 +54,11 @@ namespace COMport
         // Constants
         //
         const string APP_NAME = "COMport";
-        const string VERSION = "V1.01.05";
+        const string VERSION = "V1.01.06";
         const string FILENAME_CSV = APP_NAME + ".CSV";
+        const string LASTUSED_TXT = APP_NAME + "_USER.TXT";
+
+        public const string QUICK_TXT = APP_NAME + "_QUICK.TXT";
 
         const string CONNECT_LABEL = "Connect";
         const string SCANNING_LABEL = "Connecting";
@@ -100,6 +104,7 @@ namespace COMport
 
         string OutputLogFile = "";
         string typedCommandLine = "";
+        bool CheckEnvironmentVariables = true;
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
@@ -120,7 +125,7 @@ namespace COMport
         {
             this.Text = APP_NAME + " - " + VERSION;
             loadProjectInfo();
-            LoadEnviroment();
+            LoadLastUsedInfo();
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -131,11 +136,16 @@ namespace COMport
         /// <param name="e"></param>
         private void COMportForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            environmentWrite("COMport_project", VersionComboBox.Text);
-            environmentWrite("COMport_connection", COMportComboBox.Text);
-            environmentWrite("COMport_baudrate", BaudComboBox.Text);
-            environmentWrite("COMport_halfDuplex", HalfDuplexCheckBox.Checked ? "True" : "False");
-            environmentWrite("COMport_onEnter", onEnterComboBox.Text);
+            if (File.Exists(LASTUSED_TXT)) File.Delete(LASTUSED_TXT);
+            //
+            using (StreamWriter output = File.CreateText(LASTUSED_TXT))
+            {
+                output.WriteLine("project=" + VersionComboBox.Text);
+                output.WriteLine("connection=" + COMportComboBox.Text);
+                output.WriteLine("baudrate=" + BaudComboBox.Text);
+                output.WriteLine("halfDuplex=" + (HalfDuplexCheckBox.Checked ? "True" : "False"));
+                output.WriteLine("onEnter=" + onEnterComboBox.Text);
+            }
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -670,7 +680,7 @@ namespace COMport
 
             if (File.Exists(FILENAME_CSV))
             {
-                string[] lines = File.ReadAllLines(FILENAME_CSV);
+                // Start off with no entries filled in.
                 //
                 for (n = 0; n < MAX_PROJECTS; n++)
                 {
@@ -688,7 +698,7 @@ namespace COMport
                 // Retrieve all the saved project and baudrate combinations available.
                 // These are also placed into the project names dropdown list for easy of selection.
                 //
-                // Blank lines and those that start with a ';' are ignored.
+                string[] lines = File.ReadAllLines(FILENAME_CSV);
                 //
                 for (ln = 0, n = 0; ln < lines.Length; ln++)
                 {
@@ -696,6 +706,8 @@ namespace COMport
                     lines[ln] = recursiveReplace(lines[ln], "  ", " ");
                     lines[ln] = recursiveReplace(lines[ln], ", ", ",");
                     lines[ln] = lines[ln].Trim();
+                    //
+                    // Blank lines and those that start with a ';' are ignored.
                     //
                     if ((lines[ln].Length > 0) && !lines[ln].StartsWith(";"))
                     {
@@ -767,48 +779,65 @@ namespace COMport
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
-        /// Load the environment values for current settings.
+        /// Load the last used settings.
         /// </summary>
-        private void LoadEnviroment()
+        private void LoadLastUsedInfo()
         {
-            VersionComboBox.Text = environmentRead("COMport_project", "Unknown");
-            COMportComboBox.Text = environmentRead("COMport_connection", "");
-            HalfDuplexCheckBox.Checked = ("True" == environmentRead("COMport_halfDuplex", "false"));
-            BaudComboBox.Text = environmentRead("COMport_baudrate", "");
-            onEnterComboBox.Text = environmentRead("COMport_onEnter", "");
+            string[] lines = new string[0];
+
+            if (File.Exists(LASTUSED_TXT))
+            {
+                lines = File.ReadAllLines(LASTUSED_TXT);
+                if (lines.Length > 0) CheckEnvironmentVariables = false;
+            }
+            VersionComboBox.Text = findParameterIn( lines, "project", "Unknown");
+            COMportComboBox.Text = findParameterIn( lines, "connection", "");
+            HalfDuplexCheckBox.Checked = ("True" == findParameterIn( lines, "halfDuplex", "false"));
+            BaudComboBox.Text = findParameterIn( lines, "baudrate", "");
+            onEnterComboBox.Text = findParameterIn( lines, "onEnter", "");
+            //
             checkEnterChar(); // Avoid endless loop.
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
-        /// Recover an environment variable if set.
+        /// Recover a variable if set in the LASTUSED_TXT file.
         /// </summary>
-        /// <param name="label">Environment variable name</param>
-        /// <param name="defaultTo">This if no environment variable set</param>
+        /// <param name="lines">Source data array</param>
+        /// <param name="label">Parameter's label</param>
+        /// <param name="defaultTo">This if label not found</param>
         /// <returns></returns>
         /// 
-        static public string environmentRead(string label, string defaultTo)
+        string findParameterIn(string[] lines, string label, string defaultTo)
         {
-            string result = Environment.GetEnvironmentVariable(label, EnvironmentVariableTarget.User);
+            string result = "";
+            int index;
 
-            if (null == result)
+            foreach (string line in lines)
+            {
+                index = line.IndexOf('=');
+                //
+                if( ( index > 0 ) && ( index < line.Length ) )
+                {
+                    if( label == line.Substring(0,index) )
+                    {
+                        result = line.Substring(index + 1);
+                        //
+                        break;
+                    }
+                }
+            }
+            // If still not got a value, there might be something available in the environment variables.
+            //
+            if ((0 == result.Length) && CheckEnvironmentVariables)
+            {
+                result = Environment.GetEnvironmentVariable("COMport_" + label, EnvironmentVariableTarget.User);
+            }
+            if ((null == result) || (0 == result.Length))
             {
                 result = defaultTo;
             }
             return result;
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// Write an environment variable if not blank.
-        /// </summary>
-        /// <param name="label">Environment variable name</param>
-        /// <param name="variable">The string location to save in the environment variable</param>
-        /// <returns></returns>
-        /// 
-        static public void environmentWrite(string label, string variable)
-        {
-            Environment.SetEnvironmentVariable(label, variable, EnvironmentVariableTarget.User);
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
