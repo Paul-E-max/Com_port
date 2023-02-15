@@ -9,6 +9,8 @@
 // @Tools:      Visual Studio 2019, C#
 //
 // @Revision:
+// 15.02.2023-MD V1.01.07 - Quick Text items now used the onEnterComboBox text for enter.  Note that previous version
+//                          might see unexpected '?' from Quick Text item even when the enter key was correctly set.
 // 11.02.2023-MD V1.01.06 - Drop environmental values in favour of file storage.
 // 10.02.2023-MD V1.01.05 - More option at the mottom of Quick Text menu.
 //                          Disconnect if serial device fails.
@@ -54,7 +56,7 @@ namespace COMport
         // Constants
         //
         const string APP_NAME = "COMport";
-        const string VERSION = "V1.01.06";
+        const string VERSION = "V1.01.07";
         const string FILENAME_CSV = APP_NAME + ".CSV";
         const string LASTUSED_TXT = APP_NAME + "_USER.TXT";
 
@@ -98,7 +100,7 @@ namespace COMport
         string EchoOn = "";
         string GetID = "";
         string Response = "";
-        string EnterKey = "";
+        static public string EnterKey = Environment.NewLine;
         static public int InterLineDelay = 0; // Milliseconds delay following an enter sent to target.
         static public int InterCharDelay = 0; // Millisecond delay between characters sent to target.
 
@@ -480,18 +482,15 @@ namespace COMport
                 {
                     string toSend = Encoding.ASCII.GetString(inputs, 0, readLength);
                     //
-                    // If any enter keys appear, replace them with the standard CRLF sequence used
+                    // Replace any instances of EnterKey with the standard CRLF sequence used
                     // by the environment.
                     //
-                    if (EnterKey.Length > 0)
+                    for( i=0; i<(toSend.Length - EnterKey.Length + 1); i++ )
                     {
-                        for( i=0; i<(toSend.Length - EnterKey.Length + 1); i++ )
+                        if( toSend.Substring(i).StartsWith(EnterKey) )
                         {
-                            if( toSend.Substring(i).StartsWith(EnterKey) )
-                            {
-                                toSend = toSend.Substring(0, i) + Environment.NewLine + toSend.Substring(i + EnterKey.Length);
-                                i += (Environment.NewLine.Length - 1);
-                            }
+                            toSend = toSend.Substring(0, i) + Environment.NewLine + toSend.Substring(i + EnterKey.Length);
+                            i += (Environment.NewLine.Length - 1);
                         }
                     }
                     updateCommsTextBox(toSend);
@@ -544,13 +543,13 @@ namespace COMport
 
                 if (RxChar < 0x80)
                 {
-                    if( (CR == RxChar) && onEnterComboBox.Text.StartsWith("0x") )
+                    if (CR == RxChar)
                     {
-                        // ENTER has been hit and need to translate to some other value for this connected device.
+                        // ENTER has been hit, use the correct value for this connected device.
                         //
                         try
                         {
-                            TxBuffer[0] = Convert.ToByte(onEnterComboBox.Text.Substring(2),16);
+                            TxBuffer = Encoding.ASCII.GetBytes(EnterKey);
                         }
                         catch
                         {
@@ -848,7 +847,7 @@ namespace COMport
         /// <param name="e"></param>
         private void onEnterComboBox_TextChanged(object sender, EventArgs e)
         {
-            EnterKey = ""; // Assume that it is not set.
+            EnterKey = Environment.NewLine; // Assume default value if not set.
 
             if (onEnterComboBox.Text.StartsWith("0x"))
             {
@@ -865,11 +864,10 @@ namespace COMport
             try
             {
                 EnterKey = Convert.ToChar(Convert.ToUInt32(onEnterComboBox.Text.Substring(2), 16)).ToString();
-                if (Environment.NewLine == EnterKey) EnterKey = ""; // No need to change it to itself!
             }
             catch
             {
-                // Just ignore silly items in TxEnter text box.
+                // Just ignore silly items in TxEnter text box, defaults to environment new line string.
             }
         }
 

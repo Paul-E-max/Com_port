@@ -36,6 +36,7 @@ namespace COMport
             this.COMportComboBox = new System.Windows.Forms.ComboBox();
             this.ConnectButton = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.StartLogButton = new System.Windows.Forms.Button();
             this.QuickTextMenuButton = new System.Windows.Forms.Button();
             this.onEnterComboBox = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -44,7 +45,6 @@ namespace COMport
             this.VersionComboBox = new System.Windows.Forms.ComboBox();
             this.SerialPort = new System.IO.Ports.SerialPort(this.components);
             this.panel2 = new System.Windows.Forms.Panel();
-            this.StartLogButton = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -133,6 +133,16 @@ namespace COMport
             this.panel1.Size = new System.Drawing.Size(923, 34);
             this.panel1.TabIndex = 4;
             // 
+            // StartLogButton
+            // 
+            this.StartLogButton.Location = new System.Drawing.Point(500, 6);
+            this.StartLogButton.Name = "StartLogButton";
+            this.StartLogButton.Size = new System.Drawing.Size(75, 23);
+            this.StartLogButton.TabIndex = 14;
+            this.StartLogButton.Text = "Start log";
+            this.StartLogButton.UseVisualStyleBackColor = true;
+            this.StartLogButton.Click += new System.EventHandler(this.StartLogButton_Click);
+            // 
             // QuickTextMenuButton
             // 
             this.QuickTextMenuButton.Location = new System.Drawing.Point(581, 6);
@@ -215,16 +225,6 @@ namespace COMport
             this.panel2.Size = new System.Drawing.Size(923, 554);
             this.panel2.TabIndex = 5;
             // 
-            // StartLogButton
-            // 
-            this.StartLogButton.Location = new System.Drawing.Point(500, 6);
-            this.StartLogButton.Name = "StartLogButton";
-            this.StartLogButton.Size = new System.Drawing.Size(75, 23);
-            this.StartLogButton.TabIndex = 14;
-            this.StartLogButton.Text = "Start log";
-            this.StartLogButton.UseVisualStyleBackColor = true;
-            this.StartLogButton.Click += new System.EventHandler(this.StartLogButton_Click);
-            // 
             // COMportForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -260,10 +260,10 @@ namespace COMport
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Button clearSreenButton;
         private System.Windows.Forms.CheckBox HalfDuplexCheckBox;
-        private System.Windows.Forms.ComboBox onEnterComboBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button QuickTextMenuButton;
         private System.Windows.Forms.Button StartLogButton;
+        private System.Windows.Forms.ComboBox onEnterComboBox;
     }
 }
 
