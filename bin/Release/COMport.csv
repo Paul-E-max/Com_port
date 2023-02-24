@@ -63,5 +63,4 @@
   MVC_X001,		9600,	,			,			VERSION?,	MVC,		Yes,			0x0A,			10
   PDii,			9600,	ECHO OFF,	ECHO ON,	VERSION,
   VSC900,		9600,	,			,			TYPE,		,			Yes,			0x0A
-  FORAM,		9600,	,			,			VERSION,	5.0,		Yes,			0x0A,			10
-    
+  UVSPEC,		9600,	,			,			VERSION,	5.0,		Yes,			0x0A

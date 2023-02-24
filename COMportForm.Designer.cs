@@ -249,14 +249,11 @@ namespace COMport
         }
 
         #endregion
-
-        private System.Windows.Forms.TextBox CommsTextBox;
         private System.Windows.Forms.ComboBox BaudComboBox;
         private System.Windows.Forms.ComboBox COMportComboBox;
         private System.Windows.Forms.Button ConnectButton;
         private System.Windows.Forms.Panel panel1;
         private System.IO.Ports.SerialPort SerialPort;
-        private System.Windows.Forms.ComboBox VersionComboBox;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Button clearSreenButton;
         private System.Windows.Forms.CheckBox HalfDuplexCheckBox;
@@ -264,6 +261,8 @@ namespace COMport
         private System.Windows.Forms.Button QuickTextMenuButton;
         private System.Windows.Forms.Button StartLogButton;
         private System.Windows.Forms.ComboBox onEnterComboBox;
+        public System.Windows.Forms.TextBox CommsTextBox;
+        public System.Windows.Forms.ComboBox VersionComboBox;
     }
 }
 

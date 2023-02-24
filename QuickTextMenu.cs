@@ -9,6 +9,8 @@
 // @Tools:      Visual Studio 2019, C#
 //
 // @Revision:
+// 24.02.2023-MD V1.01.09 - Correction to CR from quick text (V1.01.08 didn't use the NL delay on quick text).
+// 21.02.2023-MD V1.01.08 - Timer now takes decimal interval rather than just whole seconds.
 // 15.02.2023-MD Quick Text now used EnterKey from COMportForm instead of a default '\n'.
 // 11.10.2022-MD Correct Execute buttons - oops, 5 to 19 all indexed button 3!
 // 05.10.2022-MD Initial version.
@@ -37,12 +39,12 @@ namespace COMport
         const int QUICK_TEXT_WIDTH = 481;
         const int QUICK_TEXT_LESS_HEIGHT = 627 - FORM_BAR;
         const int QUICK_TEXT_MORE_HEIGHT = 691 - FORM_BAR;
+        const int MINIMUM_PERIOD = 100;
 
         bool RepeatCommandPrimmed = false;
         bool CheckEnvironmentVariables = true; // Assume that environment variables can be used if necessary.
         int RepeatCommand = REPEAT_DISABLED;
-        string execString;
- 
+
         public QuickTextMenu()
         {
             InitializeComponent();
@@ -56,11 +58,14 @@ namespace COMport
         /// <param name="e"></param>
         private void QuickTextMenu_Load(object sender, EventArgs e)
         {
+            string loadFilename = COMportForm.QUICK_TEXT + "_" + Program.comportform.VersionComboBox.Text + COMportForm.TEXT_FILE_EXT;
             string[] lines = new string[0];
 
-            if (File.Exists(COMportForm.QUICK_TXT))
+            if (!File.Exists(loadFilename)) loadFilename = COMportForm.QUICK_TEXT + COMportForm.TEXT_FILE_EXT; // Default quick text without the project name appended.
+            //
+            if (File.Exists(loadFilename))
             {
-                lines = File.ReadAllLines(COMportForm.QUICK_TXT);
+                lines = File.ReadAllLines(loadFilename);
                 if (lines.Length > 0) CheckEnvironmentVariables = false;
             }
             CommandLine1TextBox.Text = setText( lines, 1, ManualEnter1CheckBox);
@@ -144,9 +149,11 @@ namespace COMport
         /// <param name="e"></param>
         private void SaveButton_Click(object sender, EventArgs e)
         {
-            if (File.Exists(COMportForm.QUICK_TXT)) File.Delete(COMportForm.QUICK_TXT);
+            string saveFilename = COMportForm.QUICK_TEXT + "_" + Program.comportform.VersionComboBox.Text + COMportForm.TEXT_FILE_EXT;
+
+            if (File.Exists(saveFilename)) File.Delete(saveFilename);
             //
-            using (StreamWriter output = File.CreateText(COMportForm.QUICK_TXT))
+            using (StreamWriter output = File.CreateText(saveFilename))
             {
                 saveToQuickTextFile(output, CommandLine1TextBox.Text, ManualEnter1CheckBox);
                 saveToQuickTextFile(output, CommandLine2TextBox.Text, ManualEnter2CheckBox);
@@ -477,8 +484,8 @@ namespace COMport
         /// <param name="e"></param>
         private void StopRepeatButton_Click(object sender, EventArgs e)
         {
-            RepeatCommandPrimmed = false;
             untickExecuteButton();
+            RepeatCommandPrimmed = false;
             RepeatCommandTimer.Enabled = false;
         }
 
@@ -489,14 +496,18 @@ namespace COMport
         /// <param name="command"></param>
         private void MaySetNewRepeatCommand( int command )
         {
-            if( RepeatCommandPrimmed )
+            if( RepeatCommandPrimmed && (false == StopRepeatButton.Focused) )
             {
                 RepeatCommandPrimmed = false;
-                untickExecuteButton();
                 RepeatCommandTimer.Enabled = false;
+                untickExecuteButton();
                 RepeatCommand = command;
-                RepeatCommandTimer.Enabled = true;
                 tickExecuteButton();
+                RepeatCommandTimer.Enabled = true;
+            }
+            else
+            {
+                Program.comportform.CommsTextBox.Focus();
             }
         }
 
@@ -576,7 +587,7 @@ namespace COMport
         /// <param name="command"></param>
         private void executeCommand( int command )
         {
-            string execString = COMportForm.EnterKey;
+            string execString = Convert.ToChar(Program.comportform.CR).ToString();
 
             switch ( command )
             {
@@ -600,7 +611,7 @@ namespace COMport
                 case 18: Program.comportform.sendLinesToKeyboard(CommandLine18TextBox.Text + (ManualEnter18CheckBox.Checked ? "" : execString)); break;
                 case 19: Program.comportform.sendLinesToKeyboard(CommandLine19TextBox.Text + (ManualEnter19CheckBox.Checked ? "" : execString)); break;
                 //
-                default: RepeatCommandTimer.Enabled = false; break;
+                default: RepeatCommandTimer.Enabled = false; break; // Invalid command number, stop the repeat timer.
             }
         }
 
@@ -614,11 +625,19 @@ namespace COMport
         {
             try
             {
-                RepeatCommandTimer.Interval = Convert.ToInt32(RepeatEveryTextBox.Text) * 1000; // Timer uses milliseconds.
+                double test = Convert.ToDouble(RepeatEveryTextBox.Text) * 1000.0; // Timer uses milliseconds.
+                if( test >= MINIMUM_PERIOD )
+                {
+                    RepeatCommandTimer.Interval = (int)test;
+                }
+                else
+                {
+                    RepeatCommandTimer.Interval = MINIMUM_PERIOD;
+                }
             }
             catch
             {
-                RepeatCommandTimer.Interval = 1000; // Just use a reasonable value.
+                RepeatCommandTimer.Interval = 1000; // Just use a reasonable one-second value.
             }
         }
 
@@ -643,5 +662,31 @@ namespace COMport
             ResumeLayout(false);
             PerformLayout();
         }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Set accept button to the corrisponding TextBox executed when selected.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CommandLine1TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText1Button; }
+        private void CommandLine2TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText2Button; }
+        private void CommandLine3TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText3Button; }
+        private void CommandLine4TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText4Button; }
+        private void CommandLine5TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText5Button; }
+        private void CommandLine6TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText6Button; }
+        private void CommandLine7TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText7Button; }
+        private void CommandLine8TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText8Button; }
+        private void CommandLine9TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText9Button; }
+        private void CommandLine10TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText10Button; }
+        private void CommandLine11TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText11Button; }
+        private void CommandLine12TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText12Button; }
+        private void CommandLine13TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText13Button; }
+        private void CommandLine14TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText14Button; }
+        private void CommandLine15TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText15Button; }
+        private void CommandLine16TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText16Button; }
+        private void CommandLine17TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText17Button; }
+        private void CommandLine18TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText18Button; }
+        private void CommandLine19TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText19Button; }
     }
 }

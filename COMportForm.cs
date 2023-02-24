@@ -9,6 +9,12 @@
 // @Tools:      Visual Studio 2019, C#
 //
 // @Revision:
+//
+// 24.02.2023-MD V1.01.09 - 1) Correction to CR from quick text (V1.01.08 didn't use the NL delay on quick text).
+//                          2) Each project can save its own Quick Text file.
+//                          3) Last connection made for each project is saved in the user's local file.
+// 21.02.2023-MD V1.01.08 - Timer now takes decimal interval rather than just whole seconds.
+//                          Character and newline delays are updated by selecting a new project.
 // 15.02.2023-MD V1.01.07 - Quick Text items now used the onEnterComboBox text for enter.  Note that previous version
 //                          might see unexpected '?' from Quick Text item even when the enter key was correctly set.
 // 11.02.2023-MD V1.01.06 - Drop environmental values in favour of file storage.
@@ -19,19 +25,20 @@
 // 07.10.2022-MD V1.01.02 - Add repeat command buttons off the bottom of the quick text menu.
 // 06.10.2022-MD V1.01.01 - Extend the number of quick text boxes, change back to Execute button and add log option.
 // 06.10.2022-MD V1.01.00 - Move quick text into a sub-menu by itself - this can be positioned anywhere on the screen.
+//
 // 05.10.2022-MD V1.00.08 - Add quick text boxes hidden off on far right.
 // 26.09.2022-MD V1.00.07 - Correction to thread handling fault that showed up with MVC_FFLEX comms!
 // 18.08.2022-MD V1.00.06 - Option to use a response to "Version" where it
-//               differs from project name.  Discard version 1.00.05 because
-//               "Half-duplex" is shifted right by the new "Response" parameter.
+//                          differs from project name.  Discard version 1.00.05 because
+//                          "Half-duplex" is shifted right by the new "Response" parameter.
 // 17.08.2022-MD V1.00.05 - Add "Tx on Enter" option.
 // 16.08.2022-MD V1.00.04 - Add half-duplex option.
-// 13.07.2022-MD Use CSV file to get identities.
-//               Environment variables can retain COM and project.
-// 28.04.2022-MD Clear screen button added.
-// 06.04.2022-MD Correction to BS when textbox is scrolled!
-// 01.04.2022-MD Handles BS coming from COM port.
-// 31.03.2022-MD Initial version.
+// 13.07.2022-MD            Use CSV file to get identities.
+//                          Environment variables can retain COM and project.
+// 28.04.2022-MD            Clear screen button added.
+// 06.04.2022-MD            Correction to BS when textbox is scrolled!
+// 01.04.2022-MD            Handles BS coming from COM port.
+// 31.03.2022-MD V1.00.00   Initial version.
 //
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -55,12 +62,13 @@ namespace COMport
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // Constants
         //
-        const string APP_NAME = "COMport";
-        const string VERSION = "V1.01.07";
+        const string APP_NAME = "COMport", VERSION = "V1.01.09"; // UPDATE MANUAL AS APPLICATION EVOLVES.
+        //
         const string FILENAME_CSV = APP_NAME + ".CSV";
-        const string LASTUSED_TXT = APP_NAME + "_USER.TXT";
+        public const string TEXT_FILE_EXT = ".TXT";
+        const string LASTUSED_TXT = APP_NAME + "_USER" + TEXT_FILE_EXT;
 
-        public const string QUICK_TXT = APP_NAME + "_QUICK.TXT";
+        public const string QUICK_TEXT = APP_NAME + "_QUICK";
 
         const string CONNECT_LABEL = "Connect";
         const string SCANNING_LABEL = "Connecting";
@@ -77,7 +85,7 @@ namespace COMport
 
         const byte BS = 0x08;
         const byte LF = 0x0A;
-        const byte CR = 0x0D;
+        public byte CR = 0x0D;
 
         const int MAX_PROJECTS = 20;            // Reads through FILENAME_CSV file, but abandons data beyond this number of projects.
 
@@ -93,6 +101,7 @@ namespace COMport
             public string enterKey;
             public string NLDelay;
             public string ChDelay;
+            public string COMport;
         };
 
         project[] projects = new project[MAX_PROJECTS];
@@ -107,6 +116,8 @@ namespace COMport
         string OutputLogFile = "";
         string typedCommandLine = "";
         bool CheckEnvironmentVariables = true;
+
+        QuickTextMenu menu;
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
@@ -147,6 +158,16 @@ namespace COMport
                 output.WriteLine("baudrate=" + BaudComboBox.Text);
                 output.WriteLine("halfDuplex=" + (HalfDuplexCheckBox.Checked ? "True" : "False"));
                 output.WriteLine("onEnter=" + onEnterComboBox.Text);
+                //
+                // Save any and all project/COM port settings recorded.
+                //
+                for (int n = 0; n < MAX_PROJECTS; n++)
+                {
+                    if((projects[n].name.Length > 0) && (projects[n].COMport.Length > 0))
+                    {
+                        output.WriteLine("connection_" + projects[n].name + "=" + projects[n].COMport);
+                    }
+                }
             }
         }
 
@@ -236,6 +257,8 @@ namespace COMport
                                 if( GetID.Length > 0 ) versionIs = serialPortCommandresponse(GetID);
                                 if( versionIs.ToUpper().StartsWith( Response ) )
                                 {
+                                    // Found a valid connection !
+                                    //
                                     connectedTo(true);
                                     this.Text += " ---> ";
                                     if( VersionComboBox.Text != Response ) this.Text += VersionComboBox.Text + " ";
@@ -256,6 +279,20 @@ namespace COMport
                         catch
                         {
                             // Don't do anything with this.
+                        }
+                        // If we succeed in connecting, make a not of typical COM port used.
+                        //
+                        if( false == VersionComboBox.Enabled )
+                        {
+                            for( int n=0; n<MAX_PROJECTS; n++ )
+                            {
+                                if( projects[n].name == VersionComboBox.Text )
+                                {
+                                    projects[n].COMport = COMportComboBox.Text;
+                                    //
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
@@ -480,20 +517,20 @@ namespace COMport
                 }
                 if (readLength > 0)
                 {
-                    string toSend = Encoding.ASCII.GetString(inputs, 0, readLength);
+                    string toDisplay = Encoding.ASCII.GetString(inputs, 0, readLength);
                     //
                     // Replace any instances of EnterKey with the standard CRLF sequence used
                     // by the environment.
                     //
-                    for( i=0; i<(toSend.Length - EnterKey.Length + 1); i++ )
+                    for( i=0; i<(toDisplay.Length - EnterKey.Length + 1); i++ )
                     {
-                        if( toSend.Substring(i).StartsWith(EnterKey) )
+                        if( toDisplay.Substring(i).StartsWith(EnterKey) )
                         {
-                            toSend = toSend.Substring(0, i) + Environment.NewLine + toSend.Substring(i + EnterKey.Length);
+                            toDisplay = toDisplay.Substring(0, i) + Environment.NewLine + toDisplay.Substring(i + EnterKey.Length);
                             i += (Environment.NewLine.Length - 1);
                         }
                     }
-                    updateCommsTextBox(toSend);
+                    updateCommsTextBox(toDisplay);
                 }
             }
         }
@@ -513,8 +550,10 @@ namespace COMport
             {
                 int oldLength = CommsTextBox.TextLength;
                 CommsTextBox.AppendText(append);
+    CommsTextBox.SelectionStart = CommsTextBox.Text.Length; // Place the curser at the end of the text.
+    CommsTextBox.ScrollToCaret();
                 //
-                if( OutputLogFile.Length > 0 )
+                if ( OutputLogFile.Length > 0 )
                 {
                     using (StreamWriter logFile = File.AppendText(OutputLogFile))
                     {
@@ -561,6 +600,23 @@ namespace COMport
                         // Attempt to send this out to the serial device - hope it is still connected.
                         //
                         SerialPort.Write(TxBuffer, 0, 1);
+                        //
+                        // Enforce any requested delays for characters or new lines.
+                        //
+                        if (Encoding.ASCII.GetBytes(EnterKey) == TxBuffer)
+                        {
+                            if( InterLineDelay > 0 )
+                            {
+                                Thread.Sleep(InterLineDelay);
+                            }
+                        }
+                        else
+                        {
+                            if (InterCharDelay > 0)
+                            {
+                                Thread.Sleep(InterCharDelay);
+                            }
+                        }
                     }
                     catch
                     {
@@ -607,21 +663,6 @@ namespace COMport
                             CommsTextBox.SelectionStart = CommsTextBox.Text.Length; // Place the curser at the end of the text.
                             CommsTextBox.ScrollToCaret();
                         }
-                    }
-                    if (CR == RxChar)
-                    {
-                        if (InterLineDelay > 0)
-                        {
-                            Thread.Sleep(InterLineDelay);
-                        }
-                        else
-                        {
-                            Thread.Sleep(InterCharDelay);
-                        }
-                    }
-                    else
-                    {
-                        if (InterCharDelay > 0) Thread.Sleep(InterCharDelay);
                     }
                 }
             }
@@ -693,6 +734,7 @@ namespace COMport
                     projects[n].halfDuplex = false;
                     projects[n].enterKey = "";
                     projects[n].NLDelay = "";
+                    projects[n].COMport = ""; // To be filled in by LoadLastUsedInfo().
                 }
                 // Retrieve all the saved project and baudrate combinations available.
                 // These are also placed into the project names dropdown list for easy of selection.
@@ -771,6 +813,17 @@ namespace COMport
                     {
                         InterCharDelay = 0;
                     }
+                    // Update the QuickText parameters too if open.
+                    //
+                    if ( Application.OpenForms.OfType<QuickTextMenu>().Count() > 0 )
+                    {
+                        menu.NLDelayTextBox.Text = InterLineDelay.ToString();
+                        menu.CharDelayTextBox.Text = InterCharDelay.ToString();
+                    }
+                    // If the project has been used with a COM port in the past, set it here.
+                    //
+                    if (project.COMport.Length > 0) COMportComboBox.Text = project.COMport;
+                    //
                     break;
                 }
             }
@@ -789,13 +842,23 @@ namespace COMport
                 lines = File.ReadAllLines(LASTUSED_TXT);
                 if (lines.Length > 0) CheckEnvironmentVariables = false;
             }
-            VersionComboBox.Text = findParameterIn( lines, "project", "Unknown");
-            COMportComboBox.Text = findParameterIn( lines, "connection", "");
-            HalfDuplexCheckBox.Checked = ("True" == findParameterIn( lines, "halfDuplex", "false"));
-            BaudComboBox.Text = findParameterIn( lines, "baudrate", "");
-            onEnterComboBox.Text = findParameterIn( lines, "onEnter", "");
+            VersionComboBox.Text = findParameterIn(lines, "project", "Unknown");
+            COMportComboBox.Text = findParameterIn(lines, "connection", "");
+            HalfDuplexCheckBox.Checked = ("True" == findParameterIn(lines, "halfDuplex", "false"));
+            BaudComboBox.Text = findParameterIn(lines, "baudrate", "");
+            onEnterComboBox.Text = findParameterIn(lines, "onEnter", "");
             //
-            checkEnterChar(); // Avoid endless loop.
+            checkEnterChar(); // Update EnterKey with onEnterCombox.Text
+            //
+            // Load any and all project/COM port settings recorded.
+            //
+            for (int n = 0; n < MAX_PROJECTS; n++)
+            {
+                if (projects[n].name.Length > 0)
+                {
+                    projects[n].COMport = findParameterIn(lines, "connection_" + projects[n].name, "");
+                }
+            }
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -893,7 +956,7 @@ namespace COMport
             string aline;
             int idx;
 
-            while (toSend.Contains("\\n"))
+            while (toSend.Contains("\\n")) // Note that Environment.NewLine should not be equal to "\\n" (only the strangest of stange people would set it so)!
             {
                 idx = toSend.IndexOf("\\n");
                 aline = toSend.Substring(0, idx);
@@ -902,7 +965,6 @@ namespace COMport
                 sendToKeyboard(aline + Environment.NewLine);
             }
             if (toSend.Length > 0) sendToKeyboard(toSend);
-            CommsTextBox.Focus();
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -930,13 +992,15 @@ namespace COMport
         /// <param name="e"></param>
         private void QuickTextMenuButton_Click(object sender, EventArgs e)
         {
-            QuickTextMenu menu = new QuickTextMenu();
-            menu.StartPosition = FormStartPosition.Manual;
-            //
-            menu.Location = Location;
-            menu.Left += ClientSize.Width + 10; // To place it on far right of parent.
-            //
-            menu.Show();
+            if ( 0 == Application.OpenForms.OfType<QuickTextMenu>().Count() )
+            {
+                menu = new QuickTextMenu();
+                menu.StartPosition = FormStartPosition.Manual;
+                menu.Location = Location;
+                menu.Left += ClientSize.Width + 10; // To place it on far right of parent.
+                //
+                menu.Show();
+            }
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
