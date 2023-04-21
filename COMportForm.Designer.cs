@@ -45,6 +45,7 @@ namespace COMport
             this.VersionComboBox = new System.Windows.Forms.ComboBox();
             this.SerialPort = new System.IO.Ports.SerialPort(this.components);
             this.panel2 = new System.Windows.Forms.Panel();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -91,6 +92,7 @@ namespace COMport
             this.BaudComboBox.Size = new System.Drawing.Size(72, 21);
             this.BaudComboBox.TabIndex = 1;
             this.BaudComboBox.Text = "115200";
+            this.toolTip.SetToolTip(this.BaudComboBox, "Select baudrate");
             // 
             // COMportComboBox
             // 
@@ -100,6 +102,7 @@ namespace COMport
             this.COMportComboBox.Name = "COMportComboBox";
             this.COMportComboBox.Size = new System.Drawing.Size(59, 21);
             this.COMportComboBox.TabIndex = 0;
+            this.toolTip.SetToolTip(this.COMportComboBox, "Select COM port to connect to");
             this.COMportComboBox.DropDown += new System.EventHandler(this.COMportComboBox_DropDown);
             // 
             // ConnectButton
@@ -111,6 +114,7 @@ namespace COMport
             this.ConnectButton.Size = new System.Drawing.Size(97, 24);
             this.ConnectButton.TabIndex = 2;
             this.ConnectButton.Text = "Connect";
+            this.toolTip.SetToolTip(this.ConnectButton, "Connect/Disconnect the device");
             this.ConnectButton.UseVisualStyleBackColor = true;
             this.ConnectButton.Click += new System.EventHandler(this.ConnectButton_Click);
             // 
@@ -145,6 +149,7 @@ namespace COMport
             this.QuickTextComboBox.Size = new System.Drawing.Size(93, 21);
             this.QuickTextComboBox.TabIndex = 15;
             this.QuickTextComboBox.Text = "QUICK";
+            this.toolTip.SetToolTip(this.QuickTextComboBox, "Select a sheet of QUICK Text commands");
             this.QuickTextComboBox.DropDown += new System.EventHandler(this.QuickTextComboBox_DropDown);
             this.QuickTextComboBox.SelectedIndexChanged += new System.EventHandler(this.QuickTextComboBox_SelectedIndexChanged);
             this.QuickTextComboBox.DropDownClosed += new System.EventHandler(this.QuickTextComboBox_DropDownClosed);
@@ -158,6 +163,7 @@ namespace COMport
             this.StartLogButton.Size = new System.Drawing.Size(75, 24);
             this.StartLogButton.TabIndex = 14;
             this.StartLogButton.Text = "Start log";
+            this.toolTip.SetToolTip(this.StartLogButton, "Start/Stop logging the communications to a file");
             this.StartLogButton.UseVisualStyleBackColor = true;
             this.StartLogButton.Click += new System.EventHandler(this.StartLogButton_Click);
             // 
@@ -172,6 +178,7 @@ namespace COMport
             this.onEnterComboBox.Name = "onEnterComboBox";
             this.onEnterComboBox.Size = new System.Drawing.Size(56, 21);
             this.onEnterComboBox.TabIndex = 7;
+            this.toolTip.SetToolTip(this.onEnterComboBox, "Typically, use 0x0D for carriage return or 0x0A for line feed");
             this.onEnterComboBox.TextChanged += new System.EventHandler(this.onEnterComboBox_TextChanged);
             // 
             // label1
@@ -191,6 +198,7 @@ namespace COMport
             this.HalfDuplexCheckBox.Size = new System.Drawing.Size(79, 17);
             this.HalfDuplexCheckBox.TabIndex = 5;
             this.HalfDuplexCheckBox.Text = "Half-duplex";
+            this.toolTip.SetToolTip(this.HalfDuplexCheckBox, "Tick if device does not use character echo");
             this.HalfDuplexCheckBox.UseVisualStyleBackColor = true;
             // 
             // clearSreenButton
@@ -213,6 +221,7 @@ namespace COMport
             this.VersionComboBox.Size = new System.Drawing.Size(168, 21);
             this.VersionComboBox.TabIndex = 3;
             this.VersionComboBox.Text = "Unknown";
+            this.toolTip.SetToolTip(this.VersionComboBox, "Select the project");
             this.VersionComboBox.SelectedIndexChanged += new System.EventHandler(this.VersionComboBox_SelectedIndexChanged);
             // 
             // SerialPort
@@ -232,6 +241,14 @@ namespace COMport
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(923, 554);
             this.panel2.TabIndex = 5;
+            // 
+            // toolTip
+            // 
+            this.toolTip.AutoPopDelay = 30000;
+            this.toolTip.InitialDelay = 500;
+            this.toolTip.IsBalloon = true;
+            this.toolTip.ReshowDelay = 100;
+            this.toolTip.ShowAlways = true;
             // 
             // COMportForm
             // 
@@ -271,6 +288,7 @@ namespace COMport
         public System.Windows.Forms.TextBox CommsTextBox;
         public System.Windows.Forms.ComboBox VersionComboBox;
         private System.Windows.Forms.ComboBox QuickTextComboBox;
+        private System.Windows.Forms.ToolTip toolTip;
     }
 }
 

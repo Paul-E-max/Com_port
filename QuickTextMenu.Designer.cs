@@ -104,6 +104,7 @@ namespace COMport
             this.RepeatCommandTimer = new System.Windows.Forms.Timer(this.components);
             this.MoreCheckBox = new System.Windows.Forms.CheckBox();
             this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // CommandLine1TextBox
@@ -343,7 +344,7 @@ namespace COMport
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(148, 554);
+            this.label5.Location = new System.Drawing.Point(199, 554);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(43, 13);
             this.label5.TabIndex = 28;
@@ -351,7 +352,7 @@ namespace COMport
             // 
             // NLDelayTextBox
             // 
-            this.NLDelayTextBox.Location = new System.Drawing.Point(197, 550);
+            this.NLDelayTextBox.Location = new System.Drawing.Point(137, 550);
             this.NLDelayTextBox.Name = "NLDelayTextBox";
             this.NLDelayTextBox.Size = new System.Drawing.Size(56, 20);
             this.NLDelayTextBox.TabIndex = 59;
@@ -765,12 +766,22 @@ namespace COMport
             this.label7.TabIndex = 67;
             this.label7.Text = "Right click to set label";
             // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(338, 553);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(42, 13);
+            this.label8.TabIndex = 68;
+            this.label8.Text = "Manual";
+            // 
             // QuickTextMenu
             // 
             this.AcceptButton = this.ExitButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(534, 588);
+            this.Controls.Add(this.label8);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.MoreCheckBox);
             this.Controls.Add(this.label6);
@@ -929,5 +940,6 @@ namespace COMport
         public System.Windows.Forms.TextBox NLDelayTextBox;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button ButtonExeText1;
+        private System.Windows.Forms.Label label8;
     }
 }

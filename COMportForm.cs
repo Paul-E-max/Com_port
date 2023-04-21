@@ -9,7 +9,7 @@
 // @Tools:      Visual Studio 2019, C#
 //
 // @Revision:
-//
+// 21.04.2023-MD V1.01.11 - Switch the COMport_quickTextName_project.TXT to COMport_project_quickTextName.TXT
 // 18.04.2023-MD V1.01.10 - 1) Generalise the ButtonExeText function for all 1-19 buttons.
 //                          2) Changed QUICK text menu button to drop down to select a file (currently COMport_quickTextName_project.TXT).
 //                          3) Label on execute buttons in quick text can be modified.
@@ -65,7 +65,7 @@ namespace COMport
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // Constants
         //
-        const string APP_NAME = "COMport", VERSION = "V1.01.10"; // UPDATE MANUAL AS APPLICATION EVOLVES.
+        const string APP_NAME = "COMport", VERSION = "V1.01.11"; // UPDATE MANUAL AS APPLICATION EVOLVES.
         //
         const string FILENAME_CSV = APP_NAME + ".CSV";
         public const string TEXT_FILE_EXT = ".TXT";
@@ -1002,32 +1002,6 @@ namespace COMport
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
-        /// Populate the QuickTextComboBox dropdown box.
-        /// </summary>
-        private void populateQuickTextComboBox()
-        {
-            string searchFor = APP_NAME + "_";
-            var filesThatmatch = Directory.EnumerateFiles(".", searchFor + "*_" + VersionComboBox.Text + TEXT_FILE_EXT);
-            int sheets = 0;
-
-            QuickTextComboBox.Items.Clear();
-            foreach (string filename in filesThatmatch)
-            {
-                int clipBegin = searchFor.Length + 2;
-                int clipLength = filename.Length - clipBegin - (VersionComboBox.Text + TEXT_FILE_EXT).Length - 1;
-                QuickTextComboBox.Items.Add(filename.Substring(clipBegin, clipLength));
-                //
-                sheets++;
-            }
-            if (0 == sheets)
-            {
-                QuickTextComboBox.Items.Add("QUICK");
-            }
-            QuickTextComboBox.Items.Add(NEW_SHEET);
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
         /// Indicate that we have finished dropdown process.
         /// </summary>
         /// <param name="sender"></param>
@@ -1035,6 +1009,35 @@ namespace COMport
         private void QuickTextComboBox_DropDownClosed(object sender, EventArgs e)
         {
             DoingDropDown = false;
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Populate the QuickTextComboBox dropdown box.
+        /// </summary>
+        private void populateQuickTextComboBox()
+        {
+            string searchFor = APP_NAME + "_" + VersionComboBox.Text + "_";
+            var filesThatmatch = Directory.EnumerateFiles(".", searchFor + "*" + TEXT_FILE_EXT);
+            int sheets = 0;
+
+            QuickTextComboBox.Items.Clear();
+            //
+            foreach (string filename in filesThatmatch)
+            {
+                int clipBegin = searchFor.Length + 2; // Where the +2 is because of an inferred ".\" in the filename.
+                int clipLength = filename.Length - clipBegin - TEXT_FILE_EXT.Length;
+                QuickTextComboBox.Items.Add(filename.Substring(clipBegin, clipLength));
+                //
+                sheets++;
+            }
+            if (0 == sheets)
+            {
+                // Default item is always COMport_project_QUICK.TXT
+                //
+                QuickTextComboBox.Items.Add("QUICK");
+            }
+            QuickTextComboBox.Items.Add(NEW_SHEET); // This label at the end enables one to add new sheets.
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1048,12 +1051,6 @@ namespace COMport
             if (e.KeyCode == Keys.Enter)
             {
                 selectQuickTextMenu(QuickTextComboBox.Text);
-            }
-            if (e.KeyCode == Keys.Delete)
-            {
-                // Not complete yet . . .  actually, need to remove the file not just the dropdown item!
-                //
-                QuickTextComboBox.Items.Remove(QuickTextComboBox.Text);
             }
         }
 
@@ -1078,7 +1075,7 @@ namespace COMport
             {
                 string filename = menuName.Replace(' ', '_');
 
-                menu = new QuickTextMenu(APP_NAME + "_" + filename + "_" + VersionComboBox.Text + TEXT_FILE_EXT);
+                menu = new QuickTextMenu(APP_NAME + "_" + VersionComboBox.Text + "_" + filename + TEXT_FILE_EXT);
                 menu.StartPosition = FormStartPosition.Manual;
                 menu.Location = Location;
                 menu.Left += ClientSize.Width + 10; // To place it on far right of parent.
@@ -1097,24 +1094,13 @@ namespace COMport
         /// <param name="e"></param>
         private void QuickTextComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //if (!DoingDropDown)
+            if (QuickTextComboBox.SelectedItem.ToString() == NEW_SHEET)
             {
-                try
-                {
-                    if (QuickTextComboBox.SelectedItem.ToString() == NEW_SHEET)
-                    {
-                        QuickTextComboBox.SelectedText = "";
-                    }
-                    else
-                    {
-                        selectQuickTextMenu(QuickTextComboBox.Text);
-                    }
-                }
-                catch
-                {
-                    /* Nothing to do here, just ignore the blank field */
-                    MessageBox.Show("failed a test");
-                }
+                QuickTextComboBox.SelectedText = "";
+            }
+            else
+            {
+                selectQuickTextMenu(QuickTextComboBox.Text);
             }
         }
 

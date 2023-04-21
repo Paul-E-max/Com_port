@@ -1,6 +1,6 @@
-"Command1"=ENUM\n
-"Command2"=Date\n
-"Command3"=\n
+"Command1"=Version\n
+"Command2"=Build\n
+"Command3"=Date\n
 "Command4"=\n
 "Command5"=\n
 "Command6"=\n
@@ -16,4 +16,4 @@
 "Command16"=\n
 "Command17"=\n
 "Command18"=\n
-"Command19"=\n
+"Command19"=RESET\n
