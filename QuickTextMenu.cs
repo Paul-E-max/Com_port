@@ -36,18 +36,22 @@ namespace COMport
     {
         const int REPEAT_DISABLED = 0;
         const int FORM_BAR = 39;
-        const int QUICK_TEXT_WIDTH = 481;
+        const int QUICK_TEXT_WIDTH = 534; // In the GUI, this is set to 550 . . . why the difference ?
         const int QUICK_TEXT_LESS_HEIGHT = 627 - FORM_BAR;
         const int QUICK_TEXT_MORE_HEIGHT = 691 - FORM_BAR;
         const int MINIMUM_PERIOD = 100;
+        const string DEFAULT_LABEL = "Command";
 
+        string loadFilename;
         bool RepeatCommandPrimmed = false;
         bool CheckEnvironmentVariables = true; // Assume that environment variables can be used if necessary.
         int RepeatCommand = REPEAT_DISABLED;
 
-        public QuickTextMenu()
+        public QuickTextMenu(string filename)
         {
             InitializeComponent();
+            loadFilename = filename;
+            this.Text = filename;
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -58,35 +62,32 @@ namespace COMport
         /// <param name="e"></param>
         private void QuickTextMenu_Load(object sender, EventArgs e)
         {
-            string loadFilename = COMportForm.QUICK_TEXT + "_" + Program.comportform.VersionComboBox.Text + COMportForm.TEXT_FILE_EXT;
             string[] lines = new string[0];
 
-            if (!File.Exists(loadFilename)) loadFilename = COMportForm.QUICK_TEXT + COMportForm.TEXT_FILE_EXT; // Default quick text without the project name appended.
-            //
             if (File.Exists(loadFilename))
             {
                 lines = File.ReadAllLines(loadFilename);
                 if (lines.Length > 0) CheckEnvironmentVariables = false;
             }
-            CommandLine1TextBox.Text = setText( lines, 1, ManualEnter1CheckBox);
-            CommandLine2TextBox.Text = setText(lines, 2, ManualEnter2CheckBox);
-            CommandLine3TextBox.Text = setText(lines, 3, ManualEnter3CheckBox);
-            CommandLine4TextBox.Text = setText(lines, 4, ManualEnter4CheckBox);
-            CommandLine5TextBox.Text = setText(lines, 5, ManualEnter5CheckBox);
-            CommandLine6TextBox.Text = setText(lines, 6, ManualEnter6CheckBox);
-            CommandLine7TextBox.Text = setText(lines, 7, ManualEnter7CheckBox);
-            CommandLine8TextBox.Text = setText(lines, 8, ManualEnter8CheckBox);
-            CommandLine9TextBox.Text = setText(lines, 9, ManualEnter9CheckBox);
-            CommandLine10TextBox.Text = setText(lines, 10, ManualEnter10CheckBox);
-            CommandLine11TextBox.Text = setText(lines, 11, ManualEnter11CheckBox);
-            CommandLine12TextBox.Text = setText(lines, 12, ManualEnter12CheckBox);
-            CommandLine13TextBox.Text = setText(lines, 13, ManualEnter13CheckBox);
-            CommandLine14TextBox.Text = setText(lines, 14, ManualEnter14CheckBox);
-            CommandLine15TextBox.Text = setText(lines, 15, ManualEnter15CheckBox);
-            CommandLine16TextBox.Text = setText(lines, 16, ManualEnter16CheckBox);
-            CommandLine17TextBox.Text = setText(lines, 17, ManualEnter17CheckBox);
-            CommandLine18TextBox.Text = setText(lines, 18, ManualEnter18CheckBox);
-            CommandLine19TextBox.Text = setText(lines, 19, ManualEnter19CheckBox);
+            setText(lines, 1, ButtonExeText1, CommandLine1TextBox, ManualEnter1CheckBox);
+            setText(lines, 2, ButtonExeText2, CommandLine2TextBox, ManualEnter2CheckBox);
+            setText(lines, 3, ButtonExeText3, CommandLine3TextBox, ManualEnter3CheckBox);
+            setText(lines, 4, ButtonExeText4, CommandLine4TextBox, ManualEnter4CheckBox);
+            setText(lines, 5, ButtonExeText5, CommandLine5TextBox, ManualEnter5CheckBox);
+            setText(lines, 6, ButtonExeText6, CommandLine6TextBox, ManualEnter6CheckBox);
+            setText(lines, 7, ButtonExeText7, CommandLine7TextBox, ManualEnter7CheckBox);
+            setText(lines, 8, ButtonExeText8, CommandLine8TextBox, ManualEnter8CheckBox);
+            setText(lines, 9, ButtonExeText9, CommandLine9TextBox, ManualEnter9CheckBox);
+            setText(lines, 10, ButtonExeText10, CommandLine10TextBox, ManualEnter10CheckBox);
+            setText(lines, 11, ButtonExeText11, CommandLine11TextBox, ManualEnter11CheckBox);
+            setText(lines, 12, ButtonExeText12, CommandLine12TextBox, ManualEnter12CheckBox);
+            setText(lines, 13, ButtonExeText13, CommandLine13TextBox, ManualEnter13CheckBox);
+            setText(lines, 14, ButtonExeText14, CommandLine14TextBox, ManualEnter14CheckBox);
+            setText(lines, 15, ButtonExeText15, CommandLine15TextBox, ManualEnter15CheckBox);
+            setText(lines, 16, ButtonExeText16, CommandLine16TextBox, ManualEnter16CheckBox);
+            setText(lines, 17, ButtonExeText17, CommandLine17TextBox, ManualEnter17CheckBox);
+            setText(lines, 18, ButtonExeText18, CommandLine18TextBox, ManualEnter18CheckBox);
+            setText(lines, 19, ButtonExeText19, CommandLine19TextBox, ManualEnter19CheckBox);
             //
             CharDelayTextBox.Text = COMportForm.InterCharDelay.ToString();
             NLDelayTextBox.Text = COMportForm.InterLineDelay.ToString();
@@ -99,20 +100,22 @@ namespace COMport
         /// <param name="index">One of seven different entries to update</param>
         /// <param name="checkbox">If read item doesn't end in "\n", tick this as "No Enter" required</param>
         /// <returns></returns>
-        private string setText( string[] lines, int index, CheckBox checkbox )
+        private void setText( string[] lines, int index, Button button, TextBox text, CheckBox checkbox )
         {
             string toRead = findParameterIn( lines, index, "");
 
             if (null == toRead) toRead = "";
-            if( toRead.EndsWith("\\n") )
+            string[] inputs = toRead.Split('=');
+            button.Text = inputs[0].Substring(1, inputs[0].Length - 2);
+            text.Text = inputs[1];
+            if (text.Text.EndsWith("\\n") )
             {
-                toRead = toRead.Substring(0, toRead.Length - 2);
+                text.Text = text.Text.Substring(0, text.Text.Length - 2);
             }
             else
             {
-                if( toRead.Length > 0 ) checkbox.Checked = true;
+                if(text.Text.Length > 0 ) checkbox.Checked = true;
             }
-            return toRead;
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -131,12 +134,16 @@ namespace COMport
             if (index <= lines.Length)
             {
                 result = lines[index - 1];
+                if( !result.Contains("\"="))
+                {
+                    result = "\"" + DEFAULT_LABEL + index + "\"=" + result;
+                }
             }
             // If not found in the source file, then check environment varibles as per previous version of COMport.exe
             //
             if( ( 0 == result.Length ) && CheckEnvironmentVariables)
             {
-                result = Environment.GetEnvironmentVariable("COMport_QuickText" + index, EnvironmentVariableTarget.User);
+                result = "\"" + DEFAULT_LABEL + index + "\"=" + Environment.GetEnvironmentVariable("COMport_QuickText" + index, EnvironmentVariableTarget.User);
             }
             return result;
         }
@@ -149,31 +156,31 @@ namespace COMport
         /// <param name="e"></param>
         private void SaveButton_Click(object sender, EventArgs e)
         {
-            string saveFilename = COMportForm.QUICK_TEXT + "_" + Program.comportform.VersionComboBox.Text + COMportForm.TEXT_FILE_EXT;
+            string saveFilename = loadFilename;
 
             if (File.Exists(saveFilename)) File.Delete(saveFilename);
             //
             using (StreamWriter output = File.CreateText(saveFilename))
             {
-                saveToQuickTextFile(output, CommandLine1TextBox.Text, ManualEnter1CheckBox);
-                saveToQuickTextFile(output, CommandLine2TextBox.Text, ManualEnter2CheckBox);
-                saveToQuickTextFile(output, CommandLine3TextBox.Text, ManualEnter3CheckBox);
-                saveToQuickTextFile(output, CommandLine4TextBox.Text, ManualEnter4CheckBox);
-                saveToQuickTextFile(output, CommandLine5TextBox.Text, ManualEnter5CheckBox);
-                saveToQuickTextFile(output, CommandLine6TextBox.Text, ManualEnter6CheckBox);
-                saveToQuickTextFile(output, CommandLine7TextBox.Text, ManualEnter7CheckBox);
-                saveToQuickTextFile(output, CommandLine8TextBox.Text, ManualEnter8CheckBox);
-                saveToQuickTextFile(output, CommandLine9TextBox.Text, ManualEnter9CheckBox);
-                saveToQuickTextFile(output, CommandLine10TextBox.Text, ManualEnter10CheckBox);
-                saveToQuickTextFile(output, CommandLine11TextBox.Text, ManualEnter11CheckBox);
-                saveToQuickTextFile(output, CommandLine12TextBox.Text, ManualEnter12CheckBox);
-                saveToQuickTextFile(output, CommandLine13TextBox.Text, ManualEnter13CheckBox);
-                saveToQuickTextFile(output, CommandLine14TextBox.Text, ManualEnter14CheckBox);
-                saveToQuickTextFile(output, CommandLine15TextBox.Text, ManualEnter15CheckBox);
-                saveToQuickTextFile(output, CommandLine16TextBox.Text, ManualEnter16CheckBox);
-                saveToQuickTextFile(output, CommandLine17TextBox.Text, ManualEnter17CheckBox);
-                saveToQuickTextFile(output, CommandLine18TextBox.Text, ManualEnter18CheckBox);
-                saveToQuickTextFile(output, CommandLine19TextBox.Text, ManualEnter19CheckBox);
+                saveToQuickTextFile(output, "\"" + ButtonExeText1.Text + "\"=" + CommandLine1TextBox.Text, ManualEnter1CheckBox);
+                saveToQuickTextFile(output, "\"" + ButtonExeText2.Text + "\"=" + CommandLine2TextBox.Text, ManualEnter2CheckBox);
+                saveToQuickTextFile(output, "\"" + ButtonExeText3.Text + "\"=" + CommandLine3TextBox.Text, ManualEnter3CheckBox);
+                saveToQuickTextFile(output, "\"" + ButtonExeText4.Text + "\"=" + CommandLine4TextBox.Text, ManualEnter4CheckBox);
+                saveToQuickTextFile(output, "\"" + ButtonExeText5.Text + "\"=" + CommandLine5TextBox.Text, ManualEnter5CheckBox);
+                saveToQuickTextFile(output, "\"" + ButtonExeText6.Text + "\"=" + CommandLine6TextBox.Text, ManualEnter6CheckBox);
+                saveToQuickTextFile(output, "\"" + ButtonExeText7.Text + "\"=" + CommandLine7TextBox.Text, ManualEnter7CheckBox);
+                saveToQuickTextFile(output, "\"" + ButtonExeText8.Text + "\"=" + CommandLine8TextBox.Text, ManualEnter8CheckBox);
+                saveToQuickTextFile(output, "\"" + ButtonExeText9.Text + "\"=" + CommandLine9TextBox.Text, ManualEnter9CheckBox);
+                saveToQuickTextFile(output, "\"" + ButtonExeText10.Text + "\"=" + CommandLine10TextBox.Text, ManualEnter10CheckBox);
+                saveToQuickTextFile(output, "\"" + ButtonExeText11.Text + "\"=" + CommandLine11TextBox.Text, ManualEnter11CheckBox);
+                saveToQuickTextFile(output, "\"" + ButtonExeText12.Text + "\"=" + CommandLine12TextBox.Text, ManualEnter12CheckBox);
+                saveToQuickTextFile(output, "\"" + ButtonExeText13.Text + "\"=" + CommandLine13TextBox.Text, ManualEnter13CheckBox);
+                saveToQuickTextFile(output, "\"" + ButtonExeText14.Text + "\"=" + CommandLine14TextBox.Text, ManualEnter14CheckBox);
+                saveToQuickTextFile(output, "\"" + ButtonExeText15.Text + "\"=" + CommandLine15TextBox.Text, ManualEnter15CheckBox);
+                saveToQuickTextFile(output, "\"" + ButtonExeText16.Text + "\"=" + CommandLine16TextBox.Text, ManualEnter16CheckBox);
+                saveToQuickTextFile(output, "\"" + ButtonExeText17.Text + "\"=" + CommandLine17TextBox.Text, ManualEnter17CheckBox);
+                saveToQuickTextFile(output, "\"" + ButtonExeText18.Text + "\"=" + CommandLine18TextBox.Text, ManualEnter18CheckBox);
+                saveToQuickTextFile(output, "\"" + ButtonExeText19.Text + "\"=" + CommandLine19TextBox.Text, ManualEnter19CheckBox);
             }
         }
 
@@ -243,226 +250,27 @@ namespace COMport
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void ExeText1Button_Click(object sender, EventArgs e)
+        private void ButtonExeTextN_MouseUp(object sender, MouseEventArgs e)
         {
-            executeCommand(1);
-            MaySetNewRepeatCommand(1);
-        }
+            Button sentBy = (Button)sender;
+            int buttonNumber = Convert.ToInt32(sentBy.Name.Substring(13));
 
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// Execute the quick text (2).
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ExeText2Button_Click(object sender, EventArgs e)
-        {
-            executeCommand(2);
-            MaySetNewRepeatCommand(2);
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// Execute the quick text (3).
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ExeText3Button_Click(object sender, EventArgs e)
-        {
-            executeCommand(3);
-            MaySetNewRepeatCommand(3);
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// Execute the quick text (4).
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ExeText4Button_Click(object sender, EventArgs e)
-        {
-            executeCommand(4);
-            MaySetNewRepeatCommand(4);
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// Execute the quick text (5).
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ExeText5Button_Click(object sender, EventArgs e)
-        {
-            executeCommand(5);
-            MaySetNewRepeatCommand(5);
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// Execute the quick text (6).
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ExeText6Button_Click(object sender, EventArgs e)
-        {
-            executeCommand(6);
-            MaySetNewRepeatCommand(6);
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// Execute the quick text (7).
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ExeText7Button_Click(object sender, EventArgs e)
-        {
-            executeCommand(7);
-            MaySetNewRepeatCommand(7);
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// Execute the quick text (8).
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ExeText8Button_Click(object sender, EventArgs e)
-        {
-            executeCommand(8);
-            MaySetNewRepeatCommand(8);
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// Execute the quick text (9).
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ExeText9Button_Click(object sender, EventArgs e)
-        {
-            executeCommand(9);
-            MaySetNewRepeatCommand(9);
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// Execute the quick text (10).
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ExeText10Button_Click(object sender, EventArgs e)
-        {
-            executeCommand(10);
-            MaySetNewRepeatCommand(10);
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// Execute the quick text (11).
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ExeText11Button_Click(object sender, EventArgs e)
-        {
-            executeCommand(11);
-            MaySetNewRepeatCommand(11);
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// Execute the quick text (12).
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ExeText12Button_Click(object sender, EventArgs e)
-        {
-            executeCommand(12);
-            MaySetNewRepeatCommand(12);
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// Execute the quick text (13).
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ExeText13Button_Click(object sender, EventArgs e)
-        {
-            executeCommand(13);
-            MaySetNewRepeatCommand(13);
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// Execute the quick text (14).
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ExeText14Button_Click(object sender, EventArgs e)
-        {
-            executeCommand(14);
-            MaySetNewRepeatCommand(14);
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// Execute the quick text (15).
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ExeText15Button_Click(object sender, EventArgs e)
-        {
-            executeCommand(15);
-            MaySetNewRepeatCommand(15);
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// Execute the quick text (16).
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ExeText16Button_Click(object sender, EventArgs e)
-        {
-            executeCommand(16);
-            MaySetNewRepeatCommand(16);
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// Execute the quick text (17).
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ExeText17Button_Click(object sender, EventArgs e)
-        {
-            executeCommand(17);
-            MaySetNewRepeatCommand(17);
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// Execute the quick text (18).
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ExeText18Button_Click(object sender, EventArgs e)
-        {
-            executeCommand(18);
-            MaySetNewRepeatCommand(18);
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// Execute the quick text (19).
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ExeText19Button_Click(object sender, EventArgs e)
-        {
-            executeCommand(19);
-            MaySetNewRepeatCommand(19);
+            if (e.Button == MouseButtons.Right)
+            {
+                EnterLabel formToEnterLabel = new EnterLabel(sentBy.Text);
+                formToEnterLabel.StartPosition = FormStartPosition.CenterParent;
+                //formToEnterLabel.Location = new Point(10, 10);
+                //
+                if ( formToEnterLabel.ShowDialog() == DialogResult.OK )
+                {
+                    sentBy.Text = formToEnterLabel.newLabel;
+                }
+            }
+            else
+            {
+                executeCommand(buttonNumber);
+                MaySetNewRepeatCommand(buttonNumber);
+            }
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -545,25 +353,25 @@ namespace COMport
 
             switch ( command )
             {
-                case 1: ExeText1Button.BackColor = ofButton; break;
-                case 2: ExeText2Button.BackColor = ofButton; break;
-                case 3: ExeText3Button.BackColor = ofButton; break;
-                case 4: ExeText4Button.BackColor = ofButton; break;
-                case 5: ExeText5Button.BackColor = ofButton; break;
-                case 6: ExeText6Button.BackColor = ofButton; break;
-                case 7: ExeText7Button.BackColor = ofButton; break;
-                case 8: ExeText8Button.BackColor = ofButton; break;
-                case 9: ExeText9Button.BackColor = ofButton; break;
-                case 10: ExeText10Button.BackColor = ofButton; break;
-                case 11: ExeText11Button.BackColor = ofButton; break;
-                case 12: ExeText12Button.BackColor = ofButton; break;
-                case 13: ExeText13Button.BackColor = ofButton; break;
-                case 14: ExeText14Button.BackColor = ofButton; break;
-                case 15: ExeText15Button.BackColor = ofButton; break;
-                case 16: ExeText16Button.BackColor = ofButton; break;
-                case 17: ExeText17Button.BackColor = ofButton; break;
-                case 18: ExeText18Button.BackColor = ofButton; break;
-                case 19: ExeText19Button.BackColor = ofButton; break;
+                case 1: ButtonExeText1.BackColor = ofButton; break;
+                case 2: ButtonExeText2.BackColor = ofButton; break;
+                case 3: ButtonExeText3.BackColor = ofButton; break;
+                case 4: ButtonExeText4.BackColor = ofButton; break;
+                case 5: ButtonExeText5.BackColor = ofButton; break;
+                case 6: ButtonExeText6.BackColor = ofButton; break;
+                case 7: ButtonExeText7.BackColor = ofButton; break;
+                case 8: ButtonExeText8.BackColor = ofButton; break;
+                case 9: ButtonExeText9.BackColor = ofButton; break;
+                case 10: ButtonExeText10.BackColor = ofButton; break;
+                case 11: ButtonExeText11.BackColor = ofButton; break;
+                case 12: ButtonExeText12.BackColor = ofButton; break;
+                case 13: ButtonExeText13.BackColor = ofButton; break;
+                case 14: ButtonExeText14.BackColor = ofButton; break;
+                case 15: ButtonExeText15.BackColor = ofButton; break;
+                case 16: ButtonExeText16.BackColor = ofButton; break;
+                case 17: ButtonExeText17.BackColor = ofButton; break;
+                case 18: ButtonExeText18.BackColor = ofButton; break;
+                case 19: ButtonExeText19.BackColor = ofButton; break;
                 //
                 default: break;
             }
@@ -669,24 +477,24 @@ namespace COMport
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CommandLine1TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText1Button; }
-        private void CommandLine2TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText2Button; }
-        private void CommandLine3TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText3Button; }
-        private void CommandLine4TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText4Button; }
-        private void CommandLine5TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText5Button; }
-        private void CommandLine6TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText6Button; }
-        private void CommandLine7TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText7Button; }
-        private void CommandLine8TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText8Button; }
-        private void CommandLine9TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText9Button; }
-        private void CommandLine10TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText10Button; }
-        private void CommandLine11TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText11Button; }
-        private void CommandLine12TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText12Button; }
-        private void CommandLine13TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText13Button; }
-        private void CommandLine14TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText14Button; }
-        private void CommandLine15TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText15Button; }
-        private void CommandLine16TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText16Button; }
-        private void CommandLine17TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText17Button; }
-        private void CommandLine18TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText18Button; }
-        private void CommandLine19TextBox_Enter(object sender, EventArgs e) { AcceptButton = ExeText19Button; }
+        private void CommandLine1TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText1; }
+        private void CommandLine2TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText2; }
+        private void CommandLine3TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText3; }
+        private void CommandLine4TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText4; }
+        private void CommandLine5TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText5; }
+        private void CommandLine6TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText6; }
+        private void CommandLine7TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText7; }
+        private void CommandLine8TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText8; }
+        private void CommandLine9TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText9; }
+        private void CommandLine10TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText10; }
+        private void CommandLine11TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText11; }
+        private void CommandLine12TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText12; }
+        private void CommandLine13TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText13; }
+        private void CommandLine14TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText14; }
+        private void CommandLine15TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText15; }
+        private void CommandLine16TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText16; }
+        private void CommandLine17TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText17; }
+        private void CommandLine18TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText18; }
+        private void CommandLine19TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText19; }
     }
 }

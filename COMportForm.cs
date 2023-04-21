@@ -10,6 +10,9 @@
 //
 // @Revision:
 //
+// 18.04.2023-MD V1.01.10 - 1) Generalise the ButtonExeText function for all 1-19 buttons.
+//                          2) Changed QUICK text menu button to drop down to select a file (currently COMport_quickTextName_project.TXT).
+//                          3) Label on execute buttons in quick text can be modified.
 // 24.02.2023-MD V1.01.09 - 1) Correction to CR from quick text (V1.01.08 didn't use the NL delay on quick text).
 //                          2) Each project can save its own Quick Text file.
 //                          3) Last connection made for each project is saved in the user's local file.
@@ -62,13 +65,11 @@ namespace COMport
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // Constants
         //
-        const string APP_NAME = "COMport", VERSION = "V1.01.09"; // UPDATE MANUAL AS APPLICATION EVOLVES.
+        const string APP_NAME = "COMport", VERSION = "V1.01.10"; // UPDATE MANUAL AS APPLICATION EVOLVES.
         //
         const string FILENAME_CSV = APP_NAME + ".CSV";
         public const string TEXT_FILE_EXT = ".TXT";
         const string LASTUSED_TXT = APP_NAME + "_USER" + TEXT_FILE_EXT;
-
-        public const string QUICK_TEXT = APP_NAME + "_QUICK";
 
         const string CONNECT_LABEL = "Connect";
         const string SCANNING_LABEL = "Connecting";
@@ -76,6 +77,7 @@ namespace COMport
 
         const string LOG_START_LABEL = "Start log";
         const string LOG_STOP_LABEL = "Stop log";
+        const string NEW_SHEET = "new sheet";
 
         const int TIMEOUT_IMMEDIATE = 1;        // Timeout during clearing of buffer.
         const int TIMEOUT_CLEARS = 20;          // Number of times to attempt clear of buffer.
@@ -116,8 +118,9 @@ namespace COMport
         string OutputLogFile = "";
         string typedCommandLine = "";
         bool CheckEnvironmentVariables = true;
+        bool DoingDropDown = false;
 
-        QuickTextMenu menu;
+        QuickTextMenu menu; // Defined here to make it available across all COMportForm functions.
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
@@ -139,6 +142,7 @@ namespace COMport
             this.Text = APP_NAME + " - " + VERSION;
             loadProjectInfo();
             LoadLastUsedInfo();
+            populateQuickTextComboBox();
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -550,8 +554,8 @@ namespace COMport
             {
                 int oldLength = CommsTextBox.TextLength;
                 CommsTextBox.AppendText(append);
-    CommsTextBox.SelectionStart = CommsTextBox.Text.Length; // Place the curser at the end of the text.
-    CommsTextBox.ScrollToCaret();
+                CommsTextBox.SelectionStart = CommsTextBox.Text.Length; // Place the curser at the end of the text.
+                CommsTextBox.ScrollToCaret();
                 //
                 if ( OutputLogFile.Length > 0 )
                 {
@@ -603,7 +607,7 @@ namespace COMport
                         //
                         // Enforce any requested delays for characters or new lines.
                         //
-                        if (Encoding.ASCII.GetBytes(EnterKey) == TxBuffer)
+                        if (Encoding.ASCII.GetBytes(EnterKey)[0] == TxBuffer[0])
                         {
                             if( InterLineDelay > 0 )
                             {
@@ -986,20 +990,131 @@ namespace COMport
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
-        /// Display the quick text menu.
+        /// Populate dropdown with available files and indicate that we are starting the dropdown process.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void QuickTextMenuButton_Click(object sender, EventArgs e)
+        private void QuickTextComboBox_DropDown(object sender, EventArgs e)
         {
-            if ( 0 == Application.OpenForms.OfType<QuickTextMenu>().Count() )
+            populateQuickTextComboBox();
+            DoingDropDown = true;
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Populate the QuickTextComboBox dropdown box.
+        /// </summary>
+        private void populateQuickTextComboBox()
+        {
+            string searchFor = APP_NAME + "_";
+            var filesThatmatch = Directory.EnumerateFiles(".", searchFor + "*_" + VersionComboBox.Text + TEXT_FILE_EXT);
+            int sheets = 0;
+
+            QuickTextComboBox.Items.Clear();
+            foreach (string filename in filesThatmatch)
             {
-                menu = new QuickTextMenu();
+                int clipBegin = searchFor.Length + 2;
+                int clipLength = filename.Length - clipBegin - (VersionComboBox.Text + TEXT_FILE_EXT).Length - 1;
+                QuickTextComboBox.Items.Add(filename.Substring(clipBegin, clipLength));
+                //
+                sheets++;
+            }
+            if (0 == sheets)
+            {
+                QuickTextComboBox.Items.Add("QUICK");
+            }
+            QuickTextComboBox.Items.Add(NEW_SHEET);
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Indicate that we have finished dropdown process.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void QuickTextComboBox_DropDownClosed(object sender, EventArgs e)
+        {
+            DoingDropDown = false;
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Detect ENTER being hit while typing a new quick text menu item.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void QuickTextComboBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                selectQuickTextMenu(QuickTextComboBox.Text);
+            }
+            if (e.KeyCode == Keys.Delete)
+            {
+                // Not complete yet . . .  actually, need to remove the file not just the dropdown item!
+                //
+                QuickTextComboBox.Items.Remove(QuickTextComboBox.Text);
+            }
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Click on the "Quick text menu" button, display the quick text menu.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void QuickTextComboBox_MouseUp(object sender, MouseEventArgs e)
+        {
+            selectQuickTextMenu(QuickTextComboBox.Text);
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Use the current Quick text menu listed to open a new menu.
+        /// </summary>
+        private void selectQuickTextMenu(string menuName)
+        {
+            if( (menuName.Length > 0) && !DoingDropDown )
+            {
+                string filename = menuName.Replace(' ', '_');
+
+                menu = new QuickTextMenu(APP_NAME + "_" + filename + "_" + VersionComboBox.Text + TEXT_FILE_EXT);
                 menu.StartPosition = FormStartPosition.Manual;
                 menu.Location = Location;
                 menu.Left += ClientSize.Width + 10; // To place it on far right of parent.
                 //
                 menu.Show();
+                //
+                CommsTextBox.Focus(); // Return to the text screen as normal . . .
+            }
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Detect "new sheet" being selected from dropdown.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void QuickTextComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //if (!DoingDropDown)
+            {
+                try
+                {
+                    if (QuickTextComboBox.SelectedItem.ToString() == NEW_SHEET)
+                    {
+                        QuickTextComboBox.SelectedText = "";
+                    }
+                    else
+                    {
+                        selectQuickTextMenu(QuickTextComboBox.Text);
+                    }
+                }
+                catch
+                {
+                    /* Nothing to do here, just ignore the blank field */
+                    MessageBox.Show("failed a test");
+                }
             }
         }
 

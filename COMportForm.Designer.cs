@@ -36,8 +36,8 @@ namespace COMport
             this.COMportComboBox = new System.Windows.Forms.ComboBox();
             this.ConnectButton = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.QuickTextComboBox = new System.Windows.Forms.ComboBox();
             this.StartLogButton = new System.Windows.Forms.Button();
-            this.QuickTextMenuButton = new System.Windows.Forms.Button();
             this.onEnterComboBox = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.HalfDuplexCheckBox = new System.Windows.Forms.CheckBox();
@@ -117,8 +117,8 @@ namespace COMport
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.panel1.Controls.Add(this.QuickTextComboBox);
             this.panel1.Controls.Add(this.StartLogButton);
-            this.panel1.Controls.Add(this.QuickTextMenuButton);
             this.panel1.Controls.Add(this.onEnterComboBox);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.HalfDuplexCheckBox);
@@ -133,25 +133,33 @@ namespace COMport
             this.panel1.Size = new System.Drawing.Size(923, 34);
             this.panel1.TabIndex = 4;
             // 
+            // QuickTextComboBox
+            // 
+            this.QuickTextComboBox.FormattingEnabled = true;
+            this.QuickTextComboBox.Items.AddRange(new object[] {
+            "new sheet",
+            "QUICK"});
+            this.QuickTextComboBox.Location = new System.Drawing.Point(581, 6);
+            this.QuickTextComboBox.MaxDropDownItems = 16;
+            this.QuickTextComboBox.Name = "QuickTextComboBox";
+            this.QuickTextComboBox.Size = new System.Drawing.Size(93, 21);
+            this.QuickTextComboBox.TabIndex = 15;
+            this.QuickTextComboBox.Text = "QUICK";
+            this.QuickTextComboBox.DropDown += new System.EventHandler(this.QuickTextComboBox_DropDown);
+            this.QuickTextComboBox.SelectedIndexChanged += new System.EventHandler(this.QuickTextComboBox_SelectedIndexChanged);
+            this.QuickTextComboBox.DropDownClosed += new System.EventHandler(this.QuickTextComboBox_DropDownClosed);
+            this.QuickTextComboBox.KeyUp += new System.Windows.Forms.KeyEventHandler(this.QuickTextComboBox_KeyUp);
+            this.QuickTextComboBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.QuickTextComboBox_MouseUp);
+            // 
             // StartLogButton
             // 
-            this.StartLogButton.Location = new System.Drawing.Point(500, 6);
+            this.StartLogButton.Location = new System.Drawing.Point(500, 4);
             this.StartLogButton.Name = "StartLogButton";
-            this.StartLogButton.Size = new System.Drawing.Size(75, 23);
+            this.StartLogButton.Size = new System.Drawing.Size(75, 24);
             this.StartLogButton.TabIndex = 14;
             this.StartLogButton.Text = "Start log";
             this.StartLogButton.UseVisualStyleBackColor = true;
             this.StartLogButton.Click += new System.EventHandler(this.StartLogButton_Click);
-            // 
-            // QuickTextMenuButton
-            // 
-            this.QuickTextMenuButton.Location = new System.Drawing.Point(581, 6);
-            this.QuickTextMenuButton.Name = "QuickTextMenuButton";
-            this.QuickTextMenuButton.Size = new System.Drawing.Size(94, 23);
-            this.QuickTextMenuButton.TabIndex = 13;
-            this.QuickTextMenuButton.Text = "Quick text menu";
-            this.QuickTextMenuButton.UseVisualStyleBackColor = true;
-            this.QuickTextMenuButton.Click += new System.EventHandler(this.QuickTextMenuButton_Click);
             // 
             // onEnterComboBox
             // 
@@ -160,7 +168,7 @@ namespace COMport
             "0x0A",
             "0x0D",
             "0x1B"});
-            this.onEnterComboBox.Location = new System.Drawing.Point(762, 8);
+            this.onEnterComboBox.Location = new System.Drawing.Point(762, 6);
             this.onEnterComboBox.Name = "onEnterComboBox";
             this.onEnterComboBox.Size = new System.Drawing.Size(56, 21);
             this.onEnterComboBox.TabIndex = 7;
@@ -187,7 +195,7 @@ namespace COMport
             // 
             // clearSreenButton
             // 
-            this.clearSreenButton.Location = new System.Drawing.Point(823, 6);
+            this.clearSreenButton.Location = new System.Drawing.Point(823, 4);
             this.clearSreenButton.Margin = new System.Windows.Forms.Padding(2);
             this.clearSreenButton.Name = "clearSreenButton";
             this.clearSreenButton.Size = new System.Drawing.Size(91, 24);
@@ -258,11 +266,11 @@ namespace COMport
         private System.Windows.Forms.Button clearSreenButton;
         private System.Windows.Forms.CheckBox HalfDuplexCheckBox;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button QuickTextMenuButton;
         private System.Windows.Forms.Button StartLogButton;
         private System.Windows.Forms.ComboBox onEnterComboBox;
         public System.Windows.Forms.TextBox CommsTextBox;
         public System.Windows.Forms.ComboBox VersionComboBox;
+        private System.Windows.Forms.ComboBox QuickTextComboBox;
     }
 }
 

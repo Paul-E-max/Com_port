@@ -1,0 +1,9 @@
+project=I2C
+connection=COM75
+baudrate=115200
+halfDuplex=False
+onEnter=
+connection_Unknown=COM85
+connection_AARI=COM7
+connection_I2C=COM75
+connection_MVC_FFLEX=COM85
