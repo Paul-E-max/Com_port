@@ -9,6 +9,7 @@
 // @Tools:      Visual Studio 2019, C#
 //
 // @Revision:
+// 21.04.2023-MD V1.01.12 - Check if save is required on exit.
 // 24.02.2023-MD V1.01.09 - Correction to CR from quick text (V1.01.08 didn't use the NL delay on quick text).
 // 21.02.2023-MD V1.01.08 - Timer now takes decimal interval rather than just whole seconds.
 // 15.02.2023-MD Quick Text now used EnterKey from COMportForm instead of a default '\n'.
@@ -37,14 +38,16 @@ namespace COMport
         const int REPEAT_DISABLED = 0;
         const int FORM_BAR = 39;
         const int QUICK_TEXT_WIDTH = 534; // In the GUI, this is set to 550 . . . why the difference ?
-        const int QUICK_TEXT_LESS_HEIGHT = 627 - FORM_BAR;
+        const int QUICK_TEXT_LESS_HEIGHT = 626 - FORM_BAR;
         const int QUICK_TEXT_MORE_HEIGHT = 691 - FORM_BAR;
         const int MINIMUM_PERIOD = 100;
         const string DEFAULT_LABEL = "Command";
 
+        Color SAVE_POSSIBLY_REQUIRED = Color.Blue;
+        Color SAVE_NOT_REQUIRED = SystemColors.ControlText;
+
         string loadFilename;
         bool RepeatCommandPrimmed = false;
-        bool CheckEnvironmentVariables = true; // Assume that environment variables can be used if necessary.
         int RepeatCommand = REPEAT_DISABLED;
 
         public QuickTextMenu(string filename)
@@ -67,7 +70,6 @@ namespace COMport
             if (File.Exists(loadFilename))
             {
                 lines = File.ReadAllLines(loadFilename);
-                if (lines.Length > 0) CheckEnvironmentVariables = false;
             }
             setText(lines, 1, ButtonExeText1, CommandLine1TextBox, ManualEnter1CheckBox);
             setText(lines, 2, ButtonExeText2, CommandLine2TextBox, ManualEnter2CheckBox);
@@ -91,6 +93,9 @@ namespace COMport
             //
             CharDelayTextBox.Text = COMportForm.InterCharDelay.ToString();
             NLDelayTextBox.Text = COMportForm.InterLineDelay.ToString();
+            //
+            SaveButton.BackColor = SystemColors.Control;
+            SaveButton.ForeColor = SAVE_NOT_REQUIRED;
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -102,12 +107,25 @@ namespace COMport
         /// <returns></returns>
         private void setText( string[] lines, int index, Button button, TextBox text, CheckBox checkbox )
         {
-            string toRead = findParameterIn( lines, index, "");
-
-            if (null == toRead) toRead = "";
+            string toRead = findParameterByIndex( lines, index, "");
             string[] inputs = toRead.Split('=');
-            button.Text = inputs[0].Substring(1, inputs[0].Length - 2);
-            text.Text = inputs[1];
+            
+            try
+            {
+                button.Text = inputs[0].Substring(1, inputs[0].Length - 2);
+            }
+            catch
+            {
+                button.Text = DEFAULT_LABEL + index.ToString();
+            }
+            try
+            {
+                text.Text = inputs[1];
+            }
+            catch
+            {
+                text.Text = "";
+            }
             if (text.Text.EndsWith("\\n") )
             {
                 text.Text = text.Text.Substring(0, text.Text.Length - 2);
@@ -127,7 +145,7 @@ namespace COMport
         /// <param name="defaultTo">This if label not found</param>
         /// <returns></returns>
         /// 
-        string findParameterIn( string[] lines, int index, string defaultTo)
+        string findParameterByIndex( string[] lines, int index, string defaultTo)
         {
             string result = defaultTo;
 
@@ -138,12 +156,6 @@ namespace COMport
                 {
                     result = "\"" + DEFAULT_LABEL + index + "\"=" + result;
                 }
-            }
-            // If not found in the source file, then check environment varibles as per previous version of COMport.exe
-            //
-            if( ( 0 == result.Length ) && CheckEnvironmentVariables)
-            {
-                result = "\"" + DEFAULT_LABEL + index + "\"=" + Environment.GetEnvironmentVariable("COMport_QuickText" + index, EnvironmentVariableTarget.User);
             }
             return result;
         }
@@ -182,6 +194,8 @@ namespace COMport
                 saveToQuickTextFile(output, "\"" + ButtonExeText18.Text + "\"=" + CommandLine18TextBox.Text, ManualEnter18CheckBox);
                 saveToQuickTextFile(output, "\"" + ButtonExeText19.Text + "\"=" + CommandLine19TextBox.Text, ManualEnter19CheckBox);
             }
+            SaveButton.BackColor = SystemColors.Control;
+            SaveButton.ForeColor = SAVE_NOT_REQUIRED;
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -206,6 +220,23 @@ namespace COMport
         private void ExitButton_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Exiting the form, check to see if save is required.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void QuickTextMenu_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if( SaveButton.ForeColor == SAVE_POSSIBLY_REQUIRED )
+            {
+                if( DialogResult.Yes == MessageBox.Show("Do you want to save the changes",loadFilename + " modified", MessageBoxButtons.YesNo) )
+                {
+                    SaveButton.PerformClick();
+                }
+            }
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -257,13 +288,15 @@ namespace COMport
 
             if (e.Button == MouseButtons.Right)
             {
+                // Right click of execute button means change its label.
+                //
                 EnterLabel formToEnterLabel = new EnterLabel(sentBy.Text);
                 formToEnterLabel.StartPosition = FormStartPosition.CenterParent;
-                //formToEnterLabel.Location = new Point(10, 10);
                 //
                 if ( formToEnterLabel.ShowDialog() == DialogResult.OK )
                 {
                     sentBy.Text = formToEnterLabel.newLabel;
+                    SaveButton.ForeColor = SAVE_POSSIBLY_REQUIRED;
                 }
             }
             else
@@ -395,29 +428,27 @@ namespace COMport
         /// <param name="command"></param>
         private void executeCommand( int command )
         {
-            string execString = Convert.ToChar(Program.comportform.CR).ToString();
-
             switch ( command )
             {
-                case 1: Program.comportform.sendLinesToKeyboard(CommandLine1TextBox.Text + (ManualEnter1CheckBox.Checked ? "" : execString)); break;
-                case 2: Program.comportform.sendLinesToKeyboard(CommandLine2TextBox.Text + (ManualEnter2CheckBox.Checked ? "" : execString)); break;
-                case 3: Program.comportform.sendLinesToKeyboard(CommandLine3TextBox.Text + (ManualEnter3CheckBox.Checked ? "" : execString)); break;
-                case 4: Program.comportform.sendLinesToKeyboard(CommandLine4TextBox.Text + (ManualEnter4CheckBox.Checked ? "" : execString)); break;
-                case 5: Program.comportform.sendLinesToKeyboard(CommandLine5TextBox.Text + (ManualEnter5CheckBox.Checked ? "" : execString)); break;
-                case 6: Program.comportform.sendLinesToKeyboard(CommandLine6TextBox.Text + (ManualEnter6CheckBox.Checked ? "" : execString)); break;
-                case 7: Program.comportform.sendLinesToKeyboard(CommandLine7TextBox.Text + (ManualEnter7CheckBox.Checked ? "" : execString)); break;
-                case 8: Program.comportform.sendLinesToKeyboard(CommandLine8TextBox.Text + (ManualEnter8CheckBox.Checked ? "" : execString)); break;
-                case 9: Program.comportform.sendLinesToKeyboard(CommandLine9TextBox.Text + (ManualEnter9CheckBox.Checked ? "" : execString)); break;
-                case 10: Program.comportform.sendLinesToKeyboard(CommandLine10TextBox.Text + (ManualEnter10CheckBox.Checked ? "" : execString)); break;
-                case 11: Program.comportform.sendLinesToKeyboard(CommandLine11TextBox.Text + (ManualEnter11CheckBox.Checked ? "" : execString)); break;
-                case 12: Program.comportform.sendLinesToKeyboard(CommandLine12TextBox.Text + (ManualEnter12CheckBox.Checked ? "" : execString)); break;
-                case 13: Program.comportform.sendLinesToKeyboard(CommandLine13TextBox.Text + (ManualEnter13CheckBox.Checked ? "" : execString)); break;
-                case 14: Program.comportform.sendLinesToKeyboard(CommandLine14TextBox.Text + (ManualEnter14CheckBox.Checked ? "" : execString)); break;
-                case 15: Program.comportform.sendLinesToKeyboard(CommandLine15TextBox.Text + (ManualEnter15CheckBox.Checked ? "" : execString)); break;
-                case 16: Program.comportform.sendLinesToKeyboard(CommandLine16TextBox.Text + (ManualEnter16CheckBox.Checked ? "" : execString)); break;
-                case 17: Program.comportform.sendLinesToKeyboard(CommandLine17TextBox.Text + (ManualEnter17CheckBox.Checked ? "" : execString)); break;
-                case 18: Program.comportform.sendLinesToKeyboard(CommandLine18TextBox.Text + (ManualEnter18CheckBox.Checked ? "" : execString)); break;
-                case 19: Program.comportform.sendLinesToKeyboard(CommandLine19TextBox.Text + (ManualEnter19CheckBox.Checked ? "" : execString)); break;
+                case 1: Program.comportform.sendLinesToKeyboard(CommandLine1TextBox.Text, ManualEnter1CheckBox.Checked); break;
+                case 2: Program.comportform.sendLinesToKeyboard(CommandLine2TextBox.Text, ManualEnter2CheckBox.Checked); break;
+                case 3: Program.comportform.sendLinesToKeyboard(CommandLine3TextBox.Text, ManualEnter3CheckBox.Checked); break;
+                case 4: Program.comportform.sendLinesToKeyboard(CommandLine4TextBox.Text, ManualEnter4CheckBox.Checked); break;
+                case 5: Program.comportform.sendLinesToKeyboard(CommandLine5TextBox.Text, ManualEnter5CheckBox.Checked); break;
+                case 6: Program.comportform.sendLinesToKeyboard(CommandLine6TextBox.Text, ManualEnter6CheckBox.Checked); break;
+                case 7: Program.comportform.sendLinesToKeyboard(CommandLine7TextBox.Text, ManualEnter7CheckBox.Checked); break;
+                case 8: Program.comportform.sendLinesToKeyboard(CommandLine8TextBox.Text, ManualEnter8CheckBox.Checked); break;
+                case 9: Program.comportform.sendLinesToKeyboard(CommandLine9TextBox.Text, ManualEnter9CheckBox.Checked); break;
+                case 10: Program.comportform.sendLinesToKeyboard(CommandLine10TextBox.Text, ManualEnter10CheckBox.Checked); break;
+                case 11: Program.comportform.sendLinesToKeyboard(CommandLine11TextBox.Text, ManualEnter11CheckBox.Checked); break;
+                case 12: Program.comportform.sendLinesToKeyboard(CommandLine12TextBox.Text, ManualEnter12CheckBox.Checked); break;
+                case 13: Program.comportform.sendLinesToKeyboard(CommandLine13TextBox.Text, ManualEnter13CheckBox.Checked); break;
+                case 14: Program.comportform.sendLinesToKeyboard(CommandLine14TextBox.Text, ManualEnter14CheckBox.Checked); break;
+                case 15: Program.comportform.sendLinesToKeyboard(CommandLine15TextBox.Text, ManualEnter15CheckBox.Checked); break;
+                case 16: Program.comportform.sendLinesToKeyboard(CommandLine16TextBox.Text, ManualEnter16CheckBox.Checked); break;
+                case 17: Program.comportform.sendLinesToKeyboard(CommandLine17TextBox.Text, ManualEnter17CheckBox.Checked); break;
+                case 18: Program.comportform.sendLinesToKeyboard(CommandLine18TextBox.Text, ManualEnter18CheckBox.Checked); break;
+                case 19: Program.comportform.sendLinesToKeyboard(CommandLine19TextBox.Text, ManualEnter19CheckBox.Checked); break;
                 //
                 default: RepeatCommandTimer.Enabled = false; break; // Invalid command number, stop the repeat timer.
             }
@@ -469,6 +500,18 @@ namespace COMport
             }
             ResumeLayout(false);
             PerformLayout();
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Contents_Changed(object sender, EventArgs e)
+        {
+            SaveButton.BackColor = Color.White;
+            SaveButton.ForeColor = SAVE_POSSIBLY_REQUIRED;
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

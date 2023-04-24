@@ -104,7 +104,6 @@ namespace COMport
             this.RepeatCommandTimer = new System.Windows.Forms.Timer(this.components);
             this.MoreCheckBox = new System.Windows.Forms.CheckBox();
             this.label7 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // CommandLine1TextBox
@@ -113,6 +112,7 @@ namespace COMport
             this.CommandLine1TextBox.Name = "CommandLine1TextBox";
             this.CommandLine1TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine1TextBox.TabIndex = 1;
+            this.CommandLine1TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
             this.CommandLine1TextBox.Enter += new System.EventHandler(this.CommandLine1TextBox_Enter);
             // 
             // ButtonExeText1
@@ -133,6 +133,7 @@ namespace COMport
             this.ManualEnter1CheckBox.Size = new System.Drawing.Size(15, 14);
             this.ManualEnter1CheckBox.TabIndex = 20;
             this.ManualEnter1CheckBox.UseVisualStyleBackColor = true;
+            this.ManualEnter1CheckBox.CheckedChanged += new System.EventHandler(this.Contents_Changed);
             // 
             // label1
             // 
@@ -160,6 +161,7 @@ namespace COMport
             this.ManualEnter2CheckBox.Size = new System.Drawing.Size(15, 14);
             this.ManualEnter2CheckBox.TabIndex = 21;
             this.ManualEnter2CheckBox.UseVisualStyleBackColor = true;
+            this.ManualEnter2CheckBox.CheckedChanged += new System.EventHandler(this.Contents_Changed);
             // 
             // ButtonExeText2
             // 
@@ -177,6 +179,7 @@ namespace COMport
             this.CommandLine2TextBox.Name = "CommandLine2TextBox";
             this.CommandLine2TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine2TextBox.TabIndex = 2;
+            this.CommandLine2TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
             this.CommandLine2TextBox.Enter += new System.EventHandler(this.CommandLine2TextBox_Enter);
             // 
             // ManualEnter3CheckBox
@@ -187,6 +190,7 @@ namespace COMport
             this.ManualEnter3CheckBox.Size = new System.Drawing.Size(15, 14);
             this.ManualEnter3CheckBox.TabIndex = 22;
             this.ManualEnter3CheckBox.UseVisualStyleBackColor = true;
+            this.ManualEnter3CheckBox.CheckedChanged += new System.EventHandler(this.Contents_Changed);
             // 
             // ButtonExeText3
             // 
@@ -204,6 +208,7 @@ namespace COMport
             this.CommandLine3TextBox.Name = "CommandLine3TextBox";
             this.CommandLine3TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine3TextBox.TabIndex = 3;
+            this.CommandLine3TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
             this.CommandLine3TextBox.Enter += new System.EventHandler(this.CommandLine3TextBox_Enter);
             // 
             // ManualEnter4CheckBox
@@ -214,6 +219,7 @@ namespace COMport
             this.ManualEnter4CheckBox.Size = new System.Drawing.Size(15, 14);
             this.ManualEnter4CheckBox.TabIndex = 23;
             this.ManualEnter4CheckBox.UseVisualStyleBackColor = true;
+            this.ManualEnter4CheckBox.CheckedChanged += new System.EventHandler(this.Contents_Changed);
             // 
             // ButtonExeText4
             // 
@@ -231,6 +237,7 @@ namespace COMport
             this.CommandLine4TextBox.Name = "CommandLine4TextBox";
             this.CommandLine4TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine4TextBox.TabIndex = 4;
+            this.CommandLine4TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
             this.CommandLine4TextBox.Enter += new System.EventHandler(this.CommandLine4TextBox_Enter);
             // 
             // ManualEnter5CheckBox
@@ -241,6 +248,7 @@ namespace COMport
             this.ManualEnter5CheckBox.Size = new System.Drawing.Size(15, 14);
             this.ManualEnter5CheckBox.TabIndex = 24;
             this.ManualEnter5CheckBox.UseVisualStyleBackColor = true;
+            this.ManualEnter5CheckBox.CheckedChanged += new System.EventHandler(this.Contents_Changed);
             // 
             // ButtonExeText5
             // 
@@ -258,6 +266,7 @@ namespace COMport
             this.CommandLine5TextBox.Name = "CommandLine5TextBox";
             this.CommandLine5TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine5TextBox.TabIndex = 5;
+            this.CommandLine5TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
             this.CommandLine5TextBox.Enter += new System.EventHandler(this.CommandLine5TextBox_Enter);
             // 
             // ManualEnter6CheckBox
@@ -268,6 +277,7 @@ namespace COMport
             this.ManualEnter6CheckBox.Size = new System.Drawing.Size(15, 14);
             this.ManualEnter6CheckBox.TabIndex = 25;
             this.ManualEnter6CheckBox.UseVisualStyleBackColor = true;
+            this.ManualEnter6CheckBox.CheckedChanged += new System.EventHandler(this.Contents_Changed);
             // 
             // ButtonExeText6
             // 
@@ -285,6 +295,7 @@ namespace COMport
             this.CommandLine6TextBox.Name = "CommandLine6TextBox";
             this.CommandLine6TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine6TextBox.TabIndex = 6;
+            this.CommandLine6TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
             this.CommandLine6TextBox.Enter += new System.EventHandler(this.CommandLine6TextBox_Enter);
             // 
             // ManualEnter7CheckBox
@@ -295,6 +306,7 @@ namespace COMport
             this.ManualEnter7CheckBox.Size = new System.Drawing.Size(15, 14);
             this.ManualEnter7CheckBox.TabIndex = 26;
             this.ManualEnter7CheckBox.UseVisualStyleBackColor = true;
+            this.ManualEnter7CheckBox.CheckedChanged += new System.EventHandler(this.Contents_Changed);
             // 
             // ButtonExeText7
             // 
@@ -312,6 +324,7 @@ namespace COMport
             this.CommandLine7TextBox.Name = "CommandLine7TextBox";
             this.CommandLine7TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine7TextBox.TabIndex = 7;
+            this.CommandLine7TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
             this.CommandLine7TextBox.Enter += new System.EventHandler(this.CommandLine7TextBox_Enter);
             // 
             // ExitButton
@@ -326,7 +339,7 @@ namespace COMport
             // 
             // CharDelayTextBox
             // 
-            this.CharDelayTextBox.Location = new System.Drawing.Point(74, 550);
+            this.CharDelayTextBox.Location = new System.Drawing.Point(75, 550);
             this.CharDelayTextBox.Name = "CharDelayTextBox";
             this.CharDelayTextBox.Size = new System.Drawing.Size(56, 20);
             this.CharDelayTextBox.TabIndex = 58;
@@ -360,9 +373,9 @@ namespace COMport
             // 
             // SaveButton
             // 
-            this.SaveButton.Location = new System.Drawing.Point(386, 547);
+            this.SaveButton.Location = new System.Drawing.Point(380, 547);
             this.SaveButton.Name = "SaveButton";
-            this.SaveButton.Size = new System.Drawing.Size(51, 23);
+            this.SaveButton.Size = new System.Drawing.Size(57, 23);
             this.SaveButton.TabIndex = 60;
             this.SaveButton.Text = "Save";
             this.SaveButton.UseVisualStyleBackColor = true;
@@ -376,6 +389,7 @@ namespace COMport
             this.ManualEnter8CheckBox.Size = new System.Drawing.Size(15, 14);
             this.ManualEnter8CheckBox.TabIndex = 27;
             this.ManualEnter8CheckBox.UseVisualStyleBackColor = true;
+            this.ManualEnter8CheckBox.CheckedChanged += new System.EventHandler(this.Contents_Changed);
             // 
             // ButtonExeText8
             // 
@@ -393,6 +407,7 @@ namespace COMport
             this.CommandLine8TextBox.Name = "CommandLine8TextBox";
             this.CommandLine8TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine8TextBox.TabIndex = 8;
+            this.CommandLine8TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
             this.CommandLine8TextBox.Enter += new System.EventHandler(this.CommandLine8TextBox_Enter);
             // 
             // ManualEnter9CheckBox
@@ -403,6 +418,7 @@ namespace COMport
             this.ManualEnter9CheckBox.Size = new System.Drawing.Size(15, 14);
             this.ManualEnter9CheckBox.TabIndex = 28;
             this.ManualEnter9CheckBox.UseVisualStyleBackColor = true;
+            this.ManualEnter9CheckBox.CheckedChanged += new System.EventHandler(this.Contents_Changed);
             // 
             // ButtonExeText9
             // 
@@ -420,6 +436,7 @@ namespace COMport
             this.CommandLine9TextBox.Name = "CommandLine9TextBox";
             this.CommandLine9TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine9TextBox.TabIndex = 9;
+            this.CommandLine9TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
             this.CommandLine9TextBox.Enter += new System.EventHandler(this.CommandLine9TextBox_Enter);
             // 
             // ManualEnter10CheckBox
@@ -430,6 +447,7 @@ namespace COMport
             this.ManualEnter10CheckBox.Size = new System.Drawing.Size(15, 14);
             this.ManualEnter10CheckBox.TabIndex = 29;
             this.ManualEnter10CheckBox.UseVisualStyleBackColor = true;
+            this.ManualEnter10CheckBox.CheckedChanged += new System.EventHandler(this.Contents_Changed);
             // 
             // ButtonExeText10
             // 
@@ -447,6 +465,7 @@ namespace COMport
             this.CommandLine10TextBox.Name = "CommandLine10TextBox";
             this.CommandLine10TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine10TextBox.TabIndex = 10;
+            this.CommandLine10TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
             this.CommandLine10TextBox.Enter += new System.EventHandler(this.CommandLine10TextBox_Enter);
             // 
             // ManualEnter11CheckBox
@@ -457,6 +476,7 @@ namespace COMport
             this.ManualEnter11CheckBox.Size = new System.Drawing.Size(15, 14);
             this.ManualEnter11CheckBox.TabIndex = 30;
             this.ManualEnter11CheckBox.UseVisualStyleBackColor = true;
+            this.ManualEnter11CheckBox.CheckedChanged += new System.EventHandler(this.Contents_Changed);
             // 
             // ButtonExeText11
             // 
@@ -474,6 +494,7 @@ namespace COMport
             this.CommandLine11TextBox.Name = "CommandLine11TextBox";
             this.CommandLine11TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine11TextBox.TabIndex = 11;
+            this.CommandLine11TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
             this.CommandLine11TextBox.Enter += new System.EventHandler(this.CommandLine11TextBox_Enter);
             // 
             // ManualEnter12CheckBox
@@ -484,6 +505,7 @@ namespace COMport
             this.ManualEnter12CheckBox.Size = new System.Drawing.Size(15, 14);
             this.ManualEnter12CheckBox.TabIndex = 31;
             this.ManualEnter12CheckBox.UseVisualStyleBackColor = true;
+            this.ManualEnter12CheckBox.CheckedChanged += new System.EventHandler(this.Contents_Changed);
             // 
             // ButtonExeText12
             // 
@@ -501,6 +523,7 @@ namespace COMport
             this.CommandLine12TextBox.Name = "CommandLine12TextBox";
             this.CommandLine12TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine12TextBox.TabIndex = 12;
+            this.CommandLine12TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
             this.CommandLine12TextBox.Enter += new System.EventHandler(this.CommandLine12TextBox_Enter);
             // 
             // ManualEnter13CheckBox
@@ -511,6 +534,7 @@ namespace COMport
             this.ManualEnter13CheckBox.Size = new System.Drawing.Size(15, 14);
             this.ManualEnter13CheckBox.TabIndex = 32;
             this.ManualEnter13CheckBox.UseVisualStyleBackColor = true;
+            this.ManualEnter13CheckBox.CheckedChanged += new System.EventHandler(this.Contents_Changed);
             // 
             // ButtonExeText13
             // 
@@ -528,6 +552,7 @@ namespace COMport
             this.CommandLine13TextBox.Name = "CommandLine13TextBox";
             this.CommandLine13TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine13TextBox.TabIndex = 13;
+            this.CommandLine13TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
             this.CommandLine13TextBox.Enter += new System.EventHandler(this.CommandLine13TextBox_Enter);
             // 
             // ManualEnter14CheckBox
@@ -538,6 +563,7 @@ namespace COMport
             this.ManualEnter14CheckBox.Size = new System.Drawing.Size(15, 14);
             this.ManualEnter14CheckBox.TabIndex = 33;
             this.ManualEnter14CheckBox.UseVisualStyleBackColor = true;
+            this.ManualEnter14CheckBox.CheckedChanged += new System.EventHandler(this.Contents_Changed);
             // 
             // ButtonExeText14
             // 
@@ -555,6 +581,7 @@ namespace COMport
             this.CommandLine14TextBox.Name = "CommandLine14TextBox";
             this.CommandLine14TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine14TextBox.TabIndex = 14;
+            this.CommandLine14TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
             this.CommandLine14TextBox.Enter += new System.EventHandler(this.CommandLine14TextBox_Enter);
             // 
             // ManualEnter15CheckBox
@@ -565,6 +592,7 @@ namespace COMport
             this.ManualEnter15CheckBox.Size = new System.Drawing.Size(15, 14);
             this.ManualEnter15CheckBox.TabIndex = 34;
             this.ManualEnter15CheckBox.UseVisualStyleBackColor = true;
+            this.ManualEnter15CheckBox.CheckedChanged += new System.EventHandler(this.Contents_Changed);
             // 
             // ButtonExeText15
             // 
@@ -582,6 +610,7 @@ namespace COMport
             this.CommandLine15TextBox.Name = "CommandLine15TextBox";
             this.CommandLine15TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine15TextBox.TabIndex = 15;
+            this.CommandLine15TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
             this.CommandLine15TextBox.Enter += new System.EventHandler(this.CommandLine15TextBox_Enter);
             // 
             // ManualEnter16CheckBox
@@ -592,6 +621,7 @@ namespace COMport
             this.ManualEnter16CheckBox.Size = new System.Drawing.Size(15, 14);
             this.ManualEnter16CheckBox.TabIndex = 35;
             this.ManualEnter16CheckBox.UseVisualStyleBackColor = true;
+            this.ManualEnter16CheckBox.CheckedChanged += new System.EventHandler(this.Contents_Changed);
             // 
             // ButtonExeText16
             // 
@@ -609,6 +639,7 @@ namespace COMport
             this.CommandLine16TextBox.Name = "CommandLine16TextBox";
             this.CommandLine16TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine16TextBox.TabIndex = 16;
+            this.CommandLine16TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
             this.CommandLine16TextBox.Enter += new System.EventHandler(this.CommandLine16TextBox_Enter);
             // 
             // ManualEnter17CheckBox
@@ -619,6 +650,7 @@ namespace COMport
             this.ManualEnter17CheckBox.Size = new System.Drawing.Size(15, 14);
             this.ManualEnter17CheckBox.TabIndex = 36;
             this.ManualEnter17CheckBox.UseVisualStyleBackColor = true;
+            this.ManualEnter17CheckBox.CheckedChanged += new System.EventHandler(this.Contents_Changed);
             // 
             // ButtonExeText17
             // 
@@ -636,6 +668,7 @@ namespace COMport
             this.CommandLine17TextBox.Name = "CommandLine17TextBox";
             this.CommandLine17TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine17TextBox.TabIndex = 17;
+            this.CommandLine17TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
             this.CommandLine17TextBox.Enter += new System.EventHandler(this.CommandLine17TextBox_Enter);
             // 
             // ManualEnter18CheckBox
@@ -646,6 +679,7 @@ namespace COMport
             this.ManualEnter18CheckBox.Size = new System.Drawing.Size(15, 14);
             this.ManualEnter18CheckBox.TabIndex = 37;
             this.ManualEnter18CheckBox.UseVisualStyleBackColor = true;
+            this.ManualEnter18CheckBox.CheckedChanged += new System.EventHandler(this.Contents_Changed);
             // 
             // ButtonExeText18
             // 
@@ -663,6 +697,7 @@ namespace COMport
             this.CommandLine18TextBox.Name = "CommandLine18TextBox";
             this.CommandLine18TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine18TextBox.TabIndex = 18;
+            this.CommandLine18TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
             this.CommandLine18TextBox.Enter += new System.EventHandler(this.CommandLine18TextBox_Enter);
             // 
             // ManualEnter19CheckBox
@@ -673,6 +708,7 @@ namespace COMport
             this.ManualEnter19CheckBox.Size = new System.Drawing.Size(15, 14);
             this.ManualEnter19CheckBox.TabIndex = 38;
             this.ManualEnter19CheckBox.UseVisualStyleBackColor = true;
+            this.ManualEnter19CheckBox.CheckedChanged += new System.EventHandler(this.Contents_Changed);
             // 
             // ButtonExeText19
             // 
@@ -690,15 +726,16 @@ namespace COMport
             this.CommandLine19TextBox.Name = "CommandLine19TextBox";
             this.CommandLine19TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine19TextBox.TabIndex = 19;
+            this.CommandLine19TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
             this.CommandLine19TextBox.Enter += new System.EventHandler(this.CommandLine19TextBox_Enter);
             // 
             // StartRepeatButton
             // 
-            this.StartRepeatButton.Location = new System.Drawing.Point(74, 587);
+            this.StartRepeatButton.Location = new System.Drawing.Point(67, 587);
             this.StartRepeatButton.Name = "StartRepeatButton";
-            this.StartRepeatButton.Size = new System.Drawing.Size(57, 55);
+            this.StartRepeatButton.Size = new System.Drawing.Size(65, 55);
             this.StartRepeatButton.TabIndex = 61;
-            this.StartRepeatButton.Text = "Repeat next Execute";
+            this.StartRepeatButton.Text = "Repeat next command";
             this.StartRepeatButton.UseVisualStyleBackColor = true;
             this.StartRepeatButton.Click += new System.EventHandler(this.StartRepeatButton_Click);
             // 
@@ -723,9 +760,9 @@ namespace COMport
             // 
             // StopRepeatButton
             // 
-            this.StopRepeatButton.Location = new System.Drawing.Point(12, 587);
+            this.StopRepeatButton.Location = new System.Drawing.Point(11, 587);
             this.StopRepeatButton.Name = "StopRepeatButton";
-            this.StopRepeatButton.Size = new System.Drawing.Size(57, 55);
+            this.StopRepeatButton.Size = new System.Drawing.Size(53, 55);
             this.StopRepeatButton.TabIndex = 64;
             this.StopRepeatButton.Text = "STOP repeats";
             this.StopRepeatButton.UseVisualStyleBackColor = true;
@@ -751,9 +788,9 @@ namespace COMport
             this.MoreCheckBox.Location = new System.Drawing.Point(273, 552);
             this.MoreCheckBox.Name = "MoreCheckBox";
             this.MoreCheckBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.MoreCheckBox.Size = new System.Drawing.Size(49, 17);
+            this.MoreCheckBox.Size = new System.Drawing.Size(86, 17);
             this.MoreCheckBox.TabIndex = 66;
-            this.MoreCheckBox.Text = "more";
+            this.MoreCheckBox.Text = "view repeats";
             this.MoreCheckBox.UseVisualStyleBackColor = true;
             this.MoreCheckBox.CheckedChanged += new System.EventHandler(this.MoreCheckBox_CheckedChanged);
             // 
@@ -766,22 +803,12 @@ namespace COMport
             this.label7.TabIndex = 67;
             this.label7.Text = "Right click to set label";
             // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(338, 553);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(42, 13);
-            this.label8.TabIndex = 68;
-            this.label8.Text = "Manual";
-            // 
             // QuickTextMenu
             // 
             this.AcceptButton = this.ExitButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(534, 588);
-            this.Controls.Add(this.label8);
+            this.ClientSize = new System.Drawing.Size(534, 587);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.MoreCheckBox);
             this.Controls.Add(this.label6);
@@ -859,6 +886,7 @@ namespace COMport
             this.MinimizeBox = false;
             this.Name = "QuickTextMenu";
             this.Text = "COMport - Quick Text Menu";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.QuickTextMenu_FormClosing);
             this.Load += new System.EventHandler(this.QuickTextMenu_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -940,6 +968,5 @@ namespace COMport
         public System.Windows.Forms.TextBox NLDelayTextBox;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button ButtonExeText1;
-        private System.Windows.Forms.Label label8;
     }
 }

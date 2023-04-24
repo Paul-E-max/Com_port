@@ -9,6 +9,11 @@
 // @Tools:      Visual Studio 2019, C#
 //
 // @Revision:
+// 23.04.2023-MD V1.01.12 - 1) Implement Ctrl+C and Ctrl+V for copy and paste.
+//                          2) Rename COMport.csv to COMport.TXT
+//                          3) Stop that ding on Quick text menu ENTER!
+// 21.04.2023-MD V1.01.12 - 1) Drop the old enviroment variables altogether.
+//                          2) Improve inter-character delay handling.
 // 21.04.2023-MD V1.01.11 - Switch the COMport_quickTextName_project.TXT to COMport_project_quickTextName.TXT
 // 18.04.2023-MD V1.01.10 - 1) Generalise the ButtonExeText function for all 1-19 buttons.
 //                          2) Changed QUICK text menu button to drop down to select a file (currently COMport_quickTextName_project.TXT).
@@ -57,6 +62,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace COMport
 {
@@ -65,9 +71,8 @@ namespace COMport
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // Constants
         //
-        const string APP_NAME = "COMport", VERSION = "V1.01.11"; // UPDATE MANUAL AS APPLICATION EVOLVES.
+        const string APP_NAME = "COMport", VERSION = "V1.01.12"; // UPDATE MANUALLY AS APPLICATION EVOLVES.
         //
-        const string FILENAME_CSV = APP_NAME + ".CSV";
         public const string TEXT_FILE_EXT = ".TXT";
         const string LASTUSED_TXT = APP_NAME + "_USER" + TEXT_FILE_EXT;
 
@@ -89,7 +94,9 @@ namespace COMport
         const byte LF = 0x0A;
         public byte CR = 0x0D;
 
-        const int MAX_PROJECTS = 20;            // Reads through FILENAME_CSV file, but abandons data beyond this number of projects.
+        const string FILENAME_CSV = APP_NAME + ".CSV";              // Obsolite project filename (don't like using CSV extention).
+        const string FILENAME_PROJECTS = APP_NAME + TEXT_FILE_EXT;  // New projects filename.
+        const int MAX_PROJECTS = 20;                                // Reads through FILENAME_PROJECTS file, but abandons data beyond this number of projects.
 
         struct project
         {
@@ -117,10 +124,16 @@ namespace COMport
 
         string OutputLogFile = "";
         string typedCommandLine = "";
-        bool CheckEnvironmentVariables = true;
         bool DoingDropDown = false;
 
-        QuickTextMenu menu; // Defined here to make it available across all COMportForm functions.
+        // Sending the characters out requires a ring buffer to pace them out with a timer
+        // when character and/or new line delays are required.
+        //
+        const int RING_BUFFER_SIZE = 256;
+
+        byte[] RingBuffer = new byte[RING_BUFFER_SIZE];
+        byte input_ptr = 0;
+        byte output_ptr = 0;
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
@@ -143,6 +156,32 @@ namespace COMport
             loadProjectInfo();
             LoadLastUsedInfo();
             populateQuickTextComboBox();
+            StopLogButton();
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Before closing the main form, make sure all unsaved menus are sorted.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void COMportForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            bool closingMore = true;
+
+            while (closingMore)
+            {
+                closingMore = false;
+                //
+                foreach (QuickTextMenu menu in Application.OpenForms.OfType<QuickTextMenu>())
+                {
+                    menu.Close();
+                    while (menu.IsAccessible) /* wait here for the menu to actually close . . . */;
+                    closingMore = true;
+                    //
+                    break;
+                }
+            }
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -153,25 +192,33 @@ namespace COMport
         /// <param name="e"></param>
         private void COMportForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            if (File.Exists(LASTUSED_TXT)) File.Delete(LASTUSED_TXT);
-            //
-            using (StreamWriter output = File.CreateText(LASTUSED_TXT))
+            try
             {
-                output.WriteLine("project=" + VersionComboBox.Text);
-                output.WriteLine("connection=" + COMportComboBox.Text);
-                output.WriteLine("baudrate=" + BaudComboBox.Text);
-                output.WriteLine("halfDuplex=" + (HalfDuplexCheckBox.Checked ? "True" : "False"));
-                output.WriteLine("onEnter=" + onEnterComboBox.Text);
+                if (File.Exists(LASTUSED_TXT)) File.Delete(LASTUSED_TXT);
                 //
-                // Save any and all project/COM port settings recorded.
-                //
-                for (int n = 0; n < MAX_PROJECTS; n++)
+                using (StreamWriter output = File.CreateText(LASTUSED_TXT))
                 {
-                    if((projects[n].name.Length > 0) && (projects[n].COMport.Length > 0))
+                    output.WriteLine("project=" + VersionComboBox.Text);
+                    output.WriteLine("connection=" + COMportComboBox.Text);
+                    output.WriteLine("baudrate=" + BaudComboBox.Text);
+                    output.WriteLine("halfDuplex=" + (HalfDuplexCheckBox.Checked ? "True" : "False"));
+                    output.WriteLine("onEnter=" + onEnterComboBox.Text);
+                    output.WriteLine("toolTips=" + (ToolTipsCheckBox.Checked ? "True" : "False"));
+                    //
+                    // Save any and all project/COM port settings recorded.
+                    //
+                    for (int n = 0; n < MAX_PROJECTS; n++)
                     {
-                        output.WriteLine("connection_" + projects[n].name + "=" + projects[n].COMport);
+                        if ((projects[n].name.Length > 0) && (projects[n].COMport.Length > 0))
+                        {
+                            output.WriteLine("connection_" + projects[n].name + "=" + projects[n].COMport);
+                        }
                     }
                 }
+            }
+            catch
+            {
+                MessageBox.Show("ERROR: Failed to save user settings in " + LASTUSED_TXT);
             }
         }
 
@@ -447,7 +494,7 @@ namespace COMport
         /// <param name="highLightColor">The colour to use, typically green or red.</param>
         /// <returns></returns>
         ///
-        private void HighLightButton(Button highLightButton)
+        private void HighLightButton(System.Windows.Forms.Button highLightButton)
         {
             highLightButton.BackColor = System.Drawing.Color.LimeGreen;
             highLightButton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
@@ -461,7 +508,7 @@ namespace COMport
         /// <param name="lowLightButton">The button to be modified.</param>
         /// <returns></returns>
         ///
-        private void LowLightButton(Button lowLightButton)
+        private void LowLightButton(System.Windows.Forms.Button lowLightButton)
         {
             lowLightButton.BackColor = System.Drawing.Color.LightCoral;
             lowLightButton.ForeColor = System.Drawing.SystemColors.ControlText;
@@ -569,24 +616,114 @@ namespace COMport
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
+        /// Appears that Ctrl_C and Ctrl+V can only be captured in the KeyUP handler.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CommsTextBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Control)
+            {
+                if (e.KeyValue == 'C')
+                {
+                    // Copy the selected text into the clipboard.
+                    //
+                    Clipboard.SetText(CommsTextBox.SelectedText);
+                    //
+                    e.Handled = true;
+                }
+                if (e.KeyValue == 'V')
+                {
+                    // Paste the clipboard into the keyboard input stream.
+                    //
+                    sendToKeyboard(Clipboard.GetText());
+                    //
+                    e.Handled = true;
+                }
+            }
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
         /// On key being pressed, send it to COM port.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void CommsTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            var TxBuffer = new byte[1];
-            byte RxChar;
-            string chr = "";
+            byte KeyboardChar = (byte)e.KeyChar;
+
+            // If the character is printable and the ring buffer would not overflow . . .
+            //
+            if ((KeyboardChar < 0x80) && ((input_ptr + 1) != output_ptr))
+            {
+                RingBuffer[input_ptr++] = KeyboardChar; // Place the new character into the ring buffer.
+                handleRingBuffer();                     // Deal with any idle characers in the ring buffer.
+            }
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Deal with any idle characers in the ring buffer.
+        /// </summary>
+        private void handleRingBuffer()
+        {
+            while(( input_ptr != output_ptr ) && ( false == characterTimer.Enabled ))
+            {
+                // There is currently no inter-character delay in progress, so just go a head and send the characters.
+                //
+                sendToDevice(RingBuffer[output_ptr]);
+                //
+                // If the inter-character delays are non-zero, start the character timer going ready to trigger the next one.
+                //
+                if (CR == RingBuffer[output_ptr])
+                {
+                    if (InterLineDelay > 0)
+                    {
+                        characterTimer.Interval = InterLineDelay;
+                        characterTimer.Start();
+                    }
+                }
+                else
+                {
+                    if (InterCharDelay > 0)
+                    {
+                        characterTimer.Interval = InterCharDelay;
+                        characterTimer.Start();
+                    }
+                }
+                output_ptr++;
+            }
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Timer is kicking off the next character.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void characterTimer_Tick(object sender, EventArgs e)
+        {
+            characterTimer.Stop(); // Each tick could be the last, it depends upon what other characters are waiting about.
+            handleRingBuffer();    // Deal with any idle characers in the ring buffer.
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Send a byte to the connected device . . . may just end up in a buffer of course!
+        /// </summary>
+        /// <param name="keyboardChar"></param>
+        private void sendToDevice(byte keyboardChar)
+        {
+            var TxBuffer = new byte[1]; // SerialPort.Write uses an array of bytes to transmit.
 
             if (false == COMportComboBox.Enabled)
             {
-                RxChar = (byte)e.KeyChar;
-                TxBuffer[0] = RxChar;
+                TxBuffer[0] = keyboardChar;
 
-                if (RxChar < 0x80)
+                if (keyboardChar < 0x80)
                 {
-                    if (CR == RxChar)
+                    if (CR == keyboardChar)
                     {
                         // ENTER has been hit, use the correct value for this connected device.
                         //
@@ -604,23 +741,6 @@ namespace COMport
                         // Attempt to send this out to the serial device - hope it is still connected.
                         //
                         SerialPort.Write(TxBuffer, 0, 1);
-                        //
-                        // Enforce any requested delays for characters or new lines.
-                        //
-                        if (Encoding.ASCII.GetBytes(EnterKey)[0] == TxBuffer[0])
-                        {
-                            if( InterLineDelay > 0 )
-                            {
-                                Thread.Sleep(InterLineDelay);
-                            }
-                        }
-                        else
-                        {
-                            if (InterCharDelay > 0)
-                            {
-                                Thread.Sleep(InterCharDelay);
-                            }
-                        }
                     }
                     catch
                     {
@@ -629,23 +749,24 @@ namespace COMport
                         SerialPort.Close();
                         connectedTo(false);
                         CommsTextBox.AppendText("\r\nERROR: lost connection\r\n\r\n");
-                        RxChar = 0; // Effectively killing off whatever was typed in.
+                        keyboardChar = 0; // Effectively discarding the character.
                     }
-                    if ( HalfDuplexCheckBox.Checked )
+                    if (HalfDuplexCheckBox.Checked)
                     {
                         // Half-duplex requires printable characters to be displayed on behalf of the
                         // connected device, since it does not generate any echo'd characters.
                         //
-                        if (RxChar > 0x1F)
+                        string chr = "";
+
+                        if (keyboardChar > 0x1F)
                         {
                             chr = Encoding.ASCII.GetString(TxBuffer, 0, 1);
                         }
                         else
                         {
-                            // The ENTER key just needs a space to separate the typed input from the
-                            // connected device's output.
+                            // Carriage return (ENTER key) just needs a space to separate the typed input from the connected device's response.
                             //
-                            if (CR == RxChar) chr = " ";
+                            if (CR == keyboardChar) chr = " ";
                         }
                         if (chr.Length > 0)
                         {
@@ -653,7 +774,8 @@ namespace COMport
                             //
                             CommsTextBox.AppendText(chr);
                             typedCommandLine += chr;
-                            if( CR == RxChar )
+                            //
+                            if (CR == keyboardChar)
                             {
                                 if (OutputLogFile.Length > 0)
                                 {
@@ -722,28 +844,32 @@ namespace COMport
         {
             int n, ln;
 
-            if (File.Exists(FILENAME_CSV))
+            // Start off with no entries filled in.
+            //
+            for (n = 0; n < MAX_PROJECTS; n++)
             {
-                // Start off with no entries filled in.
-                //
-                for (n = 0; n < MAX_PROJECTS; n++)
-                {
-                    projects[n] = new project();
-                    projects[n].name = "";
-                    projects[n].baudrate = "";
-                    projects[n].echoOff = "";
-                    projects[n].echoOn = "";
-                    projects[n].getID = "";
-                    projects[n].response = "";
-                    projects[n].halfDuplex = false;
-                    projects[n].enterKey = "";
-                    projects[n].NLDelay = "";
-                    projects[n].COMport = ""; // To be filled in by LoadLastUsedInfo().
-                }
+                projects[n] = new project();
+                projects[n].name = "";
+                projects[n].baudrate = "";
+                projects[n].echoOff = "";
+                projects[n].echoOn = "";
+                projects[n].getID = "";
+                projects[n].response = "";
+                projects[n].halfDuplex = false;
+                projects[n].enterKey = "";
+                projects[n].NLDelay = "";
+                projects[n].COMport = ""; // To be filled in by LoadLastUsedInfo().
+            }
+            // Want to encourage the use of the new project file name.
+            //
+            if (File.Exists(FILENAME_CSV) && !File.Exists(FILENAME_PROJECTS)) File.Move(FILENAME_CSV, FILENAME_PROJECTS);
+            //
+            if (File.Exists(FILENAME_PROJECTS))
+            {
                 // Retrieve all the saved project and baudrate combinations available.
                 // These are also placed into the project names dropdown list for easy of selection.
                 //
-                string[] lines = File.ReadAllLines(FILENAME_CSV);
+                string[] lines = File.ReadAllLines(FILENAME_PROJECTS);
                 //
                 for (ln = 0, n = 0; ln < lines.Length; ln++)
                 {
@@ -781,7 +907,7 @@ namespace COMport
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
-        /// If project is changed, then set the baud rate accordingly.
+        /// If project is changed, then set the optional parameters accordingly.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -819,7 +945,7 @@ namespace COMport
                     }
                     // Update the QuickText parameters too if open.
                     //
-                    if ( Application.OpenForms.OfType<QuickTextMenu>().Count() > 0 )
+                    foreach( QuickTextMenu menu in Application.OpenForms.OfType<QuickTextMenu>() )
                     {
                         menu.NLDelayTextBox.Text = InterLineDelay.ToString();
                         menu.CharDelayTextBox.Text = InterCharDelay.ToString();
@@ -841,16 +967,14 @@ namespace COMport
         {
             string[] lines = new string[0];
 
-            if (File.Exists(LASTUSED_TXT))
-            {
-                lines = File.ReadAllLines(LASTUSED_TXT);
-                if (lines.Length > 0) CheckEnvironmentVariables = false;
-            }
+            if (File.Exists(LASTUSED_TXT)) lines = File.ReadAllLines(LASTUSED_TXT);
+            //
             VersionComboBox.Text = findParameterIn(lines, "project", "Unknown");
             COMportComboBox.Text = findParameterIn(lines, "connection", "");
             HalfDuplexCheckBox.Checked = ("True" == findParameterIn(lines, "halfDuplex", "false"));
             BaudComboBox.Text = findParameterIn(lines, "baudrate", "");
             onEnterComboBox.Text = findParameterIn(lines, "onEnter", "");
+            ToolTipsCheckBox.Checked = ("True" == findParameterIn(lines, "toolTips", "True"));
             //
             checkEnterChar(); // Update EnterKey with onEnterCombox.Text
             //
@@ -876,32 +1000,22 @@ namespace COMport
         /// 
         string findParameterIn(string[] lines, string label, string defaultTo)
         {
-            string result = "";
-            int index;
+            string result = defaultTo; // If label not found, assume this value.
+            int indexToDelimiter;
 
             foreach (string line in lines)
             {
-                index = line.IndexOf('=');
+                indexToDelimiter = line.IndexOf('=');
                 //
-                if( ( index > 0 ) && ( index < line.Length ) )
+                if( ( indexToDelimiter > 0 ) && ( indexToDelimiter < line.Length ) )
                 {
-                    if( label == line.Substring(0,index) )
+                    if( label == line.Substring(0,indexToDelimiter) )
                     {
-                        result = line.Substring(index + 1);
+                        result = line.Substring(indexToDelimiter + 1);
                         //
                         break;
                     }
                 }
-            }
-            // If still not got a value, there might be something available in the environment variables.
-            //
-            if ((0 == result.Length) && CheckEnvironmentVariables)
-            {
-                result = Environment.GetEnvironmentVariable("COMport_" + label, EnvironmentVariableTarget.User);
-            }
-            if ((null == result) || (0 == result.Length))
-            {
-                result = defaultTo;
             }
             return result;
         }
@@ -920,6 +1034,7 @@ namespace COMport
             {
                 checkEnterChar();
             }
+            CommsTextBox.Focus(); // Assume once this control has been selected that we need to type on the console.
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -952,14 +1067,17 @@ namespace COMport
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
-        /// Send a text strings to the keyboard buffer, doing newline with '\n'.
+        /// Send a text strings to the keyboard buffer, doing newline if not manual enter.
         /// </summary>
         /// <param name="toSend"></param>
-        public void sendLinesToKeyboard(string toSend)
+        /// <param name="manualEnter"></param>
+        public void sendLinesToKeyboard(string toSend, bool manualEnter)
         {
             string aline;
             int idx;
 
+            if (false == manualEnter) toSend += "\\n";
+            //
             while (toSend.Contains("\\n")) // Note that Environment.NewLine should not be equal to "\\n" (only the strangest of stange people would set it so)!
             {
                 idx = toSend.IndexOf("\\n");
@@ -1075,7 +1193,8 @@ namespace COMport
             {
                 string filename = menuName.Replace(' ', '_');
 
-                menu = new QuickTextMenu(APP_NAME + "_" + VersionComboBox.Text + "_" + filename + TEXT_FILE_EXT);
+                QuickTextMenu menu = new QuickTextMenu(APP_NAME + "_" + VersionComboBox.Text + "_" + filename + TEXT_FILE_EXT);
+                //
                 menu.StartPosition = FormStartPosition.Manual;
                 menu.Location = Location;
                 menu.Left += ClientSize.Width + 10; // To place it on far right of parent.
@@ -1106,8 +1225,44 @@ namespace COMport
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
-        /// Start or restart a log file - if already logging, then stop that one and
-        /// start a new one with current timestamp.
+        /// Enable/disable the toolTips
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ToolTipsCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            toolTips.Active = ToolTipsCheckBox.Checked;
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Always assume that the console is selected following this click.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SelectConsoleFollowing_Click(object sender, EventArgs e)
+        {
+            CommsTextBox.Focus();
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Just need to suppress the ding generated by ENTER key!
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void QuickTextComboBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+            }
+
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Start or stop logging to a timestamped file.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -1115,6 +1270,8 @@ namespace COMport
         {
             if (LOG_START_LABEL == StartLogButton.Text)
             {
+                // Start logging is selected.
+                //
                 OutputLogFile = APP_NAME + DateTime.Now.ToString("_yyyyMMdd_HHmmss") + ".LOG";
                 try
                 {
@@ -1123,18 +1280,34 @@ namespace COMport
                         // Just need to ensure that it has been created . . .
                     }
                     StartLogButton.Text = LOG_STOP_LABEL;
+                    StartLogButton.BackColor = System.Drawing.SystemColors.ControlDark;
+                    StartLogButton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+                    StartLogButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, (byte)(0));
                 }
                 catch
                 {
-                    OutputLogFile = "";
-                    StartLogButton.Text = LOG_START_LABEL;
+                    StopLogButton();
                 }
             }
             else
             {
-                OutputLogFile = "";
-                StartLogButton.Text = LOG_START_LABEL;
+                StopLogButton();
             }
+            CommsTextBox.Focus(); // Always assume that the console is selected following this click.
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Change the start/stop logging button to its STOP state.
+        /// </summary>
+        private void StopLogButton()
+        {
+            StartLogButton.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            StartLogButton.ForeColor = System.Drawing.SystemColors.ControlText;
+            StartLogButton.Font = (new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, (byte)(0)));
+            //
+            OutputLogFile = ""; // Disables the log process.
+            StartLogButton.Text = LOG_START_LABEL;
         }
     }
 }

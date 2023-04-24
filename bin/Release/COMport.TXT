@@ -1,15 +1,14 @@
-﻿; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-; Filename:		COMport.CSV
+﻿; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+; Filename:		COMport.TXT
 ; Project:		DISCOVER_COM_port
 ; Author:		Foster & Freeman Ltd - Michael Dodd
 ; Created:		13.07.2022
 ;
-; All lines beginning with a semi-colon are ignored.
+; This file lists all the Foster and Freeman projects that COMport will talk to.
 ;
-; All devices this application can communicate with are listed below, one line
-; per device.  Each line is made up of parameters separated by commas. Blank
-; fields consist of just a comma and can be dropped altogether if no more
-; parameters are to be supplied on that line.
+; Lines beginning with a semi-colon are ignored.  Each line defines a project
+; made up of parameters separated by commas.  Blank fields consist of just  a
+; comma and can be dropped altogether if no more parameters are required.
 ;
 ; Parameters for each line are as follows:-
 ;
@@ -58,9 +57,9 @@
   CSU,			9600,   ,           ,           VERSION,    What
   DISCOVER,		115200,	ECHO OFF,	ECHO ON,	VERSION,
   I2C,			115200,	ECHO OFF,	ECHO ON,	VERSION
-  LAMP_TRAY,	9600,	,			,			,			,			Yes,			0x0A,			10
+  LAMP_TRAY,	9600,	,			,			,			,			Yes,			0x0A,		10
   MVC_FFLEX,	115200, ,			,			VERSION,	0 03,		Yes,			0x0A
-  MVC_X001,		9600,	,			,			VERSION?,	MVC,		Yes,			0x0A,			10
+  MVC_X001,		9600,	,			,			VERSION?,	MVC,		Yes,			0x0A,		10
   PDii,			9600,	ECHO OFF,	ECHO ON,	VERSION,
   VSC900,		9600,	,			,			TYPE,		,			Yes,			0x0A
   UVSPEC,		9600,	,			,			VERSION,	5.0,		Yes,			0x0A
