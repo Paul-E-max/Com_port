@@ -1,8 +1,8 @@
 ﻿; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-; Filename:		COMport.TXT
-; Project:		DISCOVER_COM_port
-; Author:		Foster & Freeman Ltd - Michael Dodd
-; Created:		13.07.2022
+; Filename:     COMport.TXT
+; Project:      DISCOVER_COM_port
+; Author:       Foster & Freeman Ltd - Michael Dodd
+; Created:      13.07.2022
 ;
 ; This file lists all the Foster and Freeman projects that COMport will talk to.
 ;
@@ -12,54 +12,54 @@
 ;
 ; Parameters for each line are as follows:-
 ;
-; Parameter		Description
-; ---------		-----------
+; Parameter     Description
+; ---------     -----------
 ;
-; Project:		This is displayed in a drop-down box and used to select the
-;			device that this application should talk to.
+; Project:      This is displayed in a drop-down box and used to select the
+;               device that this application should talk to.
 ;
-; Baud:			Baudrate used in communications with the connected device.
+; Baud:         Baudrate used in communications with the connected device.
 ;
-; Echo off:		Echo off command, blank if not available.
+; Echo off:     Echo off command, blank if not available.
 ;
-; Echo on:		Echo on command, blank if not available.
+; Echo on:      Echo on command, blank if not available.
 ;
-; Get ID:		Command to get the device identification, blank if not available.
+; Get ID:       Command to get the device identification, blank if not available.
 ;
-; Response:		Used where response to Get ID differs from the Project name.
-;			Note that the response only has to begin with the Project name
-;			for this entry to be accepted.  The whole response is placed on
-;			the title bar to indicate what is connected.
+; Response:     Used where response to Get ID differs from the Project name.
+;               Note that the response only has to begin with the Project name
+;               for this entry to be accepted.  The whole response is placed on
+;               the title bar to indicate what is connected.
 ;
-; Half-duplex:		Enter Yes for devices that do not echo each character typed by
-;			the user.  Use No or leave blank for full-duplex communications.
+; Half-duplex:  Enter Yes for devices that do not echo each character typed by
+;               the user.  Use No or leave blank for full-duplex communications.
 ;
-; Tx on Enter:		On hitting ENTER on the keyboard, an alternative to CR (0x0D)
-;			can be sent.  This is supplied as a hexadecimal code using the
-;			drop-down box.  A bespoke value can be typed in, again using
-;			the same hexadecimal format.  Note that since this code is
-;			used to send a command, the implication is that the target
-;			device will use the same code to indicate the end of a
-;			response.  For example, MVC_FFLEX uses LF (0x0A) to indicate a
-;			command line is to be executed and sends LF at the end of a
-;			response.
+; Tx on Enter:  On hitting ENTER on the keyboard, an alternative to CR (0x0D)
+;               can be sent.  This is supplied as a hexadecimal code using the
+;               drop-down box.  A bespoke value can be typed in, again using
+;               the same hexadecimal format.  Note that since this code is
+;               used to send a command, the implication is that the target
+;               device will use the same code to indicate the end of a
+;               response.  For example, MVC_FFLEX uses LF (0x0A) to indicate a
+;               command line is to be executed and sends LF at the end of a
+;               response.
 ;
-; NL delay:		Delay following an enter in milliseconds, defaults to zero.
+; NL delay:     Delay following an enter in milliseconds, defaults to zero.
 ;
-; Char delay:		Delay between characters in milliseconds, defaults to zero.
+; Char delay:   Delay between characters in milliseconds, defaults to zero.
 ;
 ;
-; Project		Baud	Echo off 	Echo on 	Get ID		Response	Half-duplex		Tx on ENTER	 N.L. delay	Char delay
-; -------		----	--------	------- 	------		--------	-----------		-----------	 ----------	----------
-  Unknown,		115200
-  AARI,			9600,	ECHO OFF,	ECHO ON,	VERSION,	,		,			0x0A
-  BOOTLOAD,		9600,	,		,		VERSION,
-  CSU,			9600,   ,           	,           	VERSION,    	What
-  DISCOVER,		115200,	ECHO OFF,	ECHO ON,	VERSION,
-  I2C,			115200,	ECHO OFF,	ECHO ON,	VERSION
-  LAMP_TRAY,		9600,	,		,		,		,		Yes,			0x0A,		10
-  MVC_FFLEX,		115200, ,		,		VERSION,	0 03,		Yes,			0x0A
-  MVC_X001,		9600,	,		,		VERSION?,	MVC,		Yes,			0x0A,		10
-  PDii,			9600,	ECHO OFF,	ECHO ON,	VERSION,
-  VSC900,		9600,	,		,		TYPE,		,		Yes,			0x0A
-  UVSPEC,		9600,	,		,		VERSION,	5.0,		Yes,			0x0A
+; Project    Baud    Echo off  Echo on  Get ID    Response Half-duplex  Tx on ENTER  N.L. delay Char delay
+; -------    ----    --------  -------  ------    -------- -----------  -----------  ---------- ----------
+  Unknown,   115200
+  AARI,      9600,   ECHO OFF, ECHO ON, VERSION,  ,        ,            0x0A
+  BOOTLOAD,  9600,   ,         ,        VERSION,
+  CSU,       9600,   ,         ,        VERSION,  What
+  DISCOVER,  115200, ECHO OFF, ECHO ON, VERSION,
+  I2C,       115200, ECHO OFF, ECHO ON, VERSION
+  LAMP_TRAY, 9600,   ,         ,        ,         ,        Yes,         0x0A,        10
+  MVC_FFLEX, 115200, ,         ,        VERSION,  0 03,    Yes,         0x0A
+  MVC_X001,  9600,   ,         ,        VERSION?, MVC,     Yes,         0x0A,        10
+  PDii,      9600,   ECHO OFF, ECHO ON, VERSION,
+  VSC900,    9600,   ,         ,        TYPE,     ,        Yes,         0x0A
+  UVSPEC,    9600,   ,         ,        VERSION,  5.0,     Yes,         0x0A
