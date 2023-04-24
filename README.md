@@ -36,7 +36,7 @@ This is a simple COM port application geared up to the Foster & Freeman products
 
 The file COMport.TXT lists common Foster and Freeman projects that can communicate with a console application.  This proves a single line of parameters for each project available listing name, baud-rate and options such as half-duplex and expected ENTER characters.
 
-![](Documents/COMport.TXT)
+[Example of COMport.TXT](Documents/COMport.TXT)
 
 # Build and Test
 
