@@ -229,6 +229,7 @@ namespace COMport
             this.clearSreenButton.Size = new System.Drawing.Size(76, 24);
             this.clearSreenButton.TabIndex = 4;
             this.clearSreenButton.Text = "Clear screen";
+            this.toolTips.SetToolTip(this.clearSreenButton, "Clear the console screen");
             this.clearSreenButton.UseVisualStyleBackColor = true;
             this.clearSreenButton.Click += new System.EventHandler(this.clearSreenButton_Click);
             // 

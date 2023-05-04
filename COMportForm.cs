@@ -9,6 +9,8 @@
 // @Tools:      Visual Studio 2019, C#
 //
 // @Revision:
+// 04.05.2023-MD V1.01.14 - If only one item in a scan is found, then use this in preference to value in COMport_USER.TXT
+// 25.04.2023-MD V1.01.13 - Correction to Quick Text menu with equals character in it.
 // 23.04.2023-MD V1.01.12 - 1) Implement Ctrl+C and Ctrl+V for copy and paste.
 //                          2) Rename COMport.csv to COMport.TXT
 //                          3) Stop that ding on Quick text menu ENTER!
@@ -71,7 +73,7 @@ namespace COMport
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // Constants
         //
-        const string APP_NAME = "COMport", VERSION = "V1.01.12"; // UPDATE MANUALLY AS APPLICATION EVOLVES.
+        const string APP_NAME = "COMport", VERSION = "V1.01.14"; // UPDATE MANUALLY AS APPLICATION EVOLVES.
         //
         public const string TEXT_FILE_EXT = ".TXT";
         const string LASTUSED_TXT = APP_NAME + "_USER" + TEXT_FILE_EXT;
@@ -153,10 +155,60 @@ namespace COMport
         private void COMportForm_Load(object sender, EventArgs e)
         {
             this.Text = APP_NAME + " - " + VERSION;
-            loadProjectInfo();
+            loadProjectInfo();              // Fills in any project information available, but doesn't affect the GUI selections.
             LoadLastUsedInfo();
             populateQuickTextComboBox();
             StopLogButton();
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Once the frame is displayed, it is OK to fill in details.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void COMportForm_Shown(object sender, EventArgs e)
+        {
+            scanForAvailableCOMports();
+            //
+            if (1 == COMportComboBox.Items.Count)
+            {
+                // There is only one COM port available, make a note of the original COM port selected by
+                // the USER file and attempt to connect to the one available COM port.  If it fails, then
+                // just restore the original COM port saved above.
+                //
+                string originalCOMport = COMportComboBox.Text;
+
+                COMportComboBox.Text = COMportComboBox.Items[0].ToString();
+                ConnectButton.PerformClick();
+                if(VersionComboBox.Enabled)
+                {
+                    // When version box is enabled, it means the connection failed, so restore the COM port.
+                    //
+                    if( originalCOMport.Length > 0 )
+                    {
+                        COMportComboBox.Text = originalCOMport;
+                    }
+                }
+            }
+            else
+            {
+                // If there is a COM port defined by USER file, try to connect to it.  If not, just display
+                // the first item in the list.
+                //
+                if (COMportComboBox.Text.Length > 0)
+                {
+                    // The USER file had a COM port that is plugged in, so lets try and connect.
+                    //
+                    ConnectButton.PerformClick();
+                }
+                else
+                {
+                    // Guess the first COM port in the list is the one.
+                    //
+                    if (COMportComboBox.Items.Count > 0) COMportComboBox.Text = COMportComboBox.Items[0].ToString();
+                }
+            }
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -220,40 +272,6 @@ namespace COMport
             {
                 MessageBox.Show("ERROR: Failed to save user settings in " + LASTUSED_TXT);
             }
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// Once the frame is displayed, it is OK to fill in details.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void COMportForm_Shown(object sender, EventArgs e)
-        {
-            scanForAvailableCOMports();
-            // LoadConfigurationCSV();
-            //
-            // If scan found any COM ports and CSV did not define a valid port, then
-            // just display the first item in the list.
-            //
-            if (COMportComboBox.Text.Length > 0)
-            {
-                // The CSV file had a COM port that is plugged in, so lets try and connect.
-                //
-                ConnectButton.PerformClick();
-            }
-            else
-            {
-                // Guess the first COM port in the list is the one.
-                //
-                if (COMportComboBox.Items.Count > 0) COMportComboBox.Text = COMportComboBox.Items[0].ToString();
-                //
-                // If there is only one of them, try to connect to it, otherwise will have to let user select it
-                // manually.
-                //
-                if (1 == COMportComboBox.Items.Count) ConnectButton.PerformClick();
-            }
-
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

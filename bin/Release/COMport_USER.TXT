@@ -1,7 +1,7 @@
 project=I2C
-connection=COM75
+connection=COM80
 baudrate=115200
 halfDuplex=False
 onEnter=
-toolTips=True
-connection_I2C=COM75
+toolTips=False
+connection_I2C=COM80

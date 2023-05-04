@@ -9,6 +9,7 @@
 // @Tools:      Visual Studio 2019, C#
 //
 // @Revision:
+// 25.04.2023-MD V1.01.13 - Correction to Quick Text menu with equals character in it.
 // 21.04.2023-MD V1.01.12 - Check if save is required on exit.
 // 24.02.2023-MD V1.01.09 - Correction to CR from quick text (V1.01.08 didn't use the NL delay on quick text).
 // 21.02.2023-MD V1.01.08 - Timer now takes decimal interval rather than just whole seconds.
@@ -112,7 +113,16 @@ namespace COMport
             
             try
             {
-                button.Text = inputs[0].Substring(1, inputs[0].Length - 2);
+                // Trim off the leading and trailing quote.
+                //
+                if (inputs.Length > 1)
+                {
+                    button.Text = inputs[0].Substring(1, inputs[0].Length - 2);
+                }
+                else
+                {
+                    button.Text = DEFAULT_LABEL + index.ToString();
+                }
             }
             catch
             {
@@ -120,7 +130,14 @@ namespace COMport
             }
             try
             {
-                text.Text = inputs[1];
+                if (inputs.Length > 1)
+                {
+                    text.Text = toRead.Substring(inputs[0].Length + 1);
+                }
+                else
+                {
+                    text.Text = inputs[0];
+                }
             }
             catch
             {

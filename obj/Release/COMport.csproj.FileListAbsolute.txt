@@ -30,3 +30,14 @@ Q:\Clients\Foster and Freeman\DISCOVER_COM_port\obj\Release\COMport.csproj.Gener
 Q:\Clients\Foster and Freeman\DISCOVER_COM_port\obj\Release\COMport.csproj.CoreCompileInputs.cache
 Q:\Clients\Foster and Freeman\DISCOVER_COM_port\obj\Release\COMport.exe
 Q:\Clients\Foster and Freeman\DISCOVER_COM_port\obj\Release\COMport.pdb
+C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_COM_port\bin\Release\COMport.exe.config
+C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_COM_port\bin\Release\COMport.exe
+C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_COM_port\bin\Release\COMport.pdb
+C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_COM_port\obj\Release\COMport.COMportForm.resources
+C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_COM_port\obj\Release\COMport.EnterLabel.resources
+C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_COM_port\obj\Release\COMport.Properties.Resources.resources
+C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_COM_port\obj\Release\COMport.QuickTextMenu.resources
+C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_COM_port\obj\Release\COMport.csproj.GenerateResource.cache
+C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_COM_port\obj\Release\COMport.csproj.CoreCompileInputs.cache
+C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_COM_port\obj\Release\COMport.exe
+C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_COM_port\obj\Release\COMport.pdb
