@@ -537,24 +537,9 @@ namespace COMport
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CommandLine1TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText1; }
-        private void CommandLine2TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText2; }
-        private void CommandLine3TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText3; }
-        private void CommandLine4TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText4; }
-        private void CommandLine5TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText5; }
-        private void CommandLine6TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText6; }
-        private void CommandLine7TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText7; }
-        private void CommandLine8TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText8; }
-        private void CommandLine9TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText9; }
-        private void CommandLine10TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText10; }
-        private void CommandLine11TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText11; }
-        private void CommandLine12TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText12; }
-        private void CommandLine13TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText13; }
-        private void CommandLine14TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText14; }
-        private void CommandLine15TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText15; }
-        private void CommandLine16TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText16; }
-        private void CommandLine17TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText17; }
-        private void CommandLine18TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText18; }
-        private void CommandLine19TextBox_Enter(object sender, EventArgs e) { AcceptButton = ButtonExeText19; }
+        private void CommandLineTextBox_Enter(object sender, EventArgs e)
+        {
+            AcceptButton = (Button)sender;
+        }
     }
 }

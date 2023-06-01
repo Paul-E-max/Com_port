@@ -9,6 +9,9 @@
 // @Tools:      Visual Studio 2019, C#
 //
 // @Revision:
+//
+// 01.06.2023-MD V1.01.15 - 1) Use get ID command rather than blank line to establish a command line connection (blank line offens VSC900).
+//                          2) Correction for when logging is active, was sending "\r\n" as newline instead of CR . . .
 // 04.05.2023-MD V1.01.14 - If only one item in a scan is found, then use this in preference to value in COMport_USER.TXT
 // 25.04.2023-MD V1.01.13 - Correction to Quick Text menu with equals character in it.
 // 23.04.2023-MD V1.01.12 - 1) Implement Ctrl+C and Ctrl+V for copy and paste.
@@ -73,7 +76,7 @@ namespace COMport
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // Constants
         //
-        const string APP_NAME = "COMport", VERSION = "V1.01.14"; // UPDATE MANUALLY AS APPLICATION EVOLVES.
+        const string APP_NAME = "COMport", VERSION = "V1.01.15"; // UPDATE MANUALLY AS APPLICATION EVOLVES.
         //
         public const string TEXT_FILE_EXT = ".TXT";
         const string LASTUSED_TXT = APP_NAME + "_USER" + TEXT_FILE_EXT;
@@ -321,7 +324,8 @@ namespace COMport
                             {
                                 // Attempt to connect to a device with a specific response.
                                 //
-                                serialPortWriteLine("");
+                                serialPortWriteLine(GetID); // This is just sent to establish a connection and ensure last character sent was ENTER.
+                                //
                                 if( EchoOff.Length > 0 ) serialPortWriteLine(EchoOff);
                                 if( GetID.Length > 0 ) versionIs = serialPortCommandresponse(GetID);
                                 if( versionIs.ToUpper().StartsWith( Response ) )
@@ -618,6 +622,7 @@ namespace COMport
             else
             {
                 int oldLength = CommsTextBox.TextLength;
+
                 CommsTextBox.AppendText(append);
                 CommsTextBox.SelectionStart = CommsTextBox.Text.Length; // Place the curser at the end of the text.
                 CommsTextBox.ScrollToCaret();
@@ -1102,7 +1107,7 @@ namespace COMport
                 aline = toSend.Substring(0, idx);
                 toSend = toSend.Substring(idx + 2);
                 //
-                sendToKeyboard(aline + Environment.NewLine);
+                sendToKeyboard(aline + Convert.ToChar(CR)); // The CR will be converted within handleRingBuffer() further on down stream.
             }
             if (toSend.Length > 0) sendToKeyboard(toSend);
         }
@@ -1115,7 +1120,7 @@ namespace COMport
         private void sendToKeyboard( string toSend )
         {
             object sender = null;
-            KeyPressEventArgs e = new KeyPressEventArgs((char)Keys.Enter);
+            KeyPressEventArgs e = new KeyPressEventArgs((char)Keys.Enter); // Set this to a bogus value that is then replaced within the following for loop.
 
             for (int idx = 0; idx < toSend.Length; idx++)
             {

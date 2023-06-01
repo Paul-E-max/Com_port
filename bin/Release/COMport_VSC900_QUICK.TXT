@@ -1,6 +1,6 @@
-"Command1"=ABC=qxt\n
-"Command2"=\n
-"Command3"=\n
+"Get version"=TYPE\n
+"Get build"=BUILD\n
+"Get date"=DATE\n
 "Command4"=\n
 "Command5"=\n
 "Command6"=\n

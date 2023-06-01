@@ -113,7 +113,7 @@ namespace COMport
             this.CommandLine1TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine1TextBox.TabIndex = 1;
             this.CommandLine1TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
-            this.CommandLine1TextBox.Enter += new System.EventHandler(this.CommandLine1TextBox_Enter);
+            this.CommandLine1TextBox.Enter += new System.EventHandler(this.CommandLineTextBox_Enter);
             // 
             // ButtonExeText1
             // 
@@ -180,7 +180,7 @@ namespace COMport
             this.CommandLine2TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine2TextBox.TabIndex = 2;
             this.CommandLine2TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
-            this.CommandLine2TextBox.Enter += new System.EventHandler(this.CommandLine2TextBox_Enter);
+            this.CommandLine2TextBox.Enter += new System.EventHandler(this.CommandLineTextBox_Enter);
             // 
             // ManualEnter3CheckBox
             // 
@@ -209,7 +209,7 @@ namespace COMport
             this.CommandLine3TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine3TextBox.TabIndex = 3;
             this.CommandLine3TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
-            this.CommandLine3TextBox.Enter += new System.EventHandler(this.CommandLine3TextBox_Enter);
+            this.CommandLine3TextBox.Enter += new System.EventHandler(this.CommandLineTextBox_Enter);
             // 
             // ManualEnter4CheckBox
             // 
@@ -238,7 +238,7 @@ namespace COMport
             this.CommandLine4TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine4TextBox.TabIndex = 4;
             this.CommandLine4TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
-            this.CommandLine4TextBox.Enter += new System.EventHandler(this.CommandLine4TextBox_Enter);
+            this.CommandLine4TextBox.Enter += new System.EventHandler(this.CommandLineTextBox_Enter);
             // 
             // ManualEnter5CheckBox
             // 
@@ -267,7 +267,7 @@ namespace COMport
             this.CommandLine5TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine5TextBox.TabIndex = 5;
             this.CommandLine5TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
-            this.CommandLine5TextBox.Enter += new System.EventHandler(this.CommandLine5TextBox_Enter);
+            this.CommandLine5TextBox.Enter += new System.EventHandler(this.CommandLineTextBox_Enter);
             // 
             // ManualEnter6CheckBox
             // 
@@ -296,7 +296,7 @@ namespace COMport
             this.CommandLine6TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine6TextBox.TabIndex = 6;
             this.CommandLine6TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
-            this.CommandLine6TextBox.Enter += new System.EventHandler(this.CommandLine6TextBox_Enter);
+            this.CommandLine6TextBox.Enter += new System.EventHandler(this.CommandLineTextBox_Enter);
             // 
             // ManualEnter7CheckBox
             // 
@@ -325,7 +325,7 @@ namespace COMport
             this.CommandLine7TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine7TextBox.TabIndex = 7;
             this.CommandLine7TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
-            this.CommandLine7TextBox.Enter += new System.EventHandler(this.CommandLine7TextBox_Enter);
+            this.CommandLine7TextBox.Enter += new System.EventHandler(this.CommandLineTextBox_Enter);
             // 
             // ExitButton
             // 
@@ -408,7 +408,7 @@ namespace COMport
             this.CommandLine8TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine8TextBox.TabIndex = 8;
             this.CommandLine8TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
-            this.CommandLine8TextBox.Enter += new System.EventHandler(this.CommandLine8TextBox_Enter);
+            this.CommandLine8TextBox.Enter += new System.EventHandler(this.CommandLineTextBox_Enter);
             // 
             // ManualEnter9CheckBox
             // 
@@ -437,7 +437,7 @@ namespace COMport
             this.CommandLine9TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine9TextBox.TabIndex = 9;
             this.CommandLine9TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
-            this.CommandLine9TextBox.Enter += new System.EventHandler(this.CommandLine9TextBox_Enter);
+            this.CommandLine9TextBox.Enter += new System.EventHandler(this.CommandLineTextBox_Enter);
             // 
             // ManualEnter10CheckBox
             // 
@@ -466,7 +466,7 @@ namespace COMport
             this.CommandLine10TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine10TextBox.TabIndex = 10;
             this.CommandLine10TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
-            this.CommandLine10TextBox.Enter += new System.EventHandler(this.CommandLine10TextBox_Enter);
+            this.CommandLine10TextBox.Enter += new System.EventHandler(this.CommandLineTextBox_Enter);
             // 
             // ManualEnter11CheckBox
             // 
@@ -495,7 +495,7 @@ namespace COMport
             this.CommandLine11TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine11TextBox.TabIndex = 11;
             this.CommandLine11TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
-            this.CommandLine11TextBox.Enter += new System.EventHandler(this.CommandLine11TextBox_Enter);
+            this.CommandLine11TextBox.Enter += new System.EventHandler(this.CommandLineTextBox_Enter);
             // 
             // ManualEnter12CheckBox
             // 
@@ -524,7 +524,7 @@ namespace COMport
             this.CommandLine12TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine12TextBox.TabIndex = 12;
             this.CommandLine12TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
-            this.CommandLine12TextBox.Enter += new System.EventHandler(this.CommandLine12TextBox_Enter);
+            this.CommandLine12TextBox.Enter += new System.EventHandler(this.CommandLineTextBox_Enter);
             // 
             // ManualEnter13CheckBox
             // 
@@ -553,7 +553,7 @@ namespace COMport
             this.CommandLine13TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine13TextBox.TabIndex = 13;
             this.CommandLine13TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
-            this.CommandLine13TextBox.Enter += new System.EventHandler(this.CommandLine13TextBox_Enter);
+            this.CommandLine13TextBox.Enter += new System.EventHandler(this.CommandLineTextBox_Enter);
             // 
             // ManualEnter14CheckBox
             // 
@@ -582,7 +582,7 @@ namespace COMport
             this.CommandLine14TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine14TextBox.TabIndex = 14;
             this.CommandLine14TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
-            this.CommandLine14TextBox.Enter += new System.EventHandler(this.CommandLine14TextBox_Enter);
+            this.CommandLine14TextBox.Enter += new System.EventHandler(this.CommandLineTextBox_Enter);
             // 
             // ManualEnter15CheckBox
             // 
@@ -611,7 +611,7 @@ namespace COMport
             this.CommandLine15TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine15TextBox.TabIndex = 15;
             this.CommandLine15TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
-            this.CommandLine15TextBox.Enter += new System.EventHandler(this.CommandLine15TextBox_Enter);
+            this.CommandLine15TextBox.Enter += new System.EventHandler(this.CommandLineTextBox_Enter);
             // 
             // ManualEnter16CheckBox
             // 
@@ -640,7 +640,7 @@ namespace COMport
             this.CommandLine16TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine16TextBox.TabIndex = 16;
             this.CommandLine16TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
-            this.CommandLine16TextBox.Enter += new System.EventHandler(this.CommandLine16TextBox_Enter);
+            this.CommandLine16TextBox.Enter += new System.EventHandler(this.CommandLineTextBox_Enter);
             // 
             // ManualEnter17CheckBox
             // 
@@ -669,7 +669,7 @@ namespace COMport
             this.CommandLine17TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine17TextBox.TabIndex = 17;
             this.CommandLine17TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
-            this.CommandLine17TextBox.Enter += new System.EventHandler(this.CommandLine17TextBox_Enter);
+            this.CommandLine17TextBox.Enter += new System.EventHandler(this.CommandLineTextBox_Enter);
             // 
             // ManualEnter18CheckBox
             // 
@@ -698,7 +698,7 @@ namespace COMport
             this.CommandLine18TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine18TextBox.TabIndex = 18;
             this.CommandLine18TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
-            this.CommandLine18TextBox.Enter += new System.EventHandler(this.CommandLine18TextBox_Enter);
+            this.CommandLine18TextBox.Enter += new System.EventHandler(this.CommandLineTextBox_Enter);
             // 
             // ManualEnter19CheckBox
             // 
@@ -727,7 +727,7 @@ namespace COMport
             this.CommandLine19TextBox.Size = new System.Drawing.Size(363, 20);
             this.CommandLine19TextBox.TabIndex = 19;
             this.CommandLine19TextBox.TextChanged += new System.EventHandler(this.Contents_Changed);
-            this.CommandLine19TextBox.Enter += new System.EventHandler(this.CommandLine19TextBox_Enter);
+            this.CommandLine19TextBox.Enter += new System.EventHandler(this.CommandLineTextBox_Enter);
             // 
             // StartRepeatButton
             // 

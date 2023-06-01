@@ -47,6 +47,19 @@ The file COMport.TXT lists common Foster and Freeman projects that can communica
 
 # Recent updates
 
+V1.01.15 - 01.06.2023
+
+1) Use get ID command rather than blank line to establish a command line connection (blank line offens VSC900).
+2) Correction for when logging is active, was sending "\r\n" as newline instead of CR . . .
+
+V1.01.14 - 04.05.2023
+
+If only one item in a scan is found, then use this in preference to value in COMport_USER.TXT
+
+V1.01.13 - 25.04.2023
+
+Correction to Quick Text menu with equals character in it.
+
 V1.01.12 - 24.04.2023
 
 1. Implement Ctrl+C and Ctrl+V for copy and paste.
