@@ -123,7 +123,8 @@ namespace COMport
             this.ButtonExeText1.TabIndex = 39;
             this.ButtonExeText1.Text = "Command 1";
             this.ButtonExeText1.UseVisualStyleBackColor = true;
-            this.ButtonExeText1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseUp);
+            this.ButtonExeText1.Click += new System.EventHandler(this.ButtonExeTextN_Click);
+            this.ButtonExeText1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseDown);
             // 
             // ManualEnter1CheckBox
             // 
@@ -171,7 +172,8 @@ namespace COMport
             this.ButtonExeText2.TabIndex = 40;
             this.ButtonExeText2.Text = "Command 2";
             this.ButtonExeText2.UseVisualStyleBackColor = true;
-            this.ButtonExeText2.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseUp);
+            this.ButtonExeText2.Click += new System.EventHandler(this.ButtonExeTextN_Click);
+            this.ButtonExeText2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseDown);
             // 
             // CommandLine2TextBox
             // 
@@ -200,7 +202,8 @@ namespace COMport
             this.ButtonExeText3.TabIndex = 41;
             this.ButtonExeText3.Text = "Command 3";
             this.ButtonExeText3.UseVisualStyleBackColor = true;
-            this.ButtonExeText3.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseUp);
+            this.ButtonExeText3.Click += new System.EventHandler(this.ButtonExeTextN_Click);
+            this.ButtonExeText3.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseDown);
             // 
             // CommandLine3TextBox
             // 
@@ -229,7 +232,8 @@ namespace COMport
             this.ButtonExeText4.TabIndex = 42;
             this.ButtonExeText4.Text = "Command 4";
             this.ButtonExeText4.UseVisualStyleBackColor = true;
-            this.ButtonExeText4.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseUp);
+            this.ButtonExeText4.Click += new System.EventHandler(this.ButtonExeTextN_Click);
+            this.ButtonExeText4.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseDown);
             // 
             // CommandLine4TextBox
             // 
@@ -258,7 +262,8 @@ namespace COMport
             this.ButtonExeText5.TabIndex = 43;
             this.ButtonExeText5.Text = "Command 5";
             this.ButtonExeText5.UseVisualStyleBackColor = true;
-            this.ButtonExeText5.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseUp);
+            this.ButtonExeText5.Click += new System.EventHandler(this.ButtonExeTextN_Click);
+            this.ButtonExeText5.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseDown);
             // 
             // CommandLine5TextBox
             // 
@@ -287,7 +292,8 @@ namespace COMport
             this.ButtonExeText6.TabIndex = 44;
             this.ButtonExeText6.Text = "Command 6";
             this.ButtonExeText6.UseVisualStyleBackColor = true;
-            this.ButtonExeText6.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseUp);
+            this.ButtonExeText6.Click += new System.EventHandler(this.ButtonExeTextN_Click);
+            this.ButtonExeText6.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseDown);
             // 
             // CommandLine6TextBox
             // 
@@ -316,7 +322,8 @@ namespace COMport
             this.ButtonExeText7.TabIndex = 45;
             this.ButtonExeText7.Text = "Command 7";
             this.ButtonExeText7.UseVisualStyleBackColor = true;
-            this.ButtonExeText7.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseUp);
+            this.ButtonExeText7.Click += new System.EventHandler(this.ButtonExeTextN_Click);
+            this.ButtonExeText7.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseDown);
             // 
             // CommandLine7TextBox
             // 
@@ -399,7 +406,8 @@ namespace COMport
             this.ButtonExeText8.TabIndex = 46;
             this.ButtonExeText8.Text = "Command 8";
             this.ButtonExeText8.UseVisualStyleBackColor = true;
-            this.ButtonExeText8.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseUp);
+            this.ButtonExeText8.Click += new System.EventHandler(this.ButtonExeTextN_Click);
+            this.ButtonExeText8.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseDown);
             // 
             // CommandLine8TextBox
             // 
@@ -428,7 +436,8 @@ namespace COMport
             this.ButtonExeText9.TabIndex = 47;
             this.ButtonExeText9.Text = "Command 9";
             this.ButtonExeText9.UseVisualStyleBackColor = true;
-            this.ButtonExeText9.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseUp);
+            this.ButtonExeText9.Click += new System.EventHandler(this.ButtonExeTextN_Click);
+            this.ButtonExeText9.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseDown);
             // 
             // CommandLine9TextBox
             // 
@@ -457,7 +466,8 @@ namespace COMport
             this.ButtonExeText10.TabIndex = 48;
             this.ButtonExeText10.Text = "Command 10";
             this.ButtonExeText10.UseVisualStyleBackColor = true;
-            this.ButtonExeText10.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseUp);
+            this.ButtonExeText10.Click += new System.EventHandler(this.ButtonExeTextN_Click);
+            this.ButtonExeText10.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseDown);
             // 
             // CommandLine10TextBox
             // 
@@ -486,7 +496,8 @@ namespace COMport
             this.ButtonExeText11.TabIndex = 49;
             this.ButtonExeText11.Text = "Command 11";
             this.ButtonExeText11.UseVisualStyleBackColor = true;
-            this.ButtonExeText11.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseUp);
+            this.ButtonExeText11.Click += new System.EventHandler(this.ButtonExeTextN_Click);
+            this.ButtonExeText11.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseDown);
             // 
             // CommandLine11TextBox
             // 
@@ -515,7 +526,8 @@ namespace COMport
             this.ButtonExeText12.TabIndex = 50;
             this.ButtonExeText12.Text = "Command 12";
             this.ButtonExeText12.UseVisualStyleBackColor = true;
-            this.ButtonExeText12.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseUp);
+            this.ButtonExeText12.Click += new System.EventHandler(this.ButtonExeTextN_Click);
+            this.ButtonExeText12.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseDown);
             // 
             // CommandLine12TextBox
             // 
@@ -544,7 +556,8 @@ namespace COMport
             this.ButtonExeText13.TabIndex = 51;
             this.ButtonExeText13.Text = "Command 13";
             this.ButtonExeText13.UseVisualStyleBackColor = true;
-            this.ButtonExeText13.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseUp);
+            this.ButtonExeText13.Click += new System.EventHandler(this.ButtonExeTextN_Click);
+            this.ButtonExeText13.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseDown);
             // 
             // CommandLine13TextBox
             // 
@@ -573,7 +586,8 @@ namespace COMport
             this.ButtonExeText14.TabIndex = 52;
             this.ButtonExeText14.Text = "Command 14";
             this.ButtonExeText14.UseVisualStyleBackColor = true;
-            this.ButtonExeText14.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseUp);
+            this.ButtonExeText14.Click += new System.EventHandler(this.ButtonExeTextN_Click);
+            this.ButtonExeText14.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseDown);
             // 
             // CommandLine14TextBox
             // 
@@ -602,7 +616,8 @@ namespace COMport
             this.ButtonExeText15.TabIndex = 53;
             this.ButtonExeText15.Text = "Command 15";
             this.ButtonExeText15.UseVisualStyleBackColor = true;
-            this.ButtonExeText15.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseUp);
+            this.ButtonExeText15.Click += new System.EventHandler(this.ButtonExeTextN_Click);
+            this.ButtonExeText15.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseDown);
             // 
             // CommandLine15TextBox
             // 
@@ -631,7 +646,8 @@ namespace COMport
             this.ButtonExeText16.TabIndex = 54;
             this.ButtonExeText16.Text = "Command 16";
             this.ButtonExeText16.UseVisualStyleBackColor = true;
-            this.ButtonExeText16.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseUp);
+            this.ButtonExeText16.Click += new System.EventHandler(this.ButtonExeTextN_Click);
+            this.ButtonExeText16.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseDown);
             // 
             // CommandLine16TextBox
             // 
@@ -660,7 +676,8 @@ namespace COMport
             this.ButtonExeText17.TabIndex = 55;
             this.ButtonExeText17.Text = "Command 17";
             this.ButtonExeText17.UseVisualStyleBackColor = true;
-            this.ButtonExeText17.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseUp);
+            this.ButtonExeText17.Click += new System.EventHandler(this.ButtonExeTextN_Click);
+            this.ButtonExeText17.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseDown);
             // 
             // CommandLine17TextBox
             // 
@@ -689,7 +706,8 @@ namespace COMport
             this.ButtonExeText18.TabIndex = 56;
             this.ButtonExeText18.Text = "Command 18";
             this.ButtonExeText18.UseVisualStyleBackColor = true;
-            this.ButtonExeText18.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseUp);
+            this.ButtonExeText18.Click += new System.EventHandler(this.ButtonExeTextN_Click);
+            this.ButtonExeText18.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseDown);
             // 
             // CommandLine18TextBox
             // 
@@ -718,7 +736,8 @@ namespace COMport
             this.ButtonExeText19.TabIndex = 57;
             this.ButtonExeText19.Text = "Command 19";
             this.ButtonExeText19.UseVisualStyleBackColor = true;
-            this.ButtonExeText19.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseUp);
+            this.ButtonExeText19.Click += new System.EventHandler(this.ButtonExeTextN_Click);
+            this.ButtonExeText19.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ButtonExeTextN_MouseDown);
             // 
             // CommandLine19TextBox
             // 

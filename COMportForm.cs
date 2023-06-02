@@ -10,6 +10,7 @@
 //
 // @Revision:
 //
+// 02.06.2023-MD V1.01.15 - Correction to right click and accept button in QuickText menu.
 // 01.06.2023-MD V1.01.15 - 1) Use get ID command rather than blank line to establish a command line connection (blank line offens VSC900).
 //                          2) Correction for when logging is active, was sending "\r\n" as newline instead of CR . . .
 // 04.05.2023-MD V1.01.14 - If only one item in a scan is found, then use this in preference to value in COMport_USER.TXT

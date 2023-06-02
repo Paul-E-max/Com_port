@@ -9,6 +9,7 @@
 // @Tools:      Visual Studio 2019, C#
 //
 // @Revision:
+// 02.06.2023-MD V1.01.15 - Correction to right click and accept button.
 // 25.04.2023-MD V1.01.13 - Correction to Quick Text menu with equals character in it.
 // 21.04.2023-MD V1.01.12 - Check if save is required on exit.
 // 24.02.2023-MD V1.01.09 - Correction to CR from quick text (V1.01.08 didn't use the NL delay on quick text).
@@ -31,6 +32,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace COMport
 {
@@ -292,16 +294,12 @@ namespace COMport
             }
         }
 
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// Execute the quick text (1).
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ButtonExeTextN_MouseUp(object sender, MouseEventArgs e)
+        private void ButtonExeTextN_MouseDown(object sender, MouseEventArgs e)
         {
+            Debug.WriteLine("MouseDown"); // MJD2023
+
             Button sentBy = (Button)sender;
-            int buttonNumber = Convert.ToInt32(sentBy.Name.Substring(13));
+            int buttonNumber = Convert.ToInt32(sentBy.Name.Substring("ButtonExeText".Length));
 
             if (e.Button == MouseButtons.Right)
             {
@@ -310,7 +308,7 @@ namespace COMport
                 EnterLabel formToEnterLabel = new EnterLabel(sentBy.Text);
                 formToEnterLabel.StartPosition = FormStartPosition.CenterParent;
                 //
-                if ( formToEnterLabel.ShowDialog() == DialogResult.OK )
+                if (formToEnterLabel.ShowDialog() == DialogResult.OK)
                 {
                     sentBy.Text = formToEnterLabel.newLabel;
                     SaveButton.ForeColor = SAVE_POSSIBLY_REQUIRED;
@@ -321,6 +319,36 @@ namespace COMport
                 executeCommand(buttonNumber);
                 MaySetNewRepeatCommand(buttonNumber);
             }
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// On clicking the execution button.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ButtonExeTextN_Click(object sender, EventArgs e)
+        {
+            Debug.WriteLine("Click"); // MJD2023
+
+            Button sentBy = (Button)sender;
+            int buttonNumber = Convert.ToInt32(sentBy.Name.Substring("ButtonExeText".Length));
+
+            executeCommand(buttonNumber);
+            MaySetNewRepeatCommand(buttonNumber);
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Set accept button to the corrisponding TextBox executed when selected.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CommandLineTextBox_Enter(object sender, EventArgs e)
+        {
+            string controlName = "ButtonExeText" + ((TextBox)sender).Name.Substring("CommandLine".Length).Replace("TextBox", "");
+
+            AcceptButton = (Button)Controls.Find(controlName, false)[0];
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -529,17 +557,6 @@ namespace COMport
         {
             SaveButton.BackColor = Color.White;
             SaveButton.ForeColor = SAVE_POSSIBLY_REQUIRED;
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// Set accept button to the corrisponding TextBox executed when selected.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void CommandLineTextBox_Enter(object sender, EventArgs e)
-        {
-            AcceptButton = (Button)sender;
         }
     }
 }
