@@ -47,7 +47,8 @@ namespace COMport
             this.SerialPort = new System.IO.Ports.SerialPort(this.components);
             this.panel2 = new System.Windows.Forms.Panel();
             this.toolTips = new System.Windows.Forms.ToolTip(this.components);
-            this.characterTimer = new System.Windows.Forms.Timer(this.components);
+            this.TXcharacterTimer = new System.Windows.Forms.Timer(this.components);
+            this.D2XX_RXcharacterTimer = new System.Windows.Forms.Timer(this.components);
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -107,6 +108,8 @@ namespace COMport
             this.COMportComboBox.TabIndex = 0;
             this.toolTips.SetToolTip(this.COMportComboBox, "Select COM port to connect to");
             this.COMportComboBox.DropDown += new System.EventHandler(this.COMportComboBox_DropDown);
+            this.COMportComboBox.SelectedIndexChanged += new System.EventHandler(this.COMportComboBox_SelectedIndexChanged);
+            this.COMportComboBox.Leave += new System.EventHandler(this.COMportComboBox_Leave);
             // 
             // ConnectButton
             // 
@@ -271,10 +274,15 @@ namespace COMport
             this.toolTips.ReshowDelay = 100;
             this.toolTips.ShowAlways = true;
             // 
-            // characterTimer
+            // TXcharacterTimer
             // 
-            this.characterTimer.Interval = 10;
-            this.characterTimer.Tick += new System.EventHandler(this.characterTimer_Tick);
+            this.TXcharacterTimer.Interval = 10;
+            this.TXcharacterTimer.Tick += new System.EventHandler(this.TXcharacterTimer_Tick);
+            // 
+            // D2XX_RXcharacterTimer
+            // 
+            this.D2XX_RXcharacterTimer.Interval = 10;
+            this.D2XX_RXcharacterTimer.Tick += new System.EventHandler(this.D2XX_RXcharacterTimer_Tick);
             // 
             // COMportForm
             // 
@@ -317,7 +325,8 @@ namespace COMport
         private System.Windows.Forms.ComboBox QuickTextComboBox;
         private System.Windows.Forms.ToolTip toolTips;
         private System.Windows.Forms.CheckBox ToolTipsCheckBox;
-        private System.Windows.Forms.Timer characterTimer;
+        private System.Windows.Forms.Timer TXcharacterTimer;
+        private System.Windows.Forms.Timer D2XX_RXcharacterTimer;
     }
 }
 

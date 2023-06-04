@@ -41,4 +41,6 @@ C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_COM_port\obj\Release\COMport.cs
 C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_COM_port\obj\Release\COMport.csproj.CoreCompileInputs.cache
 C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_COM_port\obj\Release\COMport.exe
 C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_COM_port\obj\Release\COMport.pdb
-C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_COM_port\obj\Release\COMport.csproj.AssemblyReference.cache
+C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_COM_port\bin\Release\FTD2XX_NET.dll
+C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_COM_port\bin\Release\FTD2XX_NET.xml
+C:\Users\Michael.Dodd\GitRepos\DISCOVER\DISCOVER_COM_port\obj\Release\COMport.csproj.CopyComplete

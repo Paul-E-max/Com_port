@@ -36,6 +36,9 @@
     <ApplicationIcon>COMport.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FTD2XX_NET">
+      <HintPath>FTDI\FTD2XX_NET.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -55,6 +58,7 @@
     <Compile Include="COMportForm.Designer.cs">
       <DependentUpon>COMportForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="comms_D2XX.cs" />
     <Compile Include="EnterLabel.cs">
       <SubType>Form</SubType>
     </Compile>

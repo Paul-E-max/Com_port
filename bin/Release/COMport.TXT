@@ -61,5 +61,5 @@
   MVC_FFLEX,	115200, ,			,			VERSION,	0 03,		Yes,			0x0A
   MVC_X001,		9600,	,			,			VERSION?,	MVC,		Yes,			0x0A,		10
   PDii,			9600,	ECHO OFF,	ECHO ON,	VERSION,
-  VSC900,		9600,	,			,			TYPE,		,			Yes,			0x0A
+  VSC900,		D2XX,	,			,			TYPE,		,			Yes,			0x0A
   UVSPEC,		9600,	,			,			VERSION,	5.0,		Yes,			0x0A

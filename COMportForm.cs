@@ -10,7 +10,8 @@
 //
 // @Revision:
 //
-// 02.06.2023-MD V1.01.15 - Correction to right click and accept button in QuickText menu.
+// 02.06.2023-MD V1.01.16 - 1) Add D2XX support (specifically for VSC900, but other D2XX projects are applicable).
+//                          2) Correction to right click and accept button.
 // 01.06.2023-MD V1.01.15 - 1) Use get ID command rather than blank line to establish a command line connection (blank line offens VSC900).
 //                          2) Correction for when logging is active, was sending "\r\n" as newline instead of CR . . .
 // 04.05.2023-MD V1.01.14 - If only one item in a scan is found, then use this in preference to value in COMport_USER.TXT
@@ -68,6 +69,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Diagnostics;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace COMport
@@ -77,7 +79,7 @@ namespace COMport
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // Constants
         //
-        const string APP_NAME = "COMport", VERSION = "V1.01.15"; // UPDATE MANUALLY AS APPLICATION EVOLVES.
+        const string APP_NAME = "COMport", VERSION = "V1.01.16"; // UPDATE MANUALLY AS APPLICATION EVOLVES.
         //
         public const string TEXT_FILE_EXT = ".TXT";
         const string LASTUSED_TXT = APP_NAME + "_USER" + TEXT_FILE_EXT;
@@ -95,6 +97,7 @@ namespace COMport
         const int TIMEOUT_NORMAL = 200;         // Normal period to wait for TX or RX to complete (use -1 for debugging, gives infinite period).
         const int TIMEOUT_MAY = 50;             // If not sure that a response is due.
         const int INTERVAL_RESPOND = 175;       // Period between TX and looking for RX (but surely this doesn't need to be this large).
+        const int MAY_TIMEOUT = 25;             // If not sure that a response is due.
 
         const byte BS = 0x08;
         const byte LF = 0x0A;
@@ -123,7 +126,7 @@ namespace COMport
         string EchoOff = "";
         string EchoOn = "";
         string GetID = "";
-        string Response = "";
+        string ExpectedResponse = ""; // Expected response updated by VersionComboBox_SelectedIndexChanged().
         static public string EnterKey = Environment.NewLine;
         static public int InterLineDelay = 0; // Milliseconds delay following an enter sent to target.
         static public int InterCharDelay = 0; // Millisecond delay between characters sent to target.
@@ -140,6 +143,18 @@ namespace COMport
         byte[] RingBuffer = new byte[RING_BUFFER_SIZE];
         byte input_ptr = 0;
         byte output_ptr = 0;
+
+        string OriginalBaudRate = "";                       // Keeps a record of baudrate while D2XX is selected.
+
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        // FTDI specific items
+        //
+        const string D2XX_SELECTION = "D2XX";
+        const bool FTDI_VCP = false;
+        const bool FTDI_D2XX = true;
+        //
+        bool FTDI_mode = FTDI_VCP;
+        D2XX D2xxDevice = new D2XX();                       // Create an instance of D2XX in case that sort of connection is required.
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
@@ -173,44 +188,51 @@ namespace COMport
         /// <param name="e"></param>
         private void COMportForm_Shown(object sender, EventArgs e)
         {
-            scanForAvailableCOMports();
-            //
-            if (1 == COMportComboBox.Items.Count)
+            if (FTDI_D2XX == FTDI_mode)
             {
-                // There is only one COM port available, make a note of the original COM port selected by
-                // the USER file and attempt to connect to the one available COM port.  If it fails, then
-                // just restore the original COM port saved above.
-                //
-                string originalCOMport = COMportComboBox.Text;
-
-                COMportComboBox.Text = COMportComboBox.Items[0].ToString();
-                ConnectButton.PerformClick();
-                if(VersionComboBox.Enabled)
-                {
-                    // When version box is enabled, it means the connection failed, so restore the COM port.
-                    //
-                    if( originalCOMport.Length > 0 )
-                    {
-                        COMportComboBox.Text = originalCOMport;
-                    }
-                }
+                ConnectButton.PerformClick(); // Any D2XX device is worth a go.
             }
             else
             {
-                // If there is a COM port defined by USER file, try to connect to it.  If not, just display
-                // the first item in the list.
+                scanForAvailableCOMports();
                 //
-                if (COMportComboBox.Text.Length > 0)
+                if (1 == COMportComboBox.Items.Count)
                 {
-                    // The USER file had a COM port that is plugged in, so lets try and connect.
+                    // There is only one COM port available, make a note of the original COM port selected by
+                    // the USER file and attempt to connect to the one available COM port.  If it fails, then
+                    // just restore the original COM port saved above.
                     //
+                    string originalCOMport = COMportComboBox.Text;
+
+                    COMportComboBox.Text = COMportComboBox.Items[0].ToString();
                     ConnectButton.PerformClick();
+                    if (VersionComboBox.Enabled)
+                    {
+                        // When version box is enabled, it means the connection failed, so restore the COM port.
+                        //
+                        if (originalCOMport.Length > 0)
+                        {
+                            COMportComboBox.Text = originalCOMport;
+                        }
+                    }
                 }
                 else
                 {
-                    // Guess the first COM port in the list is the one.
+                    // If there is a COM port defined by USER file, try to connect to it.  If not, just display
+                    // the first item in the list.
                     //
-                    if (COMportComboBox.Items.Count > 0) COMportComboBox.Text = COMportComboBox.Items[0].ToString();
+                    if (COMportComboBox.Text.Length > 0)
+                    {
+                        // The USER file had a COM port that is plugged in, so lets try and connect.
+                        //
+                        ConnectButton.PerformClick();
+                    }
+                    else
+                    {
+                        // Guess the first COM port in the list is the one.
+                        //
+                        if (COMportComboBox.Items.Count > 0) COMportComboBox.Text = COMportComboBox.Items[0].ToString();
+                    }
                 }
             }
         }
@@ -290,8 +312,8 @@ namespace COMport
 
             if (CONNECT_LABEL == ConnectButton.Text)
             {
-                // CONNECTING TO COM PORT
-                // ----------------------
+                // CONNECTING TO A PORT
+                // --------------------
                 //
                 if (0 == COMportComboBox.Text.Length)
                 {
@@ -309,35 +331,44 @@ namespace COMport
                     ConnectButton.BackColor = System.Drawing.Color.Yellow;
                     ConnectButton.Refresh();
                     //
-                    // Attempt to connect to a COM port . . .
+                    // Attempt to connect to the selected port.
                     //
-                    if (COMportComboBox.Text.Substring(0, 3) == "COM")
+                    if ((COMportComboBox.Text.Substring(0, 3) == "COM") || (FTDI_D2XX == FTDI_mode))
                     {
                         try // The following is sensitive to communication errors, and will abandon the task if one occurs.
                         {
-                            if (SerialPort.IsOpen) SerialPort.Close();
-                            SerialPort.PortName = COMportComboBox.Text;
-                            SerialPort.ReadTimeout = TIMEOUT_NORMAL;
-                            SerialPort.WriteTimeout = TIMEOUT_NORMAL;
-                            SerialPort.BaudRate = Convert.ToInt32(BaudComboBox.Text);
-                            SerialPort.Open();
+                            Port_Close();
+                            //
+                            if (FTDI_D2XX == FTDI_mode)
+                            {
+                                D2xxDevice.OpenBySerial(VersionComboBox.Text);
+                                D2XX_RXcharacterTimer.Enabled = true;
+                            }
+                            else
+                            {
+                                SerialPort.PortName = COMportComboBox.Text;
+                                SerialPort.ReadTimeout = TIMEOUT_NORMAL;
+                                SerialPort.WriteTimeout = TIMEOUT_NORMAL;
+                                SerialPort.BaudRate = Convert.ToInt32(BaudComboBox.Text);
+                                SerialPort.Open();
+                            }
                             if (GetID.Length > 0)
                             {
                                 // Attempt to connect to a device with a specific response.
                                 //
-                                serialPortWriteLine(GetID); // This is just sent to establish a connection and ensure last character sent was ENTER.
+                                Port_WritePauseAndDiscard(GetID); // This is just sent to establish a connection and ensure last character sent was ENTER.
                                 //
-                                if( EchoOff.Length > 0 ) serialPortWriteLine(EchoOff);
-                                if( GetID.Length > 0 ) versionIs = serialPortCommandresponse(GetID);
-                                if( versionIs.ToUpper().StartsWith( Response ) )
+                                if( EchoOff.Length > 0 ) Port_WritePauseAndDiscard(EchoOff);
+                                if( GetID.Length > 0 ) versionIs = Port_WriteAndRespond(GetID, "versionIs");
+                                if( versionIs.ToUpper().StartsWith( ExpectedResponse ) )
                                 {
                                     // Found a valid connection !
                                     //
                                     connectedTo(true);
                                     this.Text += " ---> ";
-                                    if( VersionComboBox.Text != Response ) this.Text += VersionComboBox.Text + " ";
+                                    if( VersionComboBox.Text != ExpectedResponse ) this.Text += VersionComboBox.Text + " ";
                                     this.Text += versionIs;
-                                    if( EchoOn.Length > 0 ) serialPortWriteLine(EchoOn);
+                                    if( EchoOn.Length > 0 ) Port_WritePauseAndDiscard(EchoOn);
                                 }
                             }
                             else
@@ -346,7 +377,7 @@ namespace COMport
                                 //
                                 connectedTo(true);
                                 this.Text += " connected";
-                                if (EchoOn.Length > 0) serialPortWriteLine(EchoOn);
+                                if (EchoOn.Length > 0) Port_WritePauseAndDiscard(EchoOn);
                             }
                             CommsTextBox.Focus();
                         }
@@ -373,18 +404,36 @@ namespace COMport
             }
             else
             {
-                COMportComboBox.Enabled = true;
-            }
-            if( COMportComboBox.Enabled )
-            {
-                if (SerialPort.IsOpen)
+                // DISCONNECTING PORT
+                // ------------------
+                //
+                if (FTDI_D2XX == FTDI_mode)
                 {
-                    SerialPort.DiscardInBuffer();
-                    SerialPort.DiscardOutBuffer();
-                    //
-                    SerialPort.Close();
+                    D2xxDevice.Close();
+                    D2XX_RXcharacterTimer.Enabled = false;
                 }
-                connectedTo(false);
+                else
+                {
+                    COMportComboBox.Enabled = true; // Indicates the the connection is not made (for VCP only).
+                }
+            }
+            if (FTDI_D2XX == FTDI_mode)
+            {
+                if (!D2xxDevice.IsConnected) connectedTo(false);
+            }
+            else
+            {
+                if (COMportComboBox.Enabled)
+                {
+                    if (SerialPort.IsOpen)
+                    {
+                        SerialPort.DiscardInBuffer();
+                        SerialPort.DiscardOutBuffer();
+                        //
+                        Port_Close();
+                    }
+                    connectedTo(false);
+                }
             }
         }
 
@@ -426,87 +475,9 @@ namespace COMport
             {
                 COMportComboBox.Items.Add(name);
             }
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// Clear out any characters hanging around in the ports output buffer.
-        /// </summary>
-        /// <param name=""></param>
-        /// <returns></returns>
-        /// 
-        private void serialPortClearbuffer()
-        {
-            SerialPort.ReadTimeout = TIMEOUT_IMMEDIATE;
+            // Check for D2XX devices.
             //
-            for (int i = 0; i < TIMEOUT_CLEARS; i++)
-            {
-                try
-                {
-                    SerialPort.ReadLine();
-                }
-                catch
-                {
-                    break; // Nothing immediately available, so done.
-                }
-            }
-            SerialPort.ReadTimeout = TIMEOUT_NORMAL;
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// Write a line to the serial port, ignore response.
-        /// </summary>
-        private void serialPortWriteLine(string command)
-        {
-            serialPortClearbuffer();
-            //
-            SerialPort.WriteLine(command);
-            Thread.Sleep(INTERVAL_RESPOND);
-            //
-            SerialPort.ReadTimeout = TIMEOUT_MAY; // Select a short timeout.
-            try
-            {
-                SerialPort.ReadLine();
-            }
-            catch
-            {
-                // ignore no response, possibly just no echo.
-            }
-            SerialPort.ReadTimeout = TIMEOUT_NORMAL;
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// Read a line from the serial port, but discard any CRLF characters.
-        /// </summary>
-        private string serialPortReadLine()
-        {
-            string response;
-
-            Thread.Sleep(INTERVAL_RESPOND);
-            response = SerialPort.ReadLine();
-            response = response.Replace("\r", "").Replace("\n", "");
-            //
-            return response;
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// Send the command and get a response.
-        /// </summary>
-        /// <param name="command"> to send </param>
-        /// <returns>Responding string</returns>
-        private string serialPortCommandresponse(string command)
-        {
-            string response;
-
-            serialPortClearbuffer(); // Make sure nothing is sitting in the pipeline.
-            //
-            SerialPort.WriteLine(command);
-            response = serialPortReadLine();
-            //
-            return response;
+            if (D2xxDevice.ScanD2XX() > 0) COMportComboBox.Items.Add(D2XX_SELECTION);
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -540,72 +511,65 @@ namespace COMport
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
-        /// When ever serial data is received, display it on CommsTextBox.
+        /// Process the received characters from the input device.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        /// <param name="inputs"></param>
+        /// <param name="readLength"></param>
+        private void processRXcharacters( byte[] inputs, int readLength )
         {
             int i;
 
-            if ( false == COMportComboBox.Enabled )
+            for (i = 0; i < readLength; i++)
             {
-                int readLength = SerialPort.BytesToRead;
-                var inputs = new byte[readLength];
-
-                SerialPort.Read(inputs, 0, readLength);
-                for ( i=0; i<readLength; i++ )
+                if (BS == inputs[i])
                 {
-                    if( BS == inputs[i] )
+                    if (i != 0)
                     {
-                        if ( i != 0 )
-                        {
-                            // Need to handle the characters in front of the BS.
-                            //
-                            updateCommsTextBox(Encoding.ASCII.GetString(inputs, 0, i));
-                            //
-                            // And force the byte array to have BS as the first character.
-                            //
-                            for (int shift = i; shift < readLength; shift++)
-                            {
-                                inputs[shift - i] = inputs[shift];
-                            }
-                            readLength -= i;
-                            i = 0;
-                        }
-                        // The BS causes the CommsTextBox to loose a character at the end of the existing content.
+                        // Need to handle the characters in front of the BS.
                         //
-                        if (CommsTextBox.TextLength > 0)
+                        updateCommsTextBox(Encoding.ASCII.GetString(inputs, 0, i));
+                        //
+                        // And force the byte array to have BS as the first character.
+                        //
+                        for (int shift = i; shift < readLength; shift++)
                         {
-                            CommsTextBox.Text = CommsTextBox.Text.Substring(0, CommsTextBox.TextLength - 1);
-                            CommsTextBox.SelectionStart = CommsTextBox.Text.Length; // Place the curser at the end of the text.
-                            CommsTextBox.ScrollToCaret();
+                            inputs[shift - i] = inputs[shift];
                         }
-                        for ( int shift=1; shift<readLength; shift++)
-                        {
-                            inputs[shift - 1] = inputs[shift];
-                        }
-                        readLength--;
-                        i--;
+                        readLength -= i;
+                        i = 0;
                     }
-                }
-                if (readLength > 0)
-                {
-                    string toDisplay = Encoding.ASCII.GetString(inputs, 0, readLength);
+                    // The BS causes the CommsTextBox to loose a character at the end of the existing content.
                     //
-                    // Replace any instances of EnterKey with the standard CRLF sequence used
-                    // by the environment.
-                    //
-                    for( i=0; i<(toDisplay.Length - EnterKey.Length + 1); i++ )
+                    if (CommsTextBox.TextLength > 0)
                     {
-                        if( toDisplay.Substring(i).StartsWith(EnterKey) )
-                        {
-                            toDisplay = toDisplay.Substring(0, i) + Environment.NewLine + toDisplay.Substring(i + EnterKey.Length);
-                            i += (Environment.NewLine.Length - 1);
-                        }
+                        CommsTextBox.Text = CommsTextBox.Text.Substring(0, CommsTextBox.TextLength - 1);
+                        CommsTextBox.SelectionStart = CommsTextBox.Text.Length; // Place the curser at the end of the text.
+                        CommsTextBox.ScrollToCaret();
                     }
-                    updateCommsTextBox(toDisplay);
+                    for (int shift = 1; shift < readLength; shift++)
+                    {
+                        inputs[shift - 1] = inputs[shift];
+                    }
+                    readLength--;
+                    i--;
                 }
+            }
+            if (readLength > 0)
+            {
+                string toDisplay = Encoding.ASCII.GetString(inputs, 0, readLength);
+                //
+                // Replace any instances of EnterKey with the standard CRLF sequence used
+                // by the environment.
+                //
+                for (i = 0; i < (toDisplay.Length - EnterKey.Length + 1); i++)
+                {
+                    if (toDisplay.Substring(i).StartsWith(EnterKey))
+                    {
+                        toDisplay = toDisplay.Substring(0, i) + Environment.NewLine + toDisplay.Substring(i + EnterKey.Length);
+                        i += (Environment.NewLine.Length - 1);
+                    }
+                }
+                updateCommsTextBox(toDisplay);
             }
         }
 
@@ -692,7 +656,7 @@ namespace COMport
         /// </summary>
         private void handleRingBuffer()
         {
-            while(( input_ptr != output_ptr ) && ( false == characterTimer.Enabled ))
+            while(( input_ptr != output_ptr ) && ( false == TXcharacterTimer.Enabled ))
             {
                 // There is currently no inter-character delay in progress, so just go a head and send the characters.
                 //
@@ -704,16 +668,16 @@ namespace COMport
                 {
                     if (InterLineDelay > 0)
                     {
-                        characterTimer.Interval = InterLineDelay;
-                        characterTimer.Start();
+                        TXcharacterTimer.Interval = InterLineDelay;
+                        TXcharacterTimer.Start();
                     }
                 }
                 else
                 {
                     if (InterCharDelay > 0)
                     {
-                        characterTimer.Interval = InterCharDelay;
-                        characterTimer.Start();
+                        TXcharacterTimer.Interval = InterCharDelay;
+                        TXcharacterTimer.Start();
                     }
                 }
                 output_ptr++;
@@ -726,9 +690,9 @@ namespace COMport
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void characterTimer_Tick(object sender, EventArgs e)
+        private void TXcharacterTimer_Tick(object sender, EventArgs e)
         {
-            characterTimer.Stop(); // Each tick could be the last, it depends upon what other characters are waiting about.
+            TXcharacterTimer.Stop(); // Each tick could be the last, it depends upon what other characters are waiting about.
             handleRingBuffer();    // Deal with any idle characers in the ring buffer.
         }
 
@@ -764,13 +728,13 @@ namespace COMport
                     {
                         // Attempt to send this out to the serial device - hope it is still connected.
                         //
-                        SerialPort.Write(TxBuffer, 0, 1);
+                        Port_Write(TxBuffer, 0, 1);
                     }
                     catch
                     {
                         // Failed to talk so close that port and apologise for the break in communication.
                         //
-                        SerialPort.Close();
+                        Port_Close();
                         connectedTo(false);
                         CommsTextBox.AppendText("\r\nERROR: lost connection\r\n\r\n");
                         keyboardChar = 0; // Effectively discarding the character.
@@ -827,6 +791,52 @@ namespace COMport
         private void COMportComboBox_DropDown(object sender, EventArgs e)
         {
             scanForAvailableCOMports();
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Check for D2XX and disable/enable baudrate accordingly.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void COMportComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            updateFTDImode();
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void COMportComboBox_Leave(object sender, EventArgs e)
+        {
+            updateFTDImode();
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Switch between the two FTDI modes . . .
+        /// </summary>
+        private void updateFTDImode()
+        {
+            if (D2XX_SELECTION == COMportComboBox.Text)
+            {
+                if ("N/A" != BaudComboBox.Text) OriginalBaudRate = BaudComboBox.Text;
+                //
+                BaudComboBox.Text = "N/A";
+                BaudComboBox.Enabled = false;
+                //
+                FTDI_mode = FTDI_D2XX;
+            }
+            if (COMportComboBox.Text.StartsWith("COM"))
+            {
+                if (("N/A" == BaudComboBox.Text) && (OriginalBaudRate.Length > 0)) BaudComboBox.Text = OriginalBaudRate;
+                BaudComboBox.Enabled = true;
+                //
+                FTDI_mode = FTDI_VCP;
+            }
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -942,13 +952,16 @@ namespace COMport
                 if (VersionComboBox.Text.ToUpper() == project.name.ToUpper() )
                 {
                     VersionComboBox.Text = project.name;
-                    BaudComboBox.Text = project.baudrate;
+                    //
+                    // Baudrate field may indicate that this project uses D2XX mode only.
+                    //
+                    if (D2XX_SELECTION == project.baudrate) setModeToD2XX(); else setModeToVCP(project.COMport, project.baudrate);
                     EchoOff = project.echoOff;
                     EchoOn = project.echoOn;
                     GetID = project.getID;
-                    Response = project.response;
-                    if (0 == Response.Length) Response = VersionComboBox.Text;
-                    Response = Response.ToUpper();
+                    ExpectedResponse = project.response;
+                    if (0 == ExpectedResponse.Length) ExpectedResponse = VersionComboBox.Text;
+                    ExpectedResponse = ExpectedResponse.ToUpper();
                     HalfDuplexCheckBox.Checked = project.halfDuplex;
                     onEnterComboBox.Text = project.enterKey;
                     try
@@ -974,13 +987,48 @@ namespace COMport
                         menu.NLDelayTextBox.Text = InterLineDelay.ToString();
                         menu.CharDelayTextBox.Text = InterCharDelay.ToString();
                     }
-                    // If the project has been used with a COM port in the past, set it here.
-                    //
-                    if (project.COMport.Length > 0) COMportComboBox.Text = project.COMport;
-                    //
                     break;
                 }
             }
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Set the mode to D2XX.
+        /// </summary>
+        private void setModeToD2XX()
+        {
+            FTDI_mode = FTDI_D2XX;
+            //
+            BaudComboBox.Text = "N/A";
+            BaudComboBox.Enabled = false; // Prevent user from modifying this.
+            COMportComboBox.Text = D2XX_SELECTION;
+            COMportComboBox.Enabled = false; // and indicate that this is D2XX rather than a COM port.
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Set the mode to Virtual COM Port.
+        /// </summary>
+        /// <param name="COMport"></param>
+        private void setModeToVCP(string COMport, string baudrate)
+        {
+            FTDI_mode = FTDI_VCP;
+            //
+            BaudComboBox.Text = baudrate;
+            BaudComboBox.Enabled = true; // Allow user to modify the baudrate.
+            //
+            // If the project has been used with a COM port in the past, set it here.
+            //
+            if (COMport.Length > 0)
+            {
+                COMportComboBox.Text = COMport;
+            }
+            else
+            {
+                COMportComboBox.Text = "N/A";
+            }
+            COMportComboBox.Enabled = true; // Allow user to modify the COM port selected.
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -990,13 +1038,15 @@ namespace COMport
         private void LoadLastUsedInfo()
         {
             string[] lines = new string[0];
+            string userCOMport;
+            string userBaudrate;
 
             if (File.Exists(LASTUSED_TXT)) lines = File.ReadAllLines(LASTUSED_TXT);
             //
             VersionComboBox.Text = findParameterIn(lines, "project", "Unknown");
-            COMportComboBox.Text = findParameterIn(lines, "connection", "");
+            userCOMport = findParameterIn(lines, "connection", "");
             HalfDuplexCheckBox.Checked = ("True" == findParameterIn(lines, "halfDuplex", "false"));
-            BaudComboBox.Text = findParameterIn(lines, "baudrate", "");
+            userBaudrate = findParameterIn(lines, "baudrate", "");
             onEnterComboBox.Text = findParameterIn(lines, "onEnter", "");
             ToolTipsCheckBox.Checked = ("True" == findParameterIn(lines, "toolTips", "True"));
             //
@@ -1011,6 +1061,7 @@ namespace COMport
                     projects[n].COMport = findParameterIn(lines, "connection_" + projects[n].name, "");
                 }
             }
+            if(D2XX_SELECTION == userCOMport) setModeToD2XX(); else setModeToVCP(userCOMport, userBaudrate);
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1332,6 +1383,343 @@ namespace COMport
             //
             OutputLogFile = ""; // Disables the log process.
             StartLogButton.Text = LOG_START_LABEL;
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// When ever serial data is received, display it on CommsTextBox.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            if (false == COMportComboBox.Enabled)
+            {
+                int readLength = SerialPort.BytesToRead;
+                var inputs = new byte[readLength];
+
+                SerialPort.Read(inputs, 0, readLength);
+                processRXcharacters(inputs, readLength);
+            }
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Check for characters coming in from D2XX device.
+        /// 
+        /// NOTES:
+        /// 
+        /// Would have much preferred to have done this using DataReceived process in
+        /// the same fashion as SerialPort_DataReceived, but couldn't find the right
+        /// way to initialise and utilise the thing.  This alternative just ticks
+        /// along at 10ms intervals to check for characters coming in from the D2XX
+        /// device and deals with them using the shared processRXcharacters function.
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void D2XX_RXcharacterTimer_Tick(object sender, EventArgs e)
+        {
+            int readLength = (int)D2xxDevice.BytesToRead();
+
+            if (readLength > 0)
+            {
+                var inputs = new byte[readLength];
+
+                D2xxDevice.Read(inputs, 0, readLength);
+                processRXcharacters(inputs, readLength);
+            }
+        }
+
+        // ------------------------------------------------------------------------------------------------------------------
+        // ------------------------------------------------------------------------------------------------------------------
+        // -----------------------                                                                 --------------------------
+        // -----------------------    Dual Port Type Handling (Serial Port (VCP) and D2xx)         --------------------------
+        // -----------------------                                                                 --------------------------
+        // ------------------------------------------------------------------------------------------------------------------
+        // ------------------------------------------------------------------------------------------------------------------
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Clear the data buffer contents for the serial port or D2xx device
+        /// </summary>
+        private void Port_ClearBuffer()
+        {
+            if (FTDI_D2XX == FTDI_mode)
+            {
+                D2xxDevice.ClearBuffer();
+            }
+            else
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    if (false == Port_PossibleRead(1)) break;
+                }
+            }
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Close the current device.
+        /// </summary>
+        private void Port_Close()
+        {
+            if (FTDI_D2XX == FTDI_mode)
+            {
+                if( D2xxDevice.IsConnected ) D2xxDevice.Close();
+            }
+            else
+            {
+                if (SerialPort.IsOpen) SerialPort.Close();
+            }
+        }
+
+        private void Port_Write(byte[] buffer, int offset, int count)
+        {
+            if (FTDI_D2XX == FTDI_mode)
+            {
+                D2xxDevice.Write(buffer, offset, count);
+            }
+            else
+            {
+                SerialPort.Write(buffer, offset, count);
+            }
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Write a line to the serial port or D2xx device
+        /// </summary>
+        private void Port_WriteLine(string command)
+        {
+#if DEBUG_LOGGING
+			logToTestFile(command);
+#endif
+            if (FTDI_D2XX == FTDI_mode)
+            {
+                D2xxDevice.WriteLine(command);
+            }
+            else
+            {
+                SerialPort.WriteLine(command);
+            }
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Read a line from the serial port or D2xx device
+        /// </summary>
+        /// <returns>Line read from the port</returns>
+        private string Port_ReadLine()
+        {
+            string response;
+
+#if DEBUG_LOGGING
+			logToTestFile(command);
+#endif
+            if (FTDI_D2XX == FTDI_mode)
+            {
+                response = D2xxDevice.ReadLine();
+            }
+            else
+            {
+                response = SerialPort.ReadLine();
+            }
+            return response;
+        }
+
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Read a character from the serial port or D2xx device
+        /// </summary>
+        /// <returns>Character read from the port</returns>
+        private int Port_ReadChar()
+        {
+            int character;
+
+            if (FTDI_D2XX == FTDI_mode)
+            {
+                character = D2xxDevice.ReadChar();
+            }
+            else
+            {
+                character = SerialPort.ReadChar();
+            }
+
+            return character;
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Read a number of characters from the serial port of D2xx device
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="offset"></param>
+        /// <param name="count"></param>
+        /// 
+        private void Port_Read(byte[] buffer, int offset, int count)
+        {
+
+            if (FTDI_D2XX == FTDI_mode)
+            {
+                D2xxDevice.Read(buffer, offset, count);
+            }
+            else
+            {
+                SerialPort.Read(buffer, offset, count);
+            }
+
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Possibly need to read a response, if echo is off it just times out. From the serial port or D2xx device
+        /// </summary>
+        /// <returns>Response</returns>
+        private bool Port_PossibleRead(int shorterTimeout)
+        {
+            bool result = false;
+
+            try
+            {
+                if (FTDI_D2XX == FTDI_mode)
+                {
+                    D2xxDevice.ReadLine();
+                    result = true;
+                }
+                else
+                {
+                    SerialPort.ReadTimeout = shorterTimeout;
+                    Port_ReadLine("any response");
+                    result = true;
+                }
+            }
+            catch
+            {
+                // ignore no response, possibly just no echo.
+            }
+            if (FTDI_VCP == FTDI_mode) SerialPort.ReadTimeout = TIMEOUT_NORMAL;
+            //
+            return result;
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Gets the numbber of avialable bytes from the serial port or D2xx device
+        /// </summary>
+        /// <returns>Number of bytes</returns>
+        private int Port_BytesToRead()
+        {
+            int result = 0;
+
+            if (FTDI_D2XX == FTDI_mode)
+            {
+
+                result = (int)D2xxDevice.BytesToRead();
+            }
+            else
+            {
+                result = SerialPort.BytesToRead;
+            }
+            return result;
+        }
+
+        // ------------------------------------------------------------------------------------------------------------------------
+        // ------------------------------------------------------------------------------------------------------------------------
+        // -------------------------------                                           ----------------------------------------------
+        // -------------------------------           NEW SERIAL PORT FUNCTIONS       ----------------------------------------------
+        // -------------------------------                                           ----------------------------------------------
+        // ------------------------------------------------------------------------------------------------------------------------
+        // ------------------------------------------------------------------------------------------------------------------------
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Write a line to the serial port then get a response.
+        /// </summary>
+        private string Port_WriteAndRespond(string command, string prompt)
+        {
+            Port_WriteLine(command);
+            //
+            // A delay is not required here because there is a set timeout provided in read line below . . .
+            // Thread.Sleep(INTERVAL_RESPOND);
+            //
+            string response = Port_ReadLine(prompt);
+            //
+            return response;
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Write a line to the serial port, pause for a moment before ignore the response.
+        /// </summary>
+        private void Port_WritePauseAndDiscard(string command)
+        {
+            Port_ClearBuffer();
+            //
+            Port_WriteLine(command);
+            Thread.Sleep(INTERVAL_RESPOND);
+            Port_PossibleRead(MAY_TIMEOUT);
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Write a line to the serial port and ignore any response.
+        /// </summary>
+        private void Port_WriteAndDiscard(string command)
+        {
+            Port_WriteLine(command);
+            Port_PossibleRead(MAY_TIMEOUT);
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Read a line back from serial device, discard the implied LF too
+        /// </summary>
+        /// <param name="prompt"></param>
+        /// <param name="response"></param>
+        private string Port_ReadLine(string prompt)
+        {
+            string response;
+
+#if DEBUG_LOGGING
+			logToTestFile(command);
+#endif
+            if (FTDI_D2XX == FTDI_mode)
+            {
+                response = D2xxDevice.ReadLine();
+            }
+            else
+            {
+                response = SerialPort.ReadLine();
+                //
+                if ("\r" == EnterKey) // The above CR read a line in.
+                {
+                    byte[] input = new byte[1];
+                    Port_Read(input, 0, 1); // Which would return (and discard) the LF character that followed the above CR.
+                }
+            }
+#if DEBUG_LOGGING
+#if DEBUG_BY_STRING
+			// Log strings being sent . . .
+			//
+			logToTestFile(", " + prompt + " = {" + response + "}\r\n");
+#else
+			// Log strings as character values . . .
+			//
+			byte[] bytes = Encoding.ASCII.GetBytes(response);
+			string list = "";
+			for (int i = 0; i < bytes.Length; i++)
+			{
+				if (i > 0) list += ", ";
+				list += String.Format("{0}", bytes[i]);
+			}
+			logToTestFile(", " + prompt + " = {" + list + "}\r\n");
+#endif
+#endif
+            response = response.Replace("\r", "").Replace("\n", "");
+            //
+            return response;
         }
     }
 }
