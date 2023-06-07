@@ -94,8 +94,8 @@ namespace COMport
             setText(lines, 18, ButtonExeText18, CommandLine18TextBox, ManualEnter18CheckBox);
             setText(lines, 19, ButtonExeText19, CommandLine19TextBox, ManualEnter19CheckBox);
             //
-            CharDelayTextBox.Text = COMportForm.InterCharDelay.ToString();
-            NLDelayTextBox.Text = COMportForm.InterLineDelay.ToString();
+            CharDelayTextBox.Text = COMport.InterCharDelay.ToString();
+            NLDelayTextBox.Text = COMport.InterLineDelay.ToString();
             //
             SaveButton.BackColor = SystemColors.Control;
             SaveButton.ForeColor = SAVE_NOT_REQUIRED;
@@ -268,11 +268,11 @@ namespace COMport
         {
             try
             {
-                COMportForm.InterCharDelay = Convert.ToInt32(CharDelayTextBox.Text);
+                COMport.InterCharDelay = Convert.ToInt32(CharDelayTextBox.Text);
             }
             catch
             {
-                COMportForm.InterCharDelay = 0;
+                COMport.InterCharDelay = 0;
             }
         }
 
@@ -286,18 +286,16 @@ namespace COMport
         {
             try
             {
-                COMportForm.InterLineDelay = Convert.ToInt32(NLDelayTextBox.Text);
+                COMport.InterLineDelay = Convert.ToInt32(NLDelayTextBox.Text);
             }
             catch
             {
-                COMportForm.InterLineDelay = 0;
+                COMport.InterLineDelay = 0;
             }
         }
 
         private void ButtonExeTextN_MouseDown(object sender, MouseEventArgs e)
         {
-            Debug.WriteLine("MouseDown"); // MJD2023
-
             Button sentBy = (Button)sender;
             int buttonNumber = Convert.ToInt32(sentBy.Name.Substring("ButtonExeText".Length));
 
@@ -329,8 +327,6 @@ namespace COMport
         /// <param name="e"></param>
         private void ButtonExeTextN_Click(object sender, EventArgs e)
         {
-            Debug.WriteLine("Click"); // MJD2023
-
             Button sentBy = (Button)sender;
             int buttonNumber = Convert.ToInt32(sentBy.Name.Substring("ButtonExeText".Length));
 

@@ -31,7 +31,7 @@ namespace COMport
         {
             this.NewLabelTextBox = new System.Windows.Forms.TextBox();
             this.OKbutton = new System.Windows.Forms.Button();
-            this.CancelButton = new System.Windows.Forms.Button();
+            this.CancelChangesButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // NewLabelTextBox
@@ -51,15 +51,15 @@ namespace COMport
             this.OKbutton.UseVisualStyleBackColor = true;
             this.OKbutton.Click += new System.EventHandler(this.OKbutton_Click);
             // 
-            // CancelButton
+            // CancelChangesButton
             // 
-            this.CancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelButton.Location = new System.Drawing.Point(194, 10);
-            this.CancelButton.Name = "CancelButton";
-            this.CancelButton.Size = new System.Drawing.Size(50, 23);
-            this.CancelButton.TabIndex = 3;
-            this.CancelButton.Text = "Cancel";
-            this.CancelButton.UseVisualStyleBackColor = true;
+            this.CancelChangesButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.CancelChangesButton.Location = new System.Drawing.Point(194, 10);
+            this.CancelChangesButton.Name = "CancelChangesButton";
+            this.CancelChangesButton.Size = new System.Drawing.Size(50, 23);
+            this.CancelChangesButton.TabIndex = 3;
+            this.CancelChangesButton.Text = "Cancel";
+            this.CancelChangesButton.UseVisualStyleBackColor = true;
             // 
             // EnterLabel
             // 
@@ -67,7 +67,7 @@ namespace COMport
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(260, 40);
-            this.Controls.Add(this.CancelButton);
+            this.Controls.Add(this.CancelChangesButton);
             this.Controls.Add(this.OKbutton);
             this.Controls.Add(this.NewLabelTextBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
@@ -81,6 +81,6 @@ namespace COMport
         #endregion
         private System.Windows.Forms.TextBox NewLabelTextBox;
         private System.Windows.Forms.Button OKbutton;
-        private System.Windows.Forms.Button CancelButton;
+        private System.Windows.Forms.Button CancelChangesButton;
     }
 }

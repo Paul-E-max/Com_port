@@ -1,8 +1,8 @@
-project=VSC900
-connection=D2XX
-baudrate=N/A
-halfDuplex=True
-onEnter=0x0A
+project=DISCOVER
+connection=COM22
+baudrate=115200
+halfDuplex=False
+onEnter=
 toolTips=True
 connection_Unknown=D2XX
 connection_BOOTLOAD=COM22

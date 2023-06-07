@@ -61,12 +61,12 @@ namespace COMport.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static System.Drawing.Icon COMport {
+        internal static byte[] FTD2XX_NET {
             get {
-                object obj = ResourceManager.GetObject("COMport", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
+                object obj = ResourceManager.GetObject("FTD2XX_NET", resourceCulture);
+                return ((byte[])(obj));
             }
         }
     }

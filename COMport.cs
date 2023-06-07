@@ -10,6 +10,7 @@
 //
 // @Revision:
 //
+// 07.06.2023-MD V1.01.17 - Embed the FTDI DLL within EXE file.
 // 02.06.2023-MD V1.01.16 - 1) Add D2XX support (specifically for VSC900, but other D2XX projects are applicable).
 //                          2) Correction to right click and accept button.
 // 01.06.2023-MD V1.01.15 - 1) Use get ID command rather than blank line to establish a command line connection (blank line offens VSC900).
@@ -71,15 +72,16 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Reflection;
 
 namespace COMport
 {
-    public partial class COMportForm : Form
+    public partial class COMport : Form
     {
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // Constants
         //
-        const string APP_NAME = "COMport", VERSION = "V1.01.16"; // UPDATE MANUALLY AS APPLICATION EVOLVES.
+        const string APP_NAME = "COMport", VERSION = "V1.01.17"; // UPDATE MANUALLY AS APPLICATION EVOLVES.
         //
         public const string TEXT_FILE_EXT = ".TXT";
         const string LASTUSED_TXT = APP_NAME + "_USER" + TEXT_FILE_EXT;
@@ -154,15 +156,40 @@ namespace COMport
         const bool FTDI_D2XX = true;
         //
         bool FTDI_mode = FTDI_VCP;
-        D2XX D2xxDevice = new D2XX();                       // Create an instance of D2XX in case that sort of connection is required.
+        //
+        // This is the global instance of D2XX, but need to delay the initialisation of it until
+        // after DLL has been loaded, see COMportForm_Load() function . . .
+        //
+        D2XX D2xxDevice;
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
-        /// 
+        /// Main entry point into COMport application code.
         /// </summary>
-        public COMportForm()
+        public COMport()
         {
+            LoadDLLfiles();
             InitializeComponent();
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Load any DLL files required.
+        /// </summary>
+        private void LoadDLLfiles()
+        {
+            AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
+            {
+                string resourceName = new AssemblyName(args.Name).Name + ".dll";
+                string resource = Array.Find(this.GetType().Assembly.GetManifestResourceNames(), element => element.EndsWith(resourceName));
+
+                using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resource))
+                {
+                    Byte[] assemblyData = new Byte[stream.Length];
+                    stream.Read(assemblyData, 0, assemblyData.Length);
+                    return Assembly.Load(assemblyData);
+                }
+            };
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -173,6 +200,8 @@ namespace COMport
         /// <param name="e"></param>
         private void COMportForm_Load(object sender, EventArgs e)
         {
+            D2xxDevice = new D2XX();        // Need to delay the actual initialisation of D2XX until after the FTDI DLL has been loaded!
+            //
             this.Text = APP_NAME + " - " + VERSION;
             loadProjectInfo();              // Fills in any project information available, but doesn't affect the GUI selections.
             LoadLastUsedInfo();

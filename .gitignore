@@ -1,6 +1,6 @@
-obj/*.*
-obj/Release/*.*
-bin/debug/*.*
+obj/*
+obj/Release/*
+bin/debug/*
 bin/Release/*.LOG
 bin/Release/*.CFG
 *.exe.config

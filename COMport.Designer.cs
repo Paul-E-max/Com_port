@@ -1,7 +1,7 @@
 ﻿
 namespace COMport
 {
-    partial class COMportForm
+    partial class COMport
     {
         /// <summary>
         /// Required designer variable.
@@ -30,7 +30,7 @@ namespace COMport
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(COMportForm));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(COMport));
             this.CommsTextBox = new System.Windows.Forms.TextBox();
             this.BaudComboBox = new System.Windows.Forms.ComboBox();
             this.COMportComboBox = new System.Windows.Forms.ComboBox();
@@ -284,7 +284,7 @@ namespace COMport
             this.D2XX_RXcharacterTimer.Interval = 10;
             this.D2XX_RXcharacterTimer.Tick += new System.EventHandler(this.D2XX_RXcharacterTimer_Tick);
             // 
-            // COMportForm
+            // COMport
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -294,7 +294,7 @@ namespace COMport
             this.Controls.Add(this.panel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(2);
-            this.Name = "COMportForm";
+            this.Name = "COMport";
             this.Text = "COM port";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.COMportForm_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.COMportForm_FormClosed);

@@ -38,6 +38,7 @@
   <ItemGroup>
     <Reference Include="FTD2XX_NET">
       <HintPath>FTDI\FTD2XX_NET.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -52,11 +53,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="COMportForm.cs">
+    <Compile Include="COMport.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="COMportForm.Designer.cs">
-      <DependentUpon>COMportForm.cs</DependentUpon>
+    <Compile Include="COMport.Designer.cs">
+      <DependentUpon>COMport.cs</DependentUpon>
     </Compile>
     <Compile Include="comms_D2XX.cs" />
     <Compile Include="EnterLabel.cs">
@@ -73,8 +74,8 @@
     <Compile Include="QuickTextMenu.Designer.cs">
       <DependentUpon>QuickTextMenu.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="COMportForm.resx">
-      <DependentUpon>COMportForm.cs</DependentUpon>
+    <EmbeddedResource Include="COMport.resx">
+      <DependentUpon>COMport.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="EnterLabel.resx">
       <DependentUpon>EnterLabel.cs</DependentUpon>
@@ -106,10 +107,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\COMport.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="COMport.ico" />
+    <EmbeddedResource Include="FTDI\FTD2XX_NET.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
