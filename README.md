@@ -47,6 +47,19 @@ The file COMport.TXT lists common Foster and Freeman projects that can communica
 
 # Recent updates
 
+V1.01.18 = 27.06.2023
+
+Right-click "Tx on Enter" for auto-new-line on display output (Use Y/N for half-duplex in COMport.TXT).
+This was introduced for the likes of Tenma power supply communications.
+
+V1.01.17 - 07.06.2023
+
+Embed the FTDI DLL within the EXE file.
+
+V1.01.16 - 04.06.2023
+
+Add D2XX support.
+
 V1.01.15 - 01.06.2023
 
 1) Use get ID command rather than blank line to establish a command line connection (blank line offens VSC900).
