@@ -1,8 +1,8 @@
 "Returns"=VERSION\n
-"Get the serial number"=prodgetsno\n
-"Get manifest number"=SDEVICE 2\n
-"Command4"=gethumidityrh0\ngetrhcal 0\n
-"Command5"=getRHCal\n
+"Command2"=FAKE GISM1 3 0\nFAKE FLED1 15 0\nFAKE FLED1 5 0\nFAKE FLED1 1 0\nFAKE FILTER 1 1000\nFAKE FILTER 2 2000\nFAKE RH 1 350\nFAKE RHHEALTH 1 100\nFAKE RH 2 355\nFAKE RHHEALTH 2 200\nFAKE RH 3 360\nFAKE RHHEALTH 3 300\nFAKE DOOR 1\nFAKE SAFETY 1\n
+"Command3"=FAKE STATUS 7 0\n
+"Command4"=\n
+"Command5"=\n
 "Command6"=\n
 "Command7"=\n
 "Command8"=\n

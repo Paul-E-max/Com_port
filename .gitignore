@@ -1,8 +1,7 @@
 obj/*
-obj/Release/*
-bin/debug/*
-bin/Release/*.LOG
-bin/Release/*.CFG
+.vs/*
+bin/Debug/*
+*.LOG
 *.exe.config
 *.cache
 *.pdb

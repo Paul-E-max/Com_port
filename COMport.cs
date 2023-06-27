@@ -10,6 +10,7 @@
 //
 // @Revision:
 //
+// 27.06.2023-MD V1.01.18 - Right-click "Tx on Enter" for auto-new-line on the display output.
 // 07.06.2023-MD V1.01.17 - Embed the FTDI DLL within EXE file.
 // 02.06.2023-MD V1.01.16 - 1) Add D2XX support (specifically for VSC900, but other D2XX projects are applicable).
 //                          2) Correction to right click and accept button.
@@ -81,7 +82,7 @@ namespace COMport
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // Constants
         //
-        const string APP_NAME = "COMport", VERSION = "V1.01.17"; // UPDATE MANUALLY AS APPLICATION EVOLVES.
+        const string APP_NAME = "COMport", VERSION = "V1.01.18"; // UPDATE MANUALLY AS APPLICATION EVOLVES.
         //
         public const string TEXT_FILE_EXT = ".TXT";
         const string LASTUSED_TXT = APP_NAME + "_USER" + TEXT_FILE_EXT;
@@ -117,7 +118,7 @@ namespace COMport
             public string echoOn;
             public string getID;
             public string response;
-            public bool halfDuplex;
+            public CheckState halfDuplex;
             public string enterKey;
             public string NLDelay;
             public string ChDelay;
@@ -308,7 +309,7 @@ namespace COMport
                     output.WriteLine("project=" + VersionComboBox.Text);
                     output.WriteLine("connection=" + COMportComboBox.Text);
                     output.WriteLine("baudrate=" + BaudComboBox.Text);
-                    output.WriteLine("halfDuplex=" + (HalfDuplexCheckBox.Checked ? "True" : "False"));
+                    output.WriteLine("halfDuplex=" + ((CheckState.Indeterminate == HalfDuplexCheckBox.CheckState) ? "Indeterminate" : HalfDuplexCheckBox.Checked ? "True" : "False"));
                     output.WriteLine("onEnter=" + onEnterComboBox.Text);
                     output.WriteLine("toolTips=" + (ToolTipsCheckBox.Checked ? "True" : "False"));
                     //
@@ -599,6 +600,11 @@ namespace COMport
                     }
                 }
                 updateCommsTextBox(toDisplay);
+                //
+                if (CheckState.Indeterminate == HalfDuplexCheckBox.CheckState)
+                {
+                    updateCommsTextBox("\r\n");
+                }
             }
         }
 
@@ -918,7 +924,7 @@ namespace COMport
                 projects[n].echoOn = "";
                 projects[n].getID = "";
                 projects[n].response = "";
-                projects[n].halfDuplex = false;
+                projects[n].halfDuplex = CheckState.Unchecked;
                 projects[n].enterKey = "";
                 projects[n].NLDelay = "";
                 projects[n].COMport = ""; // To be filled in by LoadLastUsedInfo().
@@ -955,7 +961,23 @@ namespace COMport
                         if (info.Length > 3) projects[n].echoOn = info[3];
                         if (info.Length > 4) projects[n].getID = info[4];
                         if (info.Length > 5) projects[n].response = info[5];
-                        if (info.Length > 6) projects[n].halfDuplex = info[6].ToUpper().StartsWith("Y");
+                        if (info.Length > 6)
+                        {
+                            string halfDuplex = info[6].ToUpper();
+                            
+                            if ("YES" == halfDuplex)
+                            {
+                                projects[n].halfDuplex = CheckState.Checked;
+                            }
+                            else if( "Y/N" == halfDuplex )
+                            {
+                                projects[n].halfDuplex = CheckState.Indeterminate;
+                            }
+                            else
+                            {
+                                projects[n].halfDuplex = CheckState.Unchecked;
+                            }
+                        }
                         if (info.Length > 7) projects[n].enterKey = info[7];
                         if (info.Length > 8) projects[n].NLDelay = info[8];
                         if (info.Length > 9) projects[n].ChDelay = info[9];
@@ -991,7 +1013,7 @@ namespace COMport
                     ExpectedResponse = project.response;
                     if (0 == ExpectedResponse.Length) ExpectedResponse = VersionComboBox.Text;
                     ExpectedResponse = ExpectedResponse.ToUpper();
-                    HalfDuplexCheckBox.Checked = project.halfDuplex;
+                    HalfDuplexCheckBox.CheckState = project.halfDuplex;
                     onEnterComboBox.Text = project.enterKey;
                     try
                     {
@@ -1069,12 +1091,21 @@ namespace COMport
             string[] lines = new string[0];
             string userCOMport;
             string userBaudrate;
+            string halfDuplex;
 
             if (File.Exists(LASTUSED_TXT)) lines = File.ReadAllLines(LASTUSED_TXT);
             //
             VersionComboBox.Text = findParameterIn(lines, "project", "Unknown");
             userCOMport = findParameterIn(lines, "connection", "");
-            HalfDuplexCheckBox.Checked = ("True" == findParameterIn(lines, "halfDuplex", "false"));
+            halfDuplex = findParameterIn(lines, "halfDuplex", "false");
+            if ("True" == halfDuplex)
+            {
+                HalfDuplexCheckBox.Checked = true;
+            }
+            else if ("Indeterminate" == halfDuplex)
+            {
+                HalfDuplexCheckBox.CheckState = CheckState.Indeterminate;
+            }
             userBaudrate = findParameterIn(lines, "baudrate", "");
             onEnterComboBox.Text = findParameterIn(lines, "onEnter", "");
             ToolTipsCheckBox.Checked = ("True" == findParameterIn(lines, "toolTips", "True"));
@@ -1699,6 +1730,25 @@ namespace COMport
         {
             Port_WriteLine(command);
             Port_PossibleRead(MAY_TIMEOUT);
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Right-click of Tx on enter check box selects intermediate state which
+        /// forces a CRLF into screen display if not supplied by target device.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void HalfDuplexCheckBox_MouseDown(object sender, MouseEventArgs e)
+        {
+            if( e.Button == MouseButtons.Right )
+            {
+                HalfDuplexCheckBox.CheckState = CheckState.Indeterminate;
+            }
+            else
+            {
+                return;
+            }
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

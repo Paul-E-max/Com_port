@@ -40,7 +40,7 @@ namespace COMport
             this.QuickTextComboBox = new System.Windows.Forms.ComboBox();
             this.StartLogButton = new System.Windows.Forms.Button();
             this.onEnterComboBox = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.TxOnEnterLabel = new System.Windows.Forms.Label();
             this.HalfDuplexCheckBox = new System.Windows.Forms.CheckBox();
             this.clearSreenButton = new System.Windows.Forms.Button();
             this.VersionComboBox = new System.Windows.Forms.ComboBox();
@@ -131,7 +131,7 @@ namespace COMport
             this.panel1.Controls.Add(this.QuickTextComboBox);
             this.panel1.Controls.Add(this.StartLogButton);
             this.panel1.Controls.Add(this.onEnterComboBox);
-            this.panel1.Controls.Add(this.label1);
+            this.panel1.Controls.Add(this.TxOnEnterLabel);
             this.panel1.Controls.Add(this.HalfDuplexCheckBox);
             this.panel1.Controls.Add(this.clearSreenButton);
             this.panel1.Controls.Add(this.VersionComboBox);
@@ -203,14 +203,14 @@ namespace COMport
             this.toolTips.SetToolTip(this.onEnterComboBox, "Typically, use 0x0D for carriage return or 0x0A for line feed");
             this.onEnterComboBox.TextChanged += new System.EventHandler(this.onEnterComboBox_TextChanged);
             // 
-            // label1
+            // TxOnEnterLabel
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(659, 12);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(77, 13);
-            this.label1.TabIndex = 6;
-            this.label1.Text = "Tx on ENTER:";
+            this.TxOnEnterLabel.AutoSize = true;
+            this.TxOnEnterLabel.Location = new System.Drawing.Point(659, 12);
+            this.TxOnEnterLabel.Name = "TxOnEnterLabel";
+            this.TxOnEnterLabel.Size = new System.Drawing.Size(77, 13);
+            this.TxOnEnterLabel.TabIndex = 6;
+            this.TxOnEnterLabel.Text = "Tx on ENTER:";
             // 
             // HalfDuplexCheckBox
             // 
@@ -220,9 +220,11 @@ namespace COMport
             this.HalfDuplexCheckBox.Size = new System.Drawing.Size(79, 17);
             this.HalfDuplexCheckBox.TabIndex = 5;
             this.HalfDuplexCheckBox.Text = "Half-duplex";
-            this.toolTips.SetToolTip(this.HalfDuplexCheckBox, "Tick if device does not use character echo");
+            this.toolTips.SetToolTip(this.HalfDuplexCheckBox, "Tick if device does not use character echo (right-click to auto-new-line on displ" +
+        "ay)");
             this.HalfDuplexCheckBox.UseVisualStyleBackColor = true;
             this.HalfDuplexCheckBox.Click += new System.EventHandler(this.SelectConsoleFollowing_Click);
+            this.HalfDuplexCheckBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.HalfDuplexCheckBox_MouseDown);
             // 
             // clearSreenButton
             // 
@@ -317,7 +319,7 @@ namespace COMport
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Button clearSreenButton;
         private System.Windows.Forms.CheckBox HalfDuplexCheckBox;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label TxOnEnterLabel;
         private System.Windows.Forms.Button StartLogButton;
         private System.Windows.Forms.ComboBox onEnterComboBox;
         public System.Windows.Forms.TextBox CommsTextBox;

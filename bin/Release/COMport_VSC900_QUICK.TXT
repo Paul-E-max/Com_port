@@ -1,10 +1,10 @@
 "Get version"=TYPE\n
 "Get build"=BUILD\n
 "Get date"=DATE\n
-"Command4"=\n
-"Command5"=\n
-"Command6"=\n
-"Command7"=\n
+"Command4"=c1h\n
+"Command5"=c3h\n
+"Command6"=c1h\nc3h\ncnh\n
+"Command7"=c3h\nc1h\n
 "Command8"=\n
 "Command9"=\n
 "Command10"=\n
@@ -15,5 +15,5 @@
 "Command15"=\n
 "Command16"=\n
 "Command17"=\n
-"Command18"=\n
-"Command19"=\n
+"Command18"=CNH\n
+"Command19"=C3X\n

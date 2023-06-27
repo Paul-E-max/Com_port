@@ -33,6 +33,8 @@
 ;
 ; Half-duplex:	Enter Yes for devices that do not echo each character typed by
 ;				the user.  Use No or leave blank for full-duplex communications.
+;				Use Y/N for devices that use half-duplex and require a new-line
+;				injected in the display output at the end of each response.
 ;
 ; Tx on Enter:	On hitting ENTER on the keyboard, an alternative to CR (0x0D)
 ;				can be sent.  This is supplied as a hexadecimal code using the
@@ -58,8 +60,11 @@
   DISCOVER,		115200,	ECHO OFF,	ECHO ON,	VERSION,
   I2C,			115200,	ECHO OFF,	ECHO ON,	VERSION,    ,           ,               ,           10
   LAMP_TRAY,	9600,	,			,			,			,			Yes,			0x0A,		10
-  MVC_FFLEX,	115200, ,			,			VERSION,	0 03,		Yes,			0x0A
+  MVC_FFLEX,	115200, ,			,			VERSION,	0 03,		Yes,			0x0A,       50
   MVC_X001,		9600,	,			,			VERSION?,	MVC,		Yes,			0x0A,		10
   PDii,			9600,	ECHO OFF,	ECHO ON,	VERSION,
   VSC900,		D2XX,	,			,			TYPE,		,			Yes,			0x0A
+  MLPRO,		D2XX,	,			,			TYPE,		VSC80.1,	Yes,			0x0A
   UVSPEC,		9600,	,			,			VERSION,	5.0,		Yes,			0x0A
+  TENMA,		115200,	,			,			*IDN?,		,			Y/N
+  
