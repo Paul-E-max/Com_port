@@ -4,7 +4,7 @@
 "Command4"=:SYST:LOCK 
 "Command5"=:MEAS:CURR?\n
 "Command6"=:MEAS:VOLT?\n
-"Command7"=\n
+"Command7"=*IDN?\n:SYST:LOCK 1\n:SYST:LOCK 0\n
 "Command8"=\n
 "Command9"=\n
 "Command10"=\n

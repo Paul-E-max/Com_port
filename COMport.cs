@@ -10,6 +10,7 @@
 //
 // @Revision:
 //
+// 28.06.2023-MD V1.01.19 - Extend the COM port field to handle COMnnn entries.
 // 27.06.2023-MD V1.01.18 - Right-click "Tx on Enter" for auto-new-line on the display output.
 // 07.06.2023-MD V1.01.17 - Embed the FTDI DLL within EXE file.
 // 02.06.2023-MD V1.01.16 - 1) Add D2XX support (specifically for VSC900, but other D2XX projects are applicable).
@@ -82,7 +83,7 @@ namespace COMport
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // Constants
         //
-        const string APP_NAME = "COMport", VERSION = "V1.01.18"; // UPDATE MANUALLY AS APPLICATION EVOLVES.
+        const string APP_NAME = "COMport", VERSION = "V1.01.19"; // UPDATE MANUALLY AS APPLICATION EVOLVES.
         //
         public const string TEXT_FILE_EXT = ".TXT";
         const string LASTUSED_TXT = APP_NAME + "_USER" + TEXT_FILE_EXT;
@@ -137,6 +138,7 @@ namespace COMport
         string OutputLogFile = "";
         string typedCommandLine = "";
         bool DoingDropDown = false;
+        bool generateDelimiter = false; // For half-duplex, following Tx of characters, insert space delimiter on next Rx character.
 
         // Sending the characters out requires a ring buffer to pace them out with a timer
         // when character and/or new line delays are required.
@@ -549,6 +551,8 @@ namespace COMport
         {
             int i;
 
+            NoNewlineTimer.Enabled = false;
+            //
             for (i = 0; i < readLength; i++)
             {
                 if (BS == inputs[i])
@@ -599,11 +603,16 @@ namespace COMport
                         i += (Environment.NewLine.Length - 1);
                     }
                 }
+                if( generateDelimiter )
+                {
+                    generateDelimiter = false;
+                    updateCommsTextBox(" ");
+                }
                 updateCommsTextBox(toDisplay);
                 //
                 if (CheckState.Indeterminate == HalfDuplexCheckBox.CheckState)
                 {
-                    updateCommsTextBox("\r\n");
+                    updateCommsTextBox("\n");
                 }
             }
         }
@@ -753,6 +762,7 @@ namespace COMport
                         try
                         {
                             TxBuffer = Encoding.ASCII.GetBytes(EnterKey);
+                            if (CheckState.Indeterminate == HalfDuplexCheckBox.CheckState) NoNewlineTimer.Enabled = true;
                         }
                         catch
                         {
@@ -789,7 +799,7 @@ namespace COMport
                         {
                             // Carriage return (ENTER key) just needs a space to separate the typed input from the connected device's response.
                             //
-                            if (CR == keyboardChar) chr = " ";
+                            if (CR == keyboardChar) generateDelimiter = true;
                         }
                         if (chr.Length > 0)
                         {
@@ -1749,6 +1759,18 @@ namespace COMport
             {
                 return;
             }
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Need to generate newline for half-duplex communications.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void NoNewlineTimer_Tick(object sender, EventArgs e)
+        {
+            NoNewlineTimer.Enabled = false;
+            updateCommsTextBox("\r\n");
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -1,10 +1,10 @@
 "Command1"=TYPE\n
 "Command2"=BUILD\n
 "Command3"=DATE\n
-"Command4"=\n
-"Command5"=\n
-"Command6"=\n
-"Command7"=\n
+"Command4"=MLPRO\n
+"Command5"=BSIDEWHITE 
+"Command6"=IF#\n
+"Command7"=RING 111111 4095\n
 "Command8"=\n
 "Command9"=\n
 "Command10"=\n

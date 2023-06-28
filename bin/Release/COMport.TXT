@@ -66,5 +66,5 @@
   VSC900,		D2XX,	,			,			TYPE,		,			Yes,			0x0A
   MLPRO,		D2XX,	,			,			TYPE,		VSC80.1,	Yes,			0x0A
   UVSPEC,		9600,	,			,			VERSION,	5.0,		Yes,			0x0A
-  TENMA,		115200,	,			,			*IDN?,		,			Y/N
+  TENMA,		115200,	,			,			*IDN?,		,			Y/N,			0x0A
   

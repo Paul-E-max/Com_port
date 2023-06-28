@@ -1,7 +1,10 @@
-project=MLPRO
-connection=D2XX
-baudrate=N/A
-halfDuplex=True
+project=TENMA
+connection=COM101
+baudrate=115200
+halfDuplex=Indeterminate
 onEnter=0x0A
 toolTips=True
+connection_Unknown=D2XX
+connection_VSC900=D2XX
 connection_MLPRO=D2XX
+connection_TENMA=COM101

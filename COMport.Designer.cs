@@ -31,6 +31,7 @@ namespace COMport
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(COMport));
+            this.NoNewlineTimer = new System.Windows.Forms.Timer(this.components);
             this.CommsTextBox = new System.Windows.Forms.TextBox();
             this.BaudComboBox = new System.Windows.Forms.ComboBox();
             this.COMportComboBox = new System.Windows.Forms.ComboBox();
@@ -52,6 +53,10 @@ namespace COMport
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // NoNewlineTimer
+            // 
+            this.NoNewlineTimer.Tick += new System.EventHandler(this.NoNewlineTimer_Tick);
             // 
             // CommsTextBox
             // 
@@ -101,10 +106,10 @@ namespace COMport
             // COMportComboBox
             // 
             this.COMportComboBox.FormattingEnabled = true;
-            this.COMportComboBox.Location = new System.Drawing.Point(254, 6);
+            this.COMportComboBox.Location = new System.Drawing.Point(242, 6);
             this.COMportComboBox.Margin = new System.Windows.Forms.Padding(2);
             this.COMportComboBox.Name = "COMportComboBox";
-            this.COMportComboBox.Size = new System.Drawing.Size(59, 21);
+            this.COMportComboBox.Size = new System.Drawing.Size(71, 21);
             this.COMportComboBox.TabIndex = 0;
             this.toolTips.SetToolTip(this.COMportComboBox, "Select COM port to connect to");
             this.COMportComboBox.DropDown += new System.EventHandler(this.COMportComboBox_DropDown);
@@ -244,7 +249,7 @@ namespace COMport
             this.VersionComboBox.Location = new System.Drawing.Point(104, 6);
             this.VersionComboBox.Margin = new System.Windows.Forms.Padding(2);
             this.VersionComboBox.Name = "VersionComboBox";
-            this.VersionComboBox.Size = new System.Drawing.Size(145, 21);
+            this.VersionComboBox.Size = new System.Drawing.Size(134, 21);
             this.VersionComboBox.TabIndex = 3;
             this.VersionComboBox.Text = "Unknown";
             this.toolTips.SetToolTip(this.VersionComboBox, "Select the project");
@@ -329,6 +334,7 @@ namespace COMport
         private System.Windows.Forms.CheckBox ToolTipsCheckBox;
         private System.Windows.Forms.Timer TXcharacterTimer;
         private System.Windows.Forms.Timer D2XX_RXcharacterTimer;
+        private System.Windows.Forms.Timer NoNewlineTimer;
     }
 }
 
