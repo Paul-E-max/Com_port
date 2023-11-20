@@ -110,4 +110,3 @@ Earlier updates . . .
 5. Disconnect if serial device fails.
 6. More option at the bottom of Quick Text menu.
 7. Drop environmental values in favour of file storage.
-
