@@ -1,19 +1,19 @@
 "Get version"=TYPE\n
 "Get build"=BUILD\n
 "Get date"=DATE\n
-"Command4"=c1h\n
-"Command5"=c3h\n
-"Command6"=c1h\nc3h\ncnh\n
-"Command7"=c3h\nc1h\n
-"Command8"=\n
-"Command9"=\n
-"Command10"=\n
-"Command11"=\n
-"Command12"=\n
-"Command13"=\n
-"Command14"=\n
-"Command15"=\n
-"Command16"=\n
-"Command17"=\n
-"Command18"=CNH\n
-"Command19"=C3X\n
+"Command4"=LVER\n
+"Command5"=LBUILD\n
+"Command6"=LDATE\n
+"Command7"=XYTYPE?\n
+"Command8"=XYVER?\n
+"Command9"=XYDATE?\n
+"Command10"=BL# XYSTAGE\n
+"Command11"=BL# EXIT\n
+"Command12"=:00000001FF\n
+"Bad Intel hex"=:10000000123456789ABCDEF0123456789ABCDEF0AA\n
+"Good Intel hex"=:10000800E1CF34F0E2CF35F0D9CF36F0DACF37F0A0\n
+"Command15"=XYRESET\n
+"Command16"=XYSTATUS?\n
+"Command17"=XYHOME\n
+"Command18"=XYPOSX=1000\n
+"Command19"=XYPOSY=1000\n

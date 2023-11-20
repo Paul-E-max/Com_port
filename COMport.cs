@@ -1,5 +1,5 @@
 ﻿// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// @File:       COMportForm.cs
+// @File:       COMport.cs
 // @Project:    DISCOVER_COM_port
 // @Author:     Foster & Freeman Ltd - Michael Dodd
 // @Created:    31.03.2022
@@ -9,7 +9,8 @@
 // @Tools:      Visual Studio 2019, C#
 //
 // @Revision:
-//
+// 19.10.2023-MD V1.01.20 - Record last QUICK text displayed.
+// 10.10.2023-MD V1.01.20 - Provide millisecond timestamp option on responses.
 // 28.06.2023-MD V1.01.19 - Extend the COM port field to handle COMnnn entries.
 // 27.06.2023-MD V1.01.18 - Right-click "Tx on Enter" for auto-new-line on the display output.
 // 07.06.2023-MD V1.01.17 - Embed the FTDI DLL within EXE file.
@@ -83,7 +84,7 @@ namespace COMport
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // Constants
         //
-        const string APP_NAME = "COMport", VERSION = "V1.01.19"; // UPDATE MANUALLY AS APPLICATION EVOLVES.
+        const string APP_NAME = "COMport", VERSION = "V1.01.20"; // UPDATE MANUALLY AS APPLICATION EVOLVES.
         //
         public const string TEXT_FILE_EXT = ".TXT";
         const string LASTUSED_TXT = APP_NAME + "_USER" + TEXT_FILE_EXT;
@@ -139,6 +140,8 @@ namespace COMport
         string typedCommandLine = "";
         bool DoingDropDown = false;
         bool generateDelimiter = false; // For half-duplex, following Tx of characters, insert space delimiter on next Rx character.
+        bool timeStampRequiredFlag = false;
+        bool lastKeyWasCR = false;
 
         // Sending the characters out requires a ring buffer to pace them out with a timer
         // when character and/or new line delays are required.
@@ -150,6 +153,7 @@ namespace COMport
         byte output_ptr = 0;
 
         string OriginalBaudRate = "";                       // Keeps a record of baudrate while D2XX is selected.
+        string lastQuickTextSelected = "";                  // Assume no Quick text menu has been selected.
 
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // FTDI specific items
@@ -272,25 +276,19 @@ namespace COMport
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
         /// Before closing the main form, make sure all unsaved menus are sorted.
+        ///
+        /// Note: This is performed in REVERSE order so that the items do not
+        /// shuffle about in the enumerated list.
+        /// 
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void COMportForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            bool closingMore = true;
-
-            while (closingMore)
+            foreach (QuickTextMenu menu in Application.OpenForms.OfType<QuickTextMenu>().Reverse())
             {
-                closingMore = false;
-                //
-                foreach (QuickTextMenu menu in Application.OpenForms.OfType<QuickTextMenu>())
-                {
-                    menu.Close();
-                    while (menu.IsAccessible) /* wait here for the menu to actually close . . . */;
-                    closingMore = true;
-                    //
-                    break;
-                }
+                menu.Close();
+                while (menu.IsAccessible) /* wait here for the menu to actually close . . . */;
             }
         }
 
@@ -608,13 +606,30 @@ namespace COMport
                     generateDelimiter = false;
                     updateCommsTextBox(" ");
                 }
-                updateCommsTextBox(toDisplay);
-                //
+
+                string timeStamp = "";
+                if (timeStampRequiredFlag && lastKeyWasCR)
+                {
+                    timeStamp = "[" + DateTimeOffset.Now.Second.ToString() + "." + DateTimeOffset.Now.Millisecond.ToString() + "] ";
+                    lastKeyWasCR = false;
+                }
+                updateCommsTextBox(timeStamp + toDisplay);
+                
                 if (CheckState.Indeterminate == HalfDuplexCheckBox.CheckState)
                 {
                     updateCommsTextBox("\n");
                 }
             }
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// When the QuickTextMenu reference to Line time stamp changes, update local flag too.
+        /// </summary>
+        /// <param name="state"></param>
+        public void setTimeStampRequiredFlag(bool state)
+        {
+            timeStampRequiredFlag = state;
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -692,6 +707,7 @@ namespace COMport
                 RingBuffer[input_ptr++] = KeyboardChar; // Place the new character into the ring buffer.
                 handleRingBuffer();                     // Deal with any idle characers in the ring buffer.
             }
+            if (CR == KeyboardChar) lastKeyWasCR = true;
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -702,7 +718,7 @@ namespace COMport
         {
             while(( input_ptr != output_ptr ) && ( false == TXcharacterTimer.Enabled ))
             {
-                // There is currently no inter-character delay in progress, so just go a head and send the characters.
+                // There is currently no inter-character delay in progress, so just go ahead and send the characters.
                 //
                 sendToDevice(RingBuffer[output_ptr]);
                 //
@@ -1336,9 +1352,9 @@ namespace COMport
         {
             if( (menuName.Length > 0) && !DoingDropDown )
             {
-                string filename = menuName.Replace(' ', '_');
+                lastQuickTextSelected = menuName.Replace(' ', '_');
 
-                QuickTextMenu menu = new QuickTextMenu(APP_NAME + "_" + VersionComboBox.Text + "_" + filename + TEXT_FILE_EXT);
+                QuickTextMenu menu = new QuickTextMenu(generateFullQuickTextMenuFilename(lastQuickTextSelected));
                 //
                 menu.StartPosition = FormStartPosition.Manual;
                 menu.Location = Location;
@@ -1348,6 +1364,17 @@ namespace COMport
                 //
                 CommsTextBox.Focus(); // Return to the text screen as normal . . .
             }
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Generate the full Quick text menu filename required given base filename selected.
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns></returns>
+        private string generateFullQuickTextMenuFilename(string filename)
+        {
+            return APP_NAME + "_" + VersionComboBox.Text + "_" + lastQuickTextSelected + TEXT_FILE_EXT;
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -1,7 +1,7 @@
 "Command1"=TYPE\n
 "Command2"=BUILD\n
 "Command3"=DATE\n
-"Command4"=MLPRO\n
+"Command4"=\n
 "Command5"=BSIDEWHITE 
 "Command6"=IF#\n
 "Command7"=RING 111111 100\n
@@ -10,7 +10,7 @@
 "Command10"=RING 111111 0\n
 "Range LEFT"=RANGERIGHT\n
 "Range RIGHT"=RANGELEFT\n
-"Command13"=\n
+"Command13"=RANGELEFT\nRANGERIGHT\n
 "Status LEFT"=RRSB\n
 "Status RIGHT"=RRSF\n
 "Command16"=ALSB\n

@@ -104,6 +104,7 @@ namespace COMport
             this.RepeatCommandTimer = new System.Windows.Forms.Timer(this.components);
             this.MoreCheckBox = new System.Windows.Forms.CheckBox();
             this.label7 = new System.Windows.Forms.Label();
+            this.TimeStampCheckBox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // CommandLine1TextBox
@@ -822,12 +823,25 @@ namespace COMport
             this.label7.TabIndex = 67;
             this.label7.Text = "Right click to set label";
             // 
+            // TimeStampCheckBox
+            // 
+            this.TimeStampCheckBox.AutoSize = true;
+            this.TimeStampCheckBox.Location = new System.Drawing.Point(394, 607);
+            this.TimeStampCheckBox.Name = "TimeStampCheckBox";
+            this.TimeStampCheckBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.TimeStampCheckBox.Size = new System.Drawing.Size(106, 17);
+            this.TimeStampCheckBox.TabIndex = 68;
+            this.TimeStampCheckBox.Text = "Show time stamp";
+            this.TimeStampCheckBox.UseVisualStyleBackColor = true;
+            this.TimeStampCheckBox.CheckedChanged += new System.EventHandler(this.TimeStampCheckBox_CheckedChanged);
+            // 
             // QuickTextMenu
             // 
             this.AcceptButton = this.ExitButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(534, 587);
+            this.Controls.Add(this.TimeStampCheckBox);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.MoreCheckBox);
             this.Controls.Add(this.label6);
@@ -987,5 +1001,6 @@ namespace COMport
         public System.Windows.Forms.TextBox NLDelayTextBox;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button ButtonExeText1;
+        private System.Windows.Forms.CheckBox TimeStampCheckBox;
     }
 }

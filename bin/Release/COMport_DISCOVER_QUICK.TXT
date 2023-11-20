@@ -5,9 +5,9 @@
 "Command5"=:04100000FEEF7FF090\n
 "Command6"=:10150000000000463F0000E43F0000CA3F0000B07A\n
 "Command7"=LIGHTING\n
-"Command8"=\n
-"Command9"=\n
-"Command10"=\n
+"Command8"=LIGHTBN\n
+"Command9"=LIGHTBD\n
+"Command10"=LIGHTSN\n
 "Command11"=\n
 "Command12"=\n
 "Command13"=\n

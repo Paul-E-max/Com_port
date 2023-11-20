@@ -554,5 +554,16 @@ namespace COMport
             SaveButton.BackColor = Color.White;
             SaveButton.ForeColor = SAVE_POSSIBLY_REQUIRED;
         }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TimeStampCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            Program.comportform.setTimeStampRequiredFlag(TimeStampCheckBox.Checked);
+        }
     }
 }

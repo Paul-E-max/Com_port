@@ -1,6 +1,6 @@
-"Command1"=VERSION\n
-"Command2"=TYPE\n
-"Command3"=DATE\n
+"Command1"=IDENTIFY\n
+"Command2"=\n
+"Command3"=\n
 "Command4"=\n
 "Command5"=\n
 "Command6"=\n
@@ -15,5 +15,5 @@
 "Command15"=\n
 "Command16"=\n
 "Command17"=\n
-"Command18"={J00RDD_\n
-"Command19"={ 99RDDG\n
+"Command18"=\n
+"Command19"=\n
