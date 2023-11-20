@@ -47,7 +47,16 @@ The file COMport.TXT lists common Foster and Freeman projects that can communica
 
 # Recent updates
 
-V1.01.18 = 27.06.2023
+V1.01.20 - 20.11.2023
+
+1) Record last quick text displayed
+2) Provide millisecond timestamp option on responses
+
+V1.01.19 - 28.06.2023
+
+Increased GUI for COMnnn entries and inject TENMA CR
+
+V1.01.18 - 27.06.2023
 
 Right-click "Tx on Enter" for auto-new-line on display output (Use Y/N for half-duplex in COMport.TXT).
 This was introduced for the likes of Tenma power supply communications.
