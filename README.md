@@ -47,6 +47,10 @@ The file COMport.TXT lists common Foster and Freeman projects that can communica
 
 # Recent updates
 
+V1.01.21 - 08.02.2024
+
+Option to display output in hexadecimal (see bottom of QUICK text menu next to repeat functions).
+
 V1.01.20 - 20.11.2023
 
 1) Record last quick text displayed
