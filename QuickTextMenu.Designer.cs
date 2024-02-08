@@ -105,6 +105,7 @@ namespace COMport
             this.MoreCheckBox = new System.Windows.Forms.CheckBox();
             this.label7 = new System.Windows.Forms.Label();
             this.TimeStampCheckBox = new System.Windows.Forms.CheckBox();
+            this.HexOutputCheckBox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // CommandLine1TextBox
@@ -826,7 +827,7 @@ namespace COMport
             // TimeStampCheckBox
             // 
             this.TimeStampCheckBox.AutoSize = true;
-            this.TimeStampCheckBox.Location = new System.Drawing.Point(394, 607);
+            this.TimeStampCheckBox.Location = new System.Drawing.Point(394, 598);
             this.TimeStampCheckBox.Name = "TimeStampCheckBox";
             this.TimeStampCheckBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.TimeStampCheckBox.Size = new System.Drawing.Size(106, 17);
@@ -835,12 +836,25 @@ namespace COMport
             this.TimeStampCheckBox.UseVisualStyleBackColor = true;
             this.TimeStampCheckBox.CheckedChanged += new System.EventHandler(this.TimeStampCheckBox_CheckedChanged);
             // 
+            // HexOutputCheckBox
+            // 
+            this.HexOutputCheckBox.AutoSize = true;
+            this.HexOutputCheckBox.Location = new System.Drawing.Point(380, 621);
+            this.HexOutputCheckBox.Name = "HexOutputCheckBox";
+            this.HexOutputCheckBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.HexOutputCheckBox.Size = new System.Drawing.Size(120, 17);
+            this.HexOutputCheckBox.TabIndex = 69;
+            this.HexOutputCheckBox.Text = "Hexadecimal output";
+            this.HexOutputCheckBox.UseVisualStyleBackColor = true;
+            this.HexOutputCheckBox.CheckStateChanged += new System.EventHandler(this.HexOutputCheckBox_CheckStateChanged);
+            // 
             // QuickTextMenu
             // 
             this.AcceptButton = this.ExitButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(534, 587);
+            this.Controls.Add(this.HexOutputCheckBox);
             this.Controls.Add(this.TimeStampCheckBox);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.MoreCheckBox);
@@ -1002,5 +1016,6 @@ namespace COMport
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button ButtonExeText1;
         private System.Windows.Forms.CheckBox TimeStampCheckBox;
+        private System.Windows.Forms.CheckBox HexOutputCheckBox;
     }
 }

@@ -9,6 +9,7 @@
 // @Tools:      Visual Studio 2019, C#
 //
 // @Revision:
+// 08.02.2024-MD V1.01.21 - Add hexadecimal output option.
 // 19.10.2023-MD V1.01.20 - Record last QUICK text displayed.
 // 10.10.2023-MD V1.01.20 - Provide millisecond timestamp option on responses.
 // 28.06.2023-MD V1.01.19 - Extend the COM port field to handle COMnnn entries.
@@ -84,7 +85,7 @@ namespace COMport
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // Constants
         //
-        const string APP_NAME = "COMport", VERSION = "V1.01.20"; // UPDATE MANUALLY AS APPLICATION EVOLVES.
+        const string APP_NAME = "COMport", VERSION = "V1.01.21"; // UPDATE MANUALLY AS APPLICATION EVOLVES.
         //
         public const string TEXT_FILE_EXT = ".TXT";
         const string LASTUSED_TXT = APP_NAME + "_USER" + TEXT_FILE_EXT;
@@ -141,12 +142,13 @@ namespace COMport
         bool DoingDropDown = false;
         bool generateDelimiter = false; // For half-duplex, following Tx of characters, insert space delimiter on next Rx character.
         bool timeStampRequiredFlag = false;
+        bool hexOutputFlag = false;
         bool lastKeyWasCR = false;
 
         // Sending the characters out requires a ring buffer to pace them out with a timer
         // when character and/or new line delays are required.
         //
-        const int RING_BUFFER_SIZE = 256;
+        const int RING_BUFFER_SIZE = 512;
 
         byte[] RingBuffer = new byte[RING_BUFFER_SIZE];
         byte input_ptr = 0;
@@ -168,6 +170,9 @@ namespace COMport
         // after DLL has been loaded, see COMportForm_Load() function . . .
         //
         D2XX D2xxDevice;
+
+        byte[] D2XX_inputs = new byte[RING_BUFFER_SIZE];
+        int D2XX_inputs_length = 0;
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
@@ -551,73 +556,95 @@ namespace COMport
 
             NoNewlineTimer.Enabled = false;
             //
-            for (i = 0; i < readLength; i++)
+            if (hexOutputFlag)
             {
-                if (BS == inputs[i])
+                // Just dump the hexadecimal values to the display  (hexadecimal output option enabled).
+                //
+                if (readLength > 0)
                 {
-                    if (i != 0)
-                    {
-                        // Need to handle the characters in front of the BS.
-                        //
-                        updateCommsTextBox(Encoding.ASCII.GetString(inputs, 0, i));
-                        //
-                        // And force the byte array to have BS as the first character.
-                        //
-                        for (int shift = i; shift < readLength; shift++)
-                        {
-                            inputs[shift - i] = inputs[shift];
-                        }
-                        readLength -= i;
-                        i = 0;
-                    }
-                    // The BS causes the CommsTextBox to loose a character at the end of the existing content.
+                    string toDisplay = "";
                     //
-                    if (CommsTextBox.TextLength > 0)
+                    for (i = 0; i < readLength; i++)
                     {
-                        CommsTextBox.Text = CommsTextBox.Text.Substring(0, CommsTextBox.TextLength - 1);
-                        CommsTextBox.SelectionStart = CommsTextBox.Text.Length; // Place the curser at the end of the text.
-                        CommsTextBox.ScrollToCaret();
+                        toDisplay += ((0 == i) ? " " : ",") + inputs[i].ToString("X2");
                     }
-                    for (int shift = 1; shift < readLength; shift++)
-                    {
-                        inputs[shift - 1] = inputs[shift];
-                    }
-                    readLength--;
-                    i--;
+                    if (Encoding.ASCII.GetString(inputs, i - 1, 1) == EnterKey) toDisplay += "\r\n";
+                    //
+                    updateCommsTextBox(toDisplay);
                 }
             }
-            if (readLength > 0)
+            else
             {
-                string toDisplay = Encoding.ASCII.GetString(inputs, 0, readLength);
+                // Only handle control characters for RX when plain text to be displayed (hexadecimal output option disabled).
                 //
-                // Replace any instances of EnterKey with the standard CRLF sequence used
-                // by the environment.
-                //
-                for (i = 0; i < (toDisplay.Length - EnterKey.Length + 1); i++)
+                for (i = 0; i < readLength; i++)
                 {
-                    if (toDisplay.Substring(i).StartsWith(EnterKey))
+                    if (BS == inputs[i])
                     {
-                        toDisplay = toDisplay.Substring(0, i) + Environment.NewLine + toDisplay.Substring(i + EnterKey.Length);
-                        i += (Environment.NewLine.Length - 1);
+                        if (i != 0)
+                        {
+                            // Need to handle the characters in front of the BS.
+                            //
+                            updateCommsTextBox(Encoding.ASCII.GetString(inputs, 0, i));
+                            //
+                            // And force the byte array to have BS as the first character.
+                            //
+                            for (int shift = i; shift < readLength; shift++)
+                            {
+                                inputs[shift - i] = inputs[shift];
+                            }
+                            readLength -= i;
+                            i = 0;
+                        }
+                        // The BS causes the CommsTextBox to loose a character at the end of the existing content.
+                        //
+                        if (CommsTextBox.TextLength > 0)
+                        {
+                            CommsTextBox.Text = CommsTextBox.Text.Substring(0, CommsTextBox.TextLength - 1);
+                            CommsTextBox.SelectionStart = CommsTextBox.Text.Length; // Place the curser at the end of the text.
+                            CommsTextBox.ScrollToCaret();
+                        }
+                        for (int shift = 1; shift < readLength; shift++)
+                        {
+                            inputs[shift - 1] = inputs[shift];
+                        }
+                        readLength--;
+                        i--;
                     }
                 }
-                if( generateDelimiter )
+                if (readLength > 0)
                 {
-                    generateDelimiter = false;
-                    updateCommsTextBox(" ");
-                }
+                    string toDisplay = Encoding.ASCII.GetString(inputs, 0, readLength);
+                    //
+                    // Replace any instances of EnterKey with the standard CRLF sequence used
+                    // by the environment.
+                    //
+                    for (i = 0; i < (toDisplay.Length - EnterKey.Length + 1); i++)
+                    {
+                        if (toDisplay.Substring(i).StartsWith(EnterKey))
+                        {
+                            toDisplay = toDisplay.Substring(0, i) + Environment.NewLine + toDisplay.Substring(i + EnterKey.Length);
+                            i += (Environment.NewLine.Length - 1);
+                        }
+                    }
+                    if (generateDelimiter)
+                    {
+                        generateDelimiter = false;
+                        updateCommsTextBox(" ");
+                    }
 
-                string timeStamp = "";
-                if (timeStampRequiredFlag && lastKeyWasCR)
-                {
-                    timeStamp = "[" + DateTimeOffset.Now.Second.ToString() + "." + DateTimeOffset.Now.Millisecond.ToString() + "] ";
-                    lastKeyWasCR = false;
-                }
-                updateCommsTextBox(timeStamp + toDisplay);
-                
-                if (CheckState.Indeterminate == HalfDuplexCheckBox.CheckState)
-                {
-                    updateCommsTextBox("\n");
+                    string timeStamp = "";
+                    if (timeStampRequiredFlag && lastKeyWasCR)
+                    {
+                        timeStamp = "[" + DateTimeOffset.Now.Second.ToString() + "." + DateTimeOffset.Now.Millisecond.ToString() + "] ";
+                        lastKeyWasCR = false;
+                    }
+                    updateCommsTextBox(timeStamp + toDisplay);
+
+                    if (CheckState.Indeterminate == HalfDuplexCheckBox.CheckState)
+                    {
+                        updateCommsTextBox("\n");
+                    }
                 }
             }
         }
@@ -630,6 +657,16 @@ namespace COMport
         public void setTimeStampRequiredFlag(bool state)
         {
             timeStampRequiredFlag = state;
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// When the QuickTextMenu reference to hexadecimal output changes, update local flag too.
+        /// </summary>
+        /// <param name="state"></param>
+        public void setHexadecimalFlag(bool state)
+        {
+            hexOutputFlag = state;
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1511,6 +1548,8 @@ namespace COMport
         /// way to initialise and utilise the thing.  This alternative just ticks
         /// along at 10ms intervals to check for characters coming in from the D2XX
         /// device and deals with them using the shared processRXcharacters function.
+        ///
+        /// Keep in mind that buffers are built up until there is a quiet interval.
         /// 
         /// </summary>
         /// <param name="sender"></param>
@@ -1521,10 +1560,18 @@ namespace COMport
 
             if (readLength > 0)
             {
-                var inputs = new byte[readLength];
-
-                D2xxDevice.Read(inputs, 0, readLength);
-                processRXcharacters(inputs, readLength);
+                D2xxDevice.Read(D2XX_inputs, D2XX_inputs_length, readLength);
+                D2XX_inputs_length += readLength;
+            }
+            else
+            {
+                // Hit a quiet patch, so process any new returns.
+                //
+                if (D2XX_inputs_length > 0)
+                {
+                    processRXcharacters(D2XX_inputs, D2XX_inputs_length);
+                    D2XX_inputs_length = 0;
+                }
             }
         }
 

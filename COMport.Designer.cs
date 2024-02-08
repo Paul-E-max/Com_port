@@ -288,7 +288,7 @@ namespace COMport
             // 
             // D2XX_RXcharacterTimer
             // 
-            this.D2XX_RXcharacterTimer.Interval = 10;
+            this.D2XX_RXcharacterTimer.Interval = 50;
             this.D2XX_RXcharacterTimer.Tick += new System.EventHandler(this.D2XX_RXcharacterTimer_Tick);
             // 
             // COMport

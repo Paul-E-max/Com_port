@@ -54,7 +54,7 @@
 ; Project		Baud	Echo off 	Echo on 	Get ID		Response	Half-duplex		Tx on ENTER	 N.L. delay	Char delay
 ; -------		----	--------	------- 	------		--------	-----------		-----------	 ----------	----------
   Unknown,		115200
-  AARI,			9600,	ECHO OFF,	ECHO ON,	VERSION,	,			,				0x0A
+  AARI,			D2XX,	ECHO OFF,	ECHO ON,	VERSION,	,			,				0x0A
   BOOTLOAD,		9600,	,			,			VERSION,
   CSU,			9600,   ,           ,           VERSION,    What
   DISCOVER,		115200,	ECHO OFF,	ECHO ON,	VERSION,
@@ -65,6 +65,7 @@
   PDii,			9600,	ECHO OFF,	ECHO ON,	VERSION,
   VSC80,		D2XX,	,			,			TYPE,		,			Yes,			0x0A
   VSC900,		D2XX,	,			,			TYPE,		,			Yes,			0x0A
+  VSC9000,		D2XX,	,			,			Vsi, VSC9000_MAIN_CONTROLLER, Yes, 		0x0A
   MLPRO,		D2XX,	,			,			TYPE,		VSC80.1,	Yes,			0x0A
   MLPRO2,		D2XX,	,			,			TYPE,		VSC80.1,	Yes,			0x0A
   UVSPEC,		9600,	,			,			VERSION,	5.0,		Yes,			0x0A

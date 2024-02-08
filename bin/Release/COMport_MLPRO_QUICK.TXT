@@ -5,8 +5,8 @@
 "Command5"=BSIDEWHITE 
 "Command6"=IF#\n
 "Command7"=RING 111111 100\n
-"Command8"=BRED 1\n
-"Command9"=BRED 0\n
+"Command8"=BUTTON 0\n
+"Command9"=BUTTON 1\n
 "Command10"=RING 111111 0\n
 "Range LEFT"=RANGERIGHT\n
 "Range RIGHT"=RANGELEFT\n

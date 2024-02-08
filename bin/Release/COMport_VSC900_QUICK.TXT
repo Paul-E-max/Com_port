@@ -4,9 +4,9 @@
 "Command4"=LVER\n
 "Command5"=LBUILD\n
 "Command6"=LDATE\n
-"Command7"=XYTYPE?\n
-"Command8"=XYVER?\n
-"Command9"=XYDATE?\n
+"Command7"=READVOLTS\n
+"Command8"=READAMPS\n
+"Command9"=READWATTS\n
 "Command10"=BL# XYSTAGE\n
 "Command11"=BL# EXIT\n
 "Command12"=:00000001FF\n

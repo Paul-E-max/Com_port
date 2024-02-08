@@ -312,11 +312,6 @@ namespace COMport
                     SaveButton.ForeColor = SAVE_POSSIBLY_REQUIRED;
                 }
             }
-            else
-            {
-                executeCommand(buttonNumber);
-                MaySetNewRepeatCommand(buttonNumber);
-            }
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -557,13 +552,24 @@ namespace COMport
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
-        /// 
+        /// Whenever the timestamp check flag changes, update the parent's record.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void TimeStampCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             Program.comportform.setTimeStampRequiredFlag(TimeStampCheckBox.Checked);
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Whenever the hexadecimal output check flag changes, update the parent's record.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void HexOutputCheckBox_CheckStateChanged(object sender, EventArgs e)
+        {
+            Program.comportform.setHexadecimalFlag(HexOutputCheckBox.Checked);
         }
     }
 }
