@@ -112,4 +112,9 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>CD C:\WorkArea\sign_FF
+signtool sign  /tr "http://timestamp.digicert.com" /td SHA256 /fd SHA256 /f "Foster and Freeman Limited.pfx" /p saveloy $(TargetPath)
+</PostBuildEvent>
+  </PropertyGroup>
 </Project>

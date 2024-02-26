@@ -4,13 +4,13 @@
 "Normal mode"=Xn=76\n
 "LED off"=Xn=0\n
 "LED on"=Xn=1\n
-"Command7"=\n
-"Command8"=\n
-"Command9"=\n
-"Command10"=\n
-"Command11"=\n
-"Command12"=\n
-"Command13"=\n
+"Set low position"=Xn=60\n
+"Go to low position"=Xn=65\n
+"Set high position"=Xn=70\n
+"Go to high position"=Xn=75\n
+"Command11"=Xn=127\n
+"Command12"=Xn=65\n
+"Command13"=Xn=255\nXn=255\nXn=255\nXn=255\nXn=255\nXn=255\nXn=255\nXn=255\n
 "Command14"=\n
 "Command15"=\n
 "Command16"=\n

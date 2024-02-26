@@ -9,6 +9,7 @@
 // @Tools:      Visual Studio 2019, C#
 //
 // @Revision:
+// 26.02.2024-MD V1.01.22 - Apply digital signature to EXE (see Project Properties\Build Events\Post-build event).
 // 08.02.2024-MD V1.01.21 - Add hexadecimal output option.
 // 19.10.2023-MD V1.01.20 - Record last QUICK text displayed.
 // 10.10.2023-MD V1.01.20 - Provide millisecond timestamp option on responses.
@@ -85,7 +86,7 @@ namespace COMport
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // Constants
         //
-        const string APP_NAME = "COMport", VERSION = "V1.01.21"; // UPDATE MANUALLY AS APPLICATION EVOLVES.
+        const string APP_NAME = "COMport", VERSION = "V1.01.22"; // UPDATE MANUALLY AS APPLICATION EVOLVES.
         //
         public const string TEXT_FILE_EXT = ".TXT";
         const string LASTUSED_TXT = APP_NAME + "_USER" + TEXT_FILE_EXT;
