@@ -7,7 +7,7 @@
 "Command7"=82UVC\n
 "Command8"=82WWC\n
 "Command9"=82IR8C\n
-"Command10"=\n
+"Command10"=82BC\n
 "Command11"=\n
 "Command12"=\n
 "Command13"=\n

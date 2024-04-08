@@ -1,8 +1,8 @@
 "Command1"=VERSION\n
 "Command2"=BUILD\n
 "Command3"=DATE\n
-"Command4"=TYPE\n
-"Command5"=bldr\n
+"Command4"=?\n
+"Command5"=\n
 "Command6"=\n
 "Command7"=\n
 "Command8"=\n
@@ -15,5 +15,5 @@
 "Command15"=\n
 "Command16"=\n
 "Command17"=\n
-"Command18"={J00RDD_\n
-"Command19"={ 99RDDG\n
+"Command18"=\n
+"Command19"=\n

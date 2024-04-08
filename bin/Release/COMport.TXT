@@ -57,9 +57,12 @@
   AARI,			D2XX,	ECHO OFF,	ECHO ON,	VERSION,	,			,				0x0A
   BOOTLOAD,		9600,	,			,			VERSION,
   CL82,			9600,	,			,			I?,			,			,				,			50
+  CLX10,		115200,	,			,			TYPE,		CLX1,		Yes,			0x0A,		50
+  COMMAND_EXAMPLE,115200,ECHO OFF,	ECHO ON,	VERSION,    ,           ,               ,           10
   CSU,			9600,   ,           ,           VERSION,    What
   DISCOVER,		115200,	ECHO OFF,	ECHO ON,	VERSION,
   I2C,			115200,	ECHO OFF,	ECHO ON,	VERSION,    ,           ,               ,           10
+  ICLED,		115200,	ECHO OFF,	ECHO ON,	VERSION,    ,           ,               ,           10
   LAMP_TRAY,	9600,	,			,			IDENTIFY,	VSC9000_TRAY,Yes,			0x0A,		10
   MLPRO,		D2XX,	,			,			TYPE,		VSC80.1,	Yes,			0x0A
   MLPRO2,		D2XX,	,			,			TYPE,		VSC80.1,	Yes,			0x0A
@@ -70,5 +73,6 @@
   TENMA,		115200,	,			,			*IDN?,		,			Y/N,			0x0A
   UVSPEC,		9600,	,			,			VERSION,	5.0,		Yes,			0x0A
   VSC80,		D2XX,	,			,			TYPE,		,			Yes,			0x0A
+  VSC90,		D2XX,	,			,			TYPE,		,			Yes,			0x0A
   VSC900,		D2XX,	,			,			TYPE,		,			Yes,			0x0A
   VSC9000,		D2XX,	,			,			Vsi, VSC9000_MAIN_CONTROLLER, Yes, 		0x0A

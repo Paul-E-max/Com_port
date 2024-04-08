@@ -8,7 +8,7 @@
 "Command8"=HALT\n
 "Command9"=PURGETIME\n
 "Command10"=REASON\n
-"Command11"=finish\n
+"Command11"=SAFETYPOWERPRESENT\n
 "Command12"=DOOR 20\n
 "Command13"=DOOR UNDIM\n
 "Command14"=DOOR DIM\n
