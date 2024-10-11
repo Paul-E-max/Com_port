@@ -1,4 +1,19 @@
-﻿using System;
+﻿// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// @File:       EnterLabel.cs
+// @Project:    DISCOVER_COM_port
+// @Author:     Foster & Freeman Ltd - Michael Dodd
+// @Created:    21.04.2023
+//
+// @Brief:      Simple COM port communications device for use with DISCOVER.
+//
+// @Tools:      Visual Studio 2019, C#
+//
+// @Revision:
+// 21.04.2023-MD Initial version.
+//
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;

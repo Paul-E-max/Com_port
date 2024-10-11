@@ -1,9 +1,9 @@
-"Command1"=TYPE\n
-"Command2"=BUILD\n
-"Command3"=DATE\n
-"Command4"=OFF\n
-"Command5"=READCAL\n
-"Command6"=CALIBRATE\n
+<<"Command1"=sample.txt\n>>
+"Command2"=// Comment line\n
+<<"Command3"=sample_bad.txt\n>>
+<<"Command4"=sample.txt\nsample_bad.txt\n>>
+"Command5"=\n
+"Command6"=\n
 "Command7"=\n
 "Command8"=\n
 "Command9"=\n

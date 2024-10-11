@@ -36,16 +36,18 @@ namespace COMport
             // 
             // NewLabelTextBox
             // 
-            this.NewLabelTextBox.Location = new System.Drawing.Point(12, 12);
+            this.NewLabelTextBox.Location = new System.Drawing.Point(16, 15);
+            this.NewLabelTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.NewLabelTextBox.Name = "NewLabelTextBox";
-            this.NewLabelTextBox.Size = new System.Drawing.Size(120, 20);
+            this.NewLabelTextBox.Size = new System.Drawing.Size(159, 22);
             this.NewLabelTextBox.TabIndex = 1;
             // 
             // OKbutton
             // 
-            this.OKbutton.Location = new System.Drawing.Point(138, 10);
+            this.OKbutton.Location = new System.Drawing.Point(183, 12);
+            this.OKbutton.Margin = new System.Windows.Forms.Padding(4);
             this.OKbutton.Name = "OKbutton";
-            this.OKbutton.Size = new System.Drawing.Size(50, 23);
+            this.OKbutton.Size = new System.Drawing.Size(67, 28);
             this.OKbutton.TabIndex = 2;
             this.OKbutton.Text = "OK";
             this.OKbutton.UseVisualStyleBackColor = true;
@@ -54,9 +56,10 @@ namespace COMport
             // CancelChangesButton
             // 
             this.CancelChangesButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelChangesButton.Location = new System.Drawing.Point(194, 10);
+            this.CancelChangesButton.Location = new System.Drawing.Point(258, 12);
+            this.CancelChangesButton.Margin = new System.Windows.Forms.Padding(4);
             this.CancelChangesButton.Name = "CancelChangesButton";
-            this.CancelChangesButton.Size = new System.Drawing.Size(50, 23);
+            this.CancelChangesButton.Size = new System.Drawing.Size(67, 28);
             this.CancelChangesButton.TabIndex = 3;
             this.CancelChangesButton.Text = "Cancel";
             this.CancelChangesButton.UseVisualStyleBackColor = true;
@@ -64,13 +67,14 @@ namespace COMport
             // EnterLabel
             // 
             this.AcceptButton = this.OKbutton;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(260, 40);
+            this.ClientSize = new System.Drawing.Size(338, 49);
             this.Controls.Add(this.CancelChangesButton);
             this.Controls.Add(this.OKbutton);
             this.Controls.Add(this.NewLabelTextBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "EnterLabel";
             this.Text = "Enter new label here";
             this.ResumeLayout(false);

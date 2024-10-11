@@ -8,8 +8,8 @@
 "Command8"=LIGHTBN\n
 "Command9"=LIGHTBD\n
 "Command10"=LIGHTSN\n
-"Command11"=\n
-"Command12"=\n
+"Command11"=ENUM\n
+"Command12"=TESTING ON\n
 "Command13"=\n
 "Command14"=\n
 "Command15"=\n

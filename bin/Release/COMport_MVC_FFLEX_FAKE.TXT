@@ -16,4 +16,4 @@
 "Command16"=DOOR\n
 "Command17"=HEATERTEMP\n
 "Command18"=FILTER\n
-"Command19"=FAKE GISM2 1 1\n
+"Command19"=FAKE ALL\n

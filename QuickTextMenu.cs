@@ -9,6 +9,7 @@
 // @Tools:      Visual Studio 2019, C#
 //
 // @Revision:
+// 10.10.2024-MD V1.01.23 - If command marked as "Use file" then pipe the contents of that file in as though typed.
 // 02.06.2023-MD V1.01.15 - Correction to right click and accept button.
 // 25.04.2023-MD V1.01.13 - Correction to Quick Text menu with equals character in it.
 // 21.04.2023-MD V1.01.12 - Check if save is required on exit.
@@ -74,25 +75,25 @@ namespace COMport
             {
                 lines = File.ReadAllLines(loadFilename);
             }
-            setText(lines, 1, ButtonExeText1, CommandLine1TextBox, ManualEnter1CheckBox);
-            setText(lines, 2, ButtonExeText2, CommandLine2TextBox, ManualEnter2CheckBox);
-            setText(lines, 3, ButtonExeText3, CommandLine3TextBox, ManualEnter3CheckBox);
-            setText(lines, 4, ButtonExeText4, CommandLine4TextBox, ManualEnter4CheckBox);
-            setText(lines, 5, ButtonExeText5, CommandLine5TextBox, ManualEnter5CheckBox);
-            setText(lines, 6, ButtonExeText6, CommandLine6TextBox, ManualEnter6CheckBox);
-            setText(lines, 7, ButtonExeText7, CommandLine7TextBox, ManualEnter7CheckBox);
-            setText(lines, 8, ButtonExeText8, CommandLine8TextBox, ManualEnter8CheckBox);
-            setText(lines, 9, ButtonExeText9, CommandLine9TextBox, ManualEnter9CheckBox);
-            setText(lines, 10, ButtonExeText10, CommandLine10TextBox, ManualEnter10CheckBox);
-            setText(lines, 11, ButtonExeText11, CommandLine11TextBox, ManualEnter11CheckBox);
-            setText(lines, 12, ButtonExeText12, CommandLine12TextBox, ManualEnter12CheckBox);
-            setText(lines, 13, ButtonExeText13, CommandLine13TextBox, ManualEnter13CheckBox);
-            setText(lines, 14, ButtonExeText14, CommandLine14TextBox, ManualEnter14CheckBox);
-            setText(lines, 15, ButtonExeText15, CommandLine15TextBox, ManualEnter15CheckBox);
-            setText(lines, 16, ButtonExeText16, CommandLine16TextBox, ManualEnter16CheckBox);
-            setText(lines, 17, ButtonExeText17, CommandLine17TextBox, ManualEnter17CheckBox);
-            setText(lines, 18, ButtonExeText18, CommandLine18TextBox, ManualEnter18CheckBox);
-            setText(lines, 19, ButtonExeText19, CommandLine19TextBox, ManualEnter19CheckBox);
+            setText(lines, 1, ButtonExeText1, CommandLine1TextBox,    ManualEnter1CheckBox,  UseFileCheckBox1);
+            setText(lines, 2, ButtonExeText2, CommandLine2TextBox,    ManualEnter2CheckBox,  UseFileCheckBox2);
+            setText(lines, 3, ButtonExeText3, CommandLine3TextBox,    ManualEnter3CheckBox,  UseFileCheckBox3);
+            setText(lines, 4, ButtonExeText4, CommandLine4TextBox,    ManualEnter4CheckBox,  UseFileCheckBox4);
+            setText(lines, 5, ButtonExeText5, CommandLine5TextBox,    ManualEnter5CheckBox,  UseFileCheckBox5);
+            setText(lines, 6, ButtonExeText6, CommandLine6TextBox,    ManualEnter6CheckBox,  UseFileCheckBox6);
+            setText(lines, 7, ButtonExeText7, CommandLine7TextBox,    ManualEnter7CheckBox,  UseFileCheckBox7);
+            setText(lines, 8, ButtonExeText8, CommandLine8TextBox,    ManualEnter8CheckBox,  UseFileCheckBox8);
+            setText(lines, 9, ButtonExeText9, CommandLine9TextBox,    ManualEnter9CheckBox,  UseFileCheckBox9);
+            setText(lines, 10, ButtonExeText10, CommandLine10TextBox, ManualEnter10CheckBox, UseFileCheckBox10);
+            setText(lines, 11, ButtonExeText11, CommandLine11TextBox, ManualEnter11CheckBox, UseFileCheckBox11);
+            setText(lines, 12, ButtonExeText12, CommandLine12TextBox, ManualEnter12CheckBox, UseFileCheckBox12);
+            setText(lines, 13, ButtonExeText13, CommandLine13TextBox, ManualEnter13CheckBox, UseFileCheckBox13);
+            setText(lines, 14, ButtonExeText14, CommandLine14TextBox, ManualEnter14CheckBox, UseFileCheckBox14);
+            setText(lines, 15, ButtonExeText15, CommandLine15TextBox, ManualEnter15CheckBox, UseFileCheckBox15);
+            setText(lines, 16, ButtonExeText16, CommandLine16TextBox, ManualEnter16CheckBox, UseFileCheckBox16);
+            setText(lines, 17, ButtonExeText17, CommandLine17TextBox, ManualEnter17CheckBox, UseFileCheckBox17);
+            setText(lines, 18, ButtonExeText18, CommandLine18TextBox, ManualEnter18CheckBox, UseFileCheckBox18);
+            setText(lines, 19, ButtonExeText19, CommandLine19TextBox, ManualEnter19CheckBox, UseFileCheckBox19);
             //
             CharDelayTextBox.Text = COMport.InterCharDelay.ToString();
             NLDelayTextBox.Text = COMport.InterLineDelay.ToString();
@@ -108,9 +109,18 @@ namespace COMport
         /// <param name="index">One of seven different entries to update</param>
         /// <param name="checkbox">If read item doesn't end in "\n", tick this as "No Enter" required</param>
         /// <returns></returns>
-        private void setText( string[] lines, int index, Button button, TextBox text, CheckBox checkbox )
+        private void setText( string[] lines, int index, Button button, TextBox text, CheckBox checkbox, CheckBox fileRef )
         {
             string toRead = findParameterByIndex( lines, index, "");
+
+            if (toRead.StartsWith("<<") && toRead.EndsWith(">>"))
+            {
+                // This is a filename.
+                //
+                fileRef.Checked = true;
+                toRead = toRead.Substring(2, toRead.Length - 4);
+            }
+
             string[] inputs = toRead.Split('=');
             
             try
@@ -147,11 +157,15 @@ namespace COMport
             }
             if (text.Text.EndsWith("\\n") )
             {
+                // This is a string that contains a enter.
+                //
                 text.Text = text.Text.Substring(0, text.Text.Length - 2);
             }
             else
             {
-                if(text.Text.Length > 0 ) checkbox.Checked = true;
+                // This is a string that uses a manual enter.
+                //
+                if (text.Text.Length > 0 ) checkbox.Checked = true;
             }
         }
 
@@ -193,25 +207,25 @@ namespace COMport
             //
             using (StreamWriter output = File.CreateText(saveFilename))
             {
-                saveToQuickTextFile(output, "\"" + ButtonExeText1.Text + "\"=" + CommandLine1TextBox.Text, ManualEnter1CheckBox);
-                saveToQuickTextFile(output, "\"" + ButtonExeText2.Text + "\"=" + CommandLine2TextBox.Text, ManualEnter2CheckBox);
-                saveToQuickTextFile(output, "\"" + ButtonExeText3.Text + "\"=" + CommandLine3TextBox.Text, ManualEnter3CheckBox);
-                saveToQuickTextFile(output, "\"" + ButtonExeText4.Text + "\"=" + CommandLine4TextBox.Text, ManualEnter4CheckBox);
-                saveToQuickTextFile(output, "\"" + ButtonExeText5.Text + "\"=" + CommandLine5TextBox.Text, ManualEnter5CheckBox);
-                saveToQuickTextFile(output, "\"" + ButtonExeText6.Text + "\"=" + CommandLine6TextBox.Text, ManualEnter6CheckBox);
-                saveToQuickTextFile(output, "\"" + ButtonExeText7.Text + "\"=" + CommandLine7TextBox.Text, ManualEnter7CheckBox);
-                saveToQuickTextFile(output, "\"" + ButtonExeText8.Text + "\"=" + CommandLine8TextBox.Text, ManualEnter8CheckBox);
-                saveToQuickTextFile(output, "\"" + ButtonExeText9.Text + "\"=" + CommandLine9TextBox.Text, ManualEnter9CheckBox);
-                saveToQuickTextFile(output, "\"" + ButtonExeText10.Text + "\"=" + CommandLine10TextBox.Text, ManualEnter10CheckBox);
-                saveToQuickTextFile(output, "\"" + ButtonExeText11.Text + "\"=" + CommandLine11TextBox.Text, ManualEnter11CheckBox);
-                saveToQuickTextFile(output, "\"" + ButtonExeText12.Text + "\"=" + CommandLine12TextBox.Text, ManualEnter12CheckBox);
-                saveToQuickTextFile(output, "\"" + ButtonExeText13.Text + "\"=" + CommandLine13TextBox.Text, ManualEnter13CheckBox);
-                saveToQuickTextFile(output, "\"" + ButtonExeText14.Text + "\"=" + CommandLine14TextBox.Text, ManualEnter14CheckBox);
-                saveToQuickTextFile(output, "\"" + ButtonExeText15.Text + "\"=" + CommandLine15TextBox.Text, ManualEnter15CheckBox);
-                saveToQuickTextFile(output, "\"" + ButtonExeText16.Text + "\"=" + CommandLine16TextBox.Text, ManualEnter16CheckBox);
-                saveToQuickTextFile(output, "\"" + ButtonExeText17.Text + "\"=" + CommandLine17TextBox.Text, ManualEnter17CheckBox);
-                saveToQuickTextFile(output, "\"" + ButtonExeText18.Text + "\"=" + CommandLine18TextBox.Text, ManualEnter18CheckBox);
-                saveToQuickTextFile(output, "\"" + ButtonExeText19.Text + "\"=" + CommandLine19TextBox.Text, ManualEnter19CheckBox);
+                saveToQuickTextFile(output, "\"" + ButtonExeText1.Text + "\"=" + CommandLine1TextBox.Text,   ManualEnter1CheckBox,  UseFileCheckBox1);
+                saveToQuickTextFile(output, "\"" + ButtonExeText2.Text + "\"=" + CommandLine2TextBox.Text,   ManualEnter2CheckBox,  UseFileCheckBox2);
+                saveToQuickTextFile(output, "\"" + ButtonExeText3.Text + "\"=" + CommandLine3TextBox.Text,   ManualEnter3CheckBox,  UseFileCheckBox3);
+                saveToQuickTextFile(output, "\"" + ButtonExeText4.Text + "\"=" + CommandLine4TextBox.Text,   ManualEnter4CheckBox,  UseFileCheckBox4);
+                saveToQuickTextFile(output, "\"" + ButtonExeText5.Text + "\"=" + CommandLine5TextBox.Text,   ManualEnter5CheckBox,  UseFileCheckBox5);
+                saveToQuickTextFile(output, "\"" + ButtonExeText6.Text + "\"=" + CommandLine6TextBox.Text,   ManualEnter6CheckBox,  UseFileCheckBox6);
+                saveToQuickTextFile(output, "\"" + ButtonExeText7.Text + "\"=" + CommandLine7TextBox.Text,   ManualEnter7CheckBox,  UseFileCheckBox7);
+                saveToQuickTextFile(output, "\"" + ButtonExeText8.Text + "\"=" + CommandLine8TextBox.Text,   ManualEnter8CheckBox,  UseFileCheckBox8);
+                saveToQuickTextFile(output, "\"" + ButtonExeText9.Text + "\"=" + CommandLine9TextBox.Text,   ManualEnter9CheckBox,  UseFileCheckBox9);
+                saveToQuickTextFile(output, "\"" + ButtonExeText10.Text + "\"=" + CommandLine10TextBox.Text, ManualEnter10CheckBox, UseFileCheckBox10);
+                saveToQuickTextFile(output, "\"" + ButtonExeText11.Text + "\"=" + CommandLine11TextBox.Text, ManualEnter11CheckBox, UseFileCheckBox11);
+                saveToQuickTextFile(output, "\"" + ButtonExeText12.Text + "\"=" + CommandLine12TextBox.Text, ManualEnter12CheckBox, UseFileCheckBox12);
+                saveToQuickTextFile(output, "\"" + ButtonExeText13.Text + "\"=" + CommandLine13TextBox.Text, ManualEnter13CheckBox, UseFileCheckBox13);
+                saveToQuickTextFile(output, "\"" + ButtonExeText14.Text + "\"=" + CommandLine14TextBox.Text, ManualEnter14CheckBox, UseFileCheckBox14);
+                saveToQuickTextFile(output, "\"" + ButtonExeText15.Text + "\"=" + CommandLine15TextBox.Text, ManualEnter15CheckBox, UseFileCheckBox15);
+                saveToQuickTextFile(output, "\"" + ButtonExeText16.Text + "\"=" + CommandLine16TextBox.Text, ManualEnter16CheckBox, UseFileCheckBox16);
+                saveToQuickTextFile(output, "\"" + ButtonExeText17.Text + "\"=" + CommandLine17TextBox.Text, ManualEnter17CheckBox, UseFileCheckBox17);
+                saveToQuickTextFile(output, "\"" + ButtonExeText18.Text + "\"=" + CommandLine18TextBox.Text, ManualEnter18CheckBox, UseFileCheckBox18);
+                saveToQuickTextFile(output, "\"" + ButtonExeText19.Text + "\"=" + CommandLine19TextBox.Text, ManualEnter19CheckBox, UseFileCheckBox19);
             }
             SaveButton.BackColor = SystemColors.Control;
             SaveButton.ForeColor = SAVE_NOT_REQUIRED;
@@ -224,9 +238,10 @@ namespace COMport
         /// <param name="idx"></param>
         /// <param name="textbox"></param>
         /// <param name="checkbox"></param>
-        private void saveToQuickTextFile(StreamWriter output, string textbox, CheckBox checkbox )
+        private void saveToQuickTextFile(StreamWriter output, string textbox, CheckBox checkbox, CheckBox fileRef )
         {
             if (!checkbox.Checked && (textbox.Length > 0)) textbox += "\\n";
+            if (fileRef.Checked) textbox = "<<" + textbox + ">>";
             output.WriteLine(textbox );
         }
 
@@ -294,13 +309,19 @@ namespace COMport
             }
         }
 
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Check for right clicks on the button label to set it.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ButtonExeTextN_MouseDown(object sender, MouseEventArgs e)
         {
-            Button sentBy = (Button)sender;
-            int buttonNumber = Convert.ToInt32(sentBy.Name.Substring("ButtonExeText".Length));
-
             if (e.Button == MouseButtons.Right)
             {
+                Button sentBy = (Button)sender;
+                int buttonNumber = Convert.ToInt32(sentBy.Name.Substring("ButtonExeText".Length));
+
                 // Right click of execute button means change its label.
                 //
                 EnterLabel formToEnterLabel = new EnterLabel(sentBy.Text);
@@ -466,25 +487,25 @@ namespace COMport
         {
             switch ( command )
             {
-                case 1: Program.comportform.sendLinesToKeyboard(CommandLine1TextBox.Text, ManualEnter1CheckBox.Checked); break;
-                case 2: Program.comportform.sendLinesToKeyboard(CommandLine2TextBox.Text, ManualEnter2CheckBox.Checked); break;
-                case 3: Program.comportform.sendLinesToKeyboard(CommandLine3TextBox.Text, ManualEnter3CheckBox.Checked); break;
-                case 4: Program.comportform.sendLinesToKeyboard(CommandLine4TextBox.Text, ManualEnter4CheckBox.Checked); break;
-                case 5: Program.comportform.sendLinesToKeyboard(CommandLine5TextBox.Text, ManualEnter5CheckBox.Checked); break;
-                case 6: Program.comportform.sendLinesToKeyboard(CommandLine6TextBox.Text, ManualEnter6CheckBox.Checked); break;
-                case 7: Program.comportform.sendLinesToKeyboard(CommandLine7TextBox.Text, ManualEnter7CheckBox.Checked); break;
-                case 8: Program.comportform.sendLinesToKeyboard(CommandLine8TextBox.Text, ManualEnter8CheckBox.Checked); break;
-                case 9: Program.comportform.sendLinesToKeyboard(CommandLine9TextBox.Text, ManualEnter9CheckBox.Checked); break;
-                case 10: Program.comportform.sendLinesToKeyboard(CommandLine10TextBox.Text, ManualEnter10CheckBox.Checked); break;
-                case 11: Program.comportform.sendLinesToKeyboard(CommandLine11TextBox.Text, ManualEnter11CheckBox.Checked); break;
-                case 12: Program.comportform.sendLinesToKeyboard(CommandLine12TextBox.Text, ManualEnter12CheckBox.Checked); break;
-                case 13: Program.comportform.sendLinesToKeyboard(CommandLine13TextBox.Text, ManualEnter13CheckBox.Checked); break;
-                case 14: Program.comportform.sendLinesToKeyboard(CommandLine14TextBox.Text, ManualEnter14CheckBox.Checked); break;
-                case 15: Program.comportform.sendLinesToKeyboard(CommandLine15TextBox.Text, ManualEnter15CheckBox.Checked); break;
-                case 16: Program.comportform.sendLinesToKeyboard(CommandLine16TextBox.Text, ManualEnter16CheckBox.Checked); break;
-                case 17: Program.comportform.sendLinesToKeyboard(CommandLine17TextBox.Text, ManualEnter17CheckBox.Checked); break;
-                case 18: Program.comportform.sendLinesToKeyboard(CommandLine18TextBox.Text, ManualEnter18CheckBox.Checked); break;
-                case 19: Program.comportform.sendLinesToKeyboard(CommandLine19TextBox.Text, ManualEnter19CheckBox.Checked); break;
+                case 1: Program.comportform.sendLinesToKeyboard(CommandLine1TextBox.Text, ManualEnter1CheckBox.Checked, UseFileCheckBox1.Checked); break;
+                case 2: Program.comportform.sendLinesToKeyboard(CommandLine2TextBox.Text, ManualEnter2CheckBox.Checked, UseFileCheckBox2.Checked); break;
+                case 3: Program.comportform.sendLinesToKeyboard(CommandLine3TextBox.Text, ManualEnter3CheckBox.Checked, UseFileCheckBox3.Checked); break;
+                case 4: Program.comportform.sendLinesToKeyboard(CommandLine4TextBox.Text, ManualEnter4CheckBox.Checked, UseFileCheckBox4.Checked); break;
+                case 5: Program.comportform.sendLinesToKeyboard(CommandLine5TextBox.Text, ManualEnter5CheckBox.Checked, UseFileCheckBox5.Checked); break;
+                case 6: Program.comportform.sendLinesToKeyboard(CommandLine6TextBox.Text, ManualEnter6CheckBox.Checked, UseFileCheckBox6.Checked); break;
+                case 7: Program.comportform.sendLinesToKeyboard(CommandLine7TextBox.Text, ManualEnter7CheckBox.Checked, UseFileCheckBox7.Checked); break;
+                case 8: Program.comportform.sendLinesToKeyboard(CommandLine8TextBox.Text, ManualEnter8CheckBox.Checked, UseFileCheckBox8.Checked); break;
+                case 9: Program.comportform.sendLinesToKeyboard(CommandLine9TextBox.Text, ManualEnter9CheckBox.Checked, UseFileCheckBox9.Checked); break;
+                case 10: Program.comportform.sendLinesToKeyboard(CommandLine10TextBox.Text, ManualEnter10CheckBox.Checked, UseFileCheckBox10.Checked); break;
+                case 11: Program.comportform.sendLinesToKeyboard(CommandLine11TextBox.Text, ManualEnter11CheckBox.Checked, UseFileCheckBox11.Checked); break;
+                case 12: Program.comportform.sendLinesToKeyboard(CommandLine12TextBox.Text, ManualEnter12CheckBox.Checked, UseFileCheckBox12.Checked); break;
+                case 13: Program.comportform.sendLinesToKeyboard(CommandLine13TextBox.Text, ManualEnter13CheckBox.Checked, UseFileCheckBox13.Checked); break;
+                case 14: Program.comportform.sendLinesToKeyboard(CommandLine14TextBox.Text, ManualEnter14CheckBox.Checked, UseFileCheckBox14.Checked); break;
+                case 15: Program.comportform.sendLinesToKeyboard(CommandLine15TextBox.Text, ManualEnter15CheckBox.Checked, UseFileCheckBox15.Checked); break;
+                case 16: Program.comportform.sendLinesToKeyboard(CommandLine16TextBox.Text, ManualEnter16CheckBox.Checked, UseFileCheckBox16.Checked); break;
+                case 17: Program.comportform.sendLinesToKeyboard(CommandLine17TextBox.Text, ManualEnter17CheckBox.Checked, UseFileCheckBox17.Checked); break;
+                case 18: Program.comportform.sendLinesToKeyboard(CommandLine18TextBox.Text, ManualEnter18CheckBox.Checked, UseFileCheckBox18.Checked); break;
+                case 19: Program.comportform.sendLinesToKeyboard(CommandLine19TextBox.Text, ManualEnter19CheckBox.Checked, UseFileCheckBox19.Checked); break;
                 //
                 default: RepeatCommandTimer.Enabled = false; break; // Invalid command number, stop the repeat timer.
             }
@@ -540,7 +561,8 @@ namespace COMport
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
-        /// 
+        /// When something is updated, note that we need to save.
+        /// Also, may need to modify the Manual Enter flags.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -548,6 +570,50 @@ namespace COMport
         {
             SaveButton.BackColor = Color.White;
             SaveButton.ForeColor = SAVE_POSSIBLY_REQUIRED;
+            //
+            updateManualFlags(sender, UseFileCheckBox1, ManualEnter1CheckBox);
+            updateManualFlags(sender, UseFileCheckBox2, ManualEnter2CheckBox);
+            updateManualFlags(sender, UseFileCheckBox3, ManualEnter3CheckBox);
+            updateManualFlags(sender, UseFileCheckBox4, ManualEnter4CheckBox);
+            updateManualFlags(sender, UseFileCheckBox5, ManualEnter5CheckBox);
+            updateManualFlags(sender, UseFileCheckBox6, ManualEnter6CheckBox);
+            updateManualFlags(sender, UseFileCheckBox7, ManualEnter7CheckBox);
+            updateManualFlags(sender, UseFileCheckBox8, ManualEnter8CheckBox);
+            updateManualFlags(sender, UseFileCheckBox9, ManualEnter9CheckBox);
+            updateManualFlags(sender, UseFileCheckBox10, ManualEnter10CheckBox);
+            updateManualFlags(sender, UseFileCheckBox11, ManualEnter11CheckBox);
+            updateManualFlags(sender, UseFileCheckBox12, ManualEnter12CheckBox);
+            updateManualFlags(sender, UseFileCheckBox13, ManualEnter13CheckBox);
+            updateManualFlags(sender, UseFileCheckBox14, ManualEnter14CheckBox);
+            updateManualFlags(sender, UseFileCheckBox15, ManualEnter15CheckBox);
+            updateManualFlags(sender, UseFileCheckBox16, ManualEnter16CheckBox);
+            updateManualFlags(sender, UseFileCheckBox17, ManualEnter17CheckBox);
+            updateManualFlags(sender, UseFileCheckBox18, ManualEnter18CheckBox);
+            updateManualFlags(sender, UseFileCheckBox19, ManualEnter19CheckBox);
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// If "Use File" is selected, force the "Manual Enter" flag off and disable.
+        /// If "Use File" is deselected, re-enable "Manual Enter".
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="useFile"></param>
+        /// <param name="ManualEnter"></param>
+        void updateManualFlags(object sender, CheckBox useFile, CheckBox ManualEnter)
+        {
+            if (sender == useFile)
+            {
+                if (useFile.Checked)
+                {
+                    ManualEnter.Checked = false;
+                    ManualEnter.Enabled = false;
+                }
+                else
+                {
+                    ManualEnter.Enabled = true;
+                }
+            }
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

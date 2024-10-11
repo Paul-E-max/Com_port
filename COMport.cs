@@ -9,6 +9,7 @@
 // @Tools:      Visual Studio 2019, C#
 //
 // @Revision:
+// 10.10.2024-MD V1.01.23 - If command marked as "Use file" then pipe the contents of that file in as though typed.
 // 26.02.2024-MD V1.01.22 - Apply digital signature to EXE (see Project Properties\Build Events\Post-build event).
 // 08.02.2024-MD V1.01.21 - Add hexadecimal output option.
 // 19.10.2023-MD V1.01.20 - Record last QUICK text displayed.
@@ -86,7 +87,7 @@ namespace COMport
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // Constants
         //
-        const string APP_NAME = "COMport", VERSION = "V1.01.22"; // UPDATE MANUALLY AS APPLICATION EVOLVES.
+        const string APP_NAME = "COMport", VERSION = "V1.01.23"; // UPDATE MANUALLY AS APPLICATION EVOLVES.
         //
         public const string TEXT_FILE_EXT = ".TXT";
         const string LASTUSED_TXT = APP_NAME + "_USER" + TEXT_FILE_EXT;
@@ -145,6 +146,9 @@ namespace COMport
         bool timeStampRequiredFlag = false;
         bool hexOutputFlag = false;
         bool lastKeyWasCR = false;
+
+        const string COMMENT_ON = "\x15";                   // Ctrl+U (NAK) to stop character transmission to device until end of line.
+        bool commentOnly = false;                           // Flags that characters are not to be sent to the device.
 
         // Sending the characters out requires a ring buffer to pace them out with a timer
         // when character and/or new line delays are required.
@@ -805,80 +809,95 @@ namespace COMport
 
             if (false == COMportComboBox.Enabled)
             {
-                TxBuffer[0] = keyboardChar;
-
-                if (keyboardChar < 0x80)
+                if (Encoding.ASCII.GetBytes(COMMENT_ON)[0] == keyboardChar)
                 {
-                    if (CR == keyboardChar)
+                    commentOnly = true;
+                }
+                else
+                {
+                    TxBuffer[0] = keyboardChar;
+
+                    if (keyboardChar < 0x80)
                     {
-                        // ENTER has been hit, use the correct value for this connected device.
-                        //
+                        if (CR == keyboardChar)
+                        {
+                            // ENTER has been hit, use the correct value for this connected device.
+                            //
+                            try
+                            {
+                                TxBuffer = Encoding.ASCII.GetBytes(EnterKey);
+                                if (CheckState.Indeterminate == HalfDuplexCheckBox.CheckState) NoNewlineTimer.Enabled = true;
+                            }
+                            catch
+                            {
+                                // Just ignore silly items in TxEnter text box.
+                            }
+                        }
                         try
                         {
-                            TxBuffer = Encoding.ASCII.GetBytes(EnterKey);
-                            if (CheckState.Indeterminate == HalfDuplexCheckBox.CheckState) NoNewlineTimer.Enabled = true;
+                            // Attempt to send this out to the serial device - hope it is still connected.
+                            //
+                            if (false == commentOnly) Port_Write(TxBuffer, 0, 1);
                         }
                         catch
                         {
-                            // Just ignore silly items in TxEnter text box.
+                            // Failed to talk so close that port and apologise for the break in communication.
+                            //
+                            Port_Close();
+                            connectedTo(false);
+                            CommsTextBox.AppendText("\r\nERROR: lost connection\r\n\r\n");
+                            keyboardChar = 0; // Effectively discarding the character.
                         }
-                    }
-                    try
-                    {
-                        // Attempt to send this out to the serial device - hope it is still connected.
-                        //
-                        Port_Write(TxBuffer, 0, 1);
-                    }
-                    catch
-                    {
-                        // Failed to talk so close that port and apologise for the break in communication.
-                        //
-                        Port_Close();
-                        connectedTo(false);
-                        CommsTextBox.AppendText("\r\nERROR: lost connection\r\n\r\n");
-                        keyboardChar = 0; // Effectively discarding the character.
-                    }
-                    if (HalfDuplexCheckBox.Checked)
-                    {
-                        // Half-duplex requires printable characters to be displayed on behalf of the
-                        // connected device, since it does not generate any echo'd characters.
-                        //
-                        string chr = "";
+                        if (HalfDuplexCheckBox.Checked || commentOnly)
+                        {
+                            // Half-duplex requires printable characters to be displayed on behalf of the
+                            // connected device, since it does not generate any echo'd characters.
+                            //
+                            string chr = "";
 
-                        if (keyboardChar > 0x1F)
-                        {
-                            chr = Encoding.ASCII.GetString(TxBuffer, 0, 1);
-                        }
-                        else
-                        {
-                            // Carriage return (ENTER key) just needs a space to separate the typed input from the connected device's response.
-                            //
-                            if (CR == keyboardChar) generateDelimiter = true;
-                        }
-                        if (chr.Length > 0)
-                        {
-                            // Need to echo this to the terminal since the serial device isn't going to!
-                            //
-                            CommsTextBox.AppendText(chr);
-                            typedCommandLine += chr;
-                            //
-                            if (CR == keyboardChar)
+                            if (keyboardChar > 0x1F)
                             {
-                                if (OutputLogFile.Length > 0)
-                                {
-                                    using (StreamWriter logFile = File.AppendText(OutputLogFile))
-                                    {
-                                        logFile.Write(typedCommandLine);
-                                    }
-                                }
-                                typedCommandLine = "";
+                                chr = Encoding.ASCII.GetString(TxBuffer, 0, 1);
                             }
-                            CommsTextBox.SelectionStart = CommsTextBox.Text.Length; // Place the curser at the end of the text.
-                            CommsTextBox.ScrollToCaret();
+                            else
+                            {
+                                if (commentOnly)
+                                {
+                                    chr = "\r\n";
+                                }
+                                else
+                                {
+                                    // Carriage return (ENTER key) just needs a space to separate the typed input from the connected device's response.
+                                    //
+                                    if (CR == keyboardChar) generateDelimiter = true;
+                                }
+                            }
+                            if (chr.Length > 0)
+                            {
+                                // Need to echo this to the terminal since the serial device isn't going to!
+                                //
+                                CommsTextBox.AppendText(chr);
+                                typedCommandLine += chr;
+                                //
+                                if (CR == keyboardChar)
+                                {
+                                    if (OutputLogFile.Length > 0)
+                                    {
+                                        using (StreamWriter logFile = File.AppendText(OutputLogFile))
+                                        {
+                                            logFile.Write(typedCommandLine);
+                                        }
+                                    }
+                                    typedCommandLine = "";
+                                }
+                                CommsTextBox.SelectionStart = CommsTextBox.Text.Length; // Place the curser at the end of the text.
+                                CommsTextBox.ScrollToCaret();
+                            }
                         }
                     }
                 }
             }
+            if (CR == keyboardChar) commentOnly = false;
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1270,22 +1289,53 @@ namespace COMport
         /// </summary>
         /// <param name="toSend"></param>
         /// <param name="manualEnter"></param>
-        public void sendLinesToKeyboard(string toSend, bool manualEnter)
+        /// <param name="pipeFile"></param>
+        public void sendLinesToKeyboard(string toSend, bool manualEnter, bool pipeFile)
         {
-            string aline;
-            int idx;
-
-            if (false == manualEnter) toSend += "\\n";
+            // Splice and dice strings up into whole lines.
             //
-            while (toSend.Contains("\\n")) // Note that Environment.NewLine should not be equal to "\\n" (only the strangest of stange people would set it so)!
+            while (toSend.Contains("\\n"))
             {
-                idx = toSend.IndexOf("\\n");
-                aline = toSend.Substring(0, idx);
+                // Note that Environment.NewLine should not be equal to "\\n" (only the strangest of stange people would set it so)!
+                //
+                int idx = toSend.IndexOf("\\n");
+                string aline = toSend.Substring(0, idx);
                 toSend = toSend.Substring(idx + 2);
                 //
-                sendToKeyboard(aline + Convert.ToChar(CR)); // The CR will be converted within handleRingBuffer() further on down stream.
+                sendLinesToKeyboard(aline + Convert.ToChar(CR), false, pipeFile); // The CR will be converted within handleRingBuffer() further on down stream.
             }
-            if (toSend.Length > 0) sendToKeyboard(toSend);
+            if (pipeFile)
+            {
+                toSend = toSend.TrimEnd('\r');
+                //
+                if (File.Exists(toSend))
+                {
+                    string[] lines = File.ReadAllLines(toSend);
+
+                    foreach (string line in lines)
+                    {
+                        sendLinesToKeyboard(line, false, false); // Sends one line at a time to device.
+                    }
+                }
+                else
+                {
+                    sendLinesToKeyboard("// Can't find file: " + toSend, false, false); // Sends error message as a comment line.
+                }
+            }
+            else
+            {
+                if (false == manualEnter)
+                {
+                    toSend += Convert.ToChar(CR);
+                }
+                if (toSend.StartsWith("//"))
+                {
+                    // Display lines as comment by inserting control characters in to switch activity on/off . . .
+                    //
+                    toSend = COMMENT_ON + toSend;
+                }
+                sendToKeyboard(toSend);
+            }
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
