@@ -48,6 +48,14 @@ The file COMport.TXT lists common Foster and Freeman projects that can communica
 
 # Recent updates
 
+V1.01.23 - 11.10.2024
+
+Allow files to be piped in as though typed by the operator.
+
+V1.01.22 - 26.02.2024
+
+Apply F&F digital signature to allow application to be run on company machines.
+
 V1.01.21 - 08.02.2024
 
 Option to display output in hexadecimal (see bottom of QUICK text menu next to repeat functions).
