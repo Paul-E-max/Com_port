@@ -20,9 +20,10 @@ This is a simple COM port application geared up to the Foster & Freeman products
 * Click on the QUICK text entry to bring up a sheet of 19 entries
 * Click on the drop-down icon for QUICK text to list available menus
 * Select the "new sheet" item and type in a name to create a new sheet 
-* Each entry has a command button on the left, user's text in the middle and manual tick box to the right
+* Each entry has a command button on the left, "Use file" option, user's text in the middle and a "Manual enter" option to the right
 * Fill in the user text with frequently required items
 * Click on a command button to quickly generate the user's text as though typed into the console area
+* Ticking the file option takes the user text as a filename to be opened and piped in on-block
 * If the manual box is not ticked, an automatic ENTER is generated
 * Changes to these items are only recorded on hitting the Save button
 * Inter-character delays can be set in milli-seconds
