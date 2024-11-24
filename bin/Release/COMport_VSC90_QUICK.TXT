@@ -1,0 +1,20 @@
+,1000,2
+"Command1"=TYPE\n
+"Command2"=BUILD\n
+"Command3"=DATE\n
+"Command4"=LVER\n
+"Command5"=LBUILD\n
+"Command6"=LDATE\n
+"Command7"=// This is just a comment\n
+<<"Command8"=sample.txt\n>>
+"Command9"=TYPE\nBUILD\n
+"Command10"=\n
+"Command11"=\n
+"Command12"=\n
+"Command13"=\n
+"Command14"=\n
+"Command15"=\n
+"Command16"=\n
+"Command17"=\n
+"Command18"=\n
+"Command19"=\n

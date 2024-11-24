@@ -104,8 +104,6 @@ namespace COMport
             this.RepeatCommandTimer = new System.Windows.Forms.Timer(this.components);
             this.MoreCheckBox = new System.Windows.Forms.CheckBox();
             this.label7 = new System.Windows.Forms.Label();
-            this.TimeStampCheckBox = new System.Windows.Forms.CheckBox();
-            this.HexOutputCheckBox = new System.Windows.Forms.CheckBox();
             this.UseFileCheckBox19 = new System.Windows.Forms.CheckBox();
             this.UseFileCheckBox18 = new System.Windows.Forms.CheckBox();
             this.UseFileCheckBox17 = new System.Windows.Forms.CheckBox();
@@ -177,7 +175,7 @@ namespace COMport
             this.label2.Location = new System.Drawing.Point(208, 17);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(470, 20);
+            this.label2.Size = new System.Drawing.Size(376, 16);
             this.label2.TabIndex = 4;
             this.label2.Text = "Enter command or filename below (multiples separated by \'\\n\')";
             // 
@@ -426,7 +424,7 @@ namespace COMport
             this.NLDelayTextBox.Name = "NLDelayTextBox";
             this.NLDelayTextBox.Size = new System.Drawing.Size(73, 22);
             this.NLDelayTextBox.TabIndex = 59;
-            this.NLDelayTextBox.TextChanged += new System.EventHandler(this.NLDelaytextBox_TextChanged);
+            this.NLDelayTextBox.TextChanged += new System.EventHandler(this.NLDelayTextBox_TextChanged);
             // 
             // SaveButton
             // 
@@ -916,32 +914,6 @@ namespace COMport
             this.label7.TabIndex = 67;
             this.label7.Text = "Right click to set label";
             // 
-            // TimeStampCheckBox
-            // 
-            this.TimeStampCheckBox.AutoSize = true;
-            this.TimeStampCheckBox.Location = new System.Drawing.Point(525, 736);
-            this.TimeStampCheckBox.Margin = new System.Windows.Forms.Padding(4);
-            this.TimeStampCheckBox.Name = "TimeStampCheckBox";
-            this.TimeStampCheckBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.TimeStampCheckBox.Size = new System.Drawing.Size(130, 20);
-            this.TimeStampCheckBox.TabIndex = 68;
-            this.TimeStampCheckBox.Text = "Show time stamp";
-            this.TimeStampCheckBox.UseVisualStyleBackColor = true;
-            this.TimeStampCheckBox.CheckedChanged += new System.EventHandler(this.TimeStampCheckBox_CheckedChanged);
-            // 
-            // HexOutputCheckBox
-            // 
-            this.HexOutputCheckBox.AutoSize = true;
-            this.HexOutputCheckBox.Location = new System.Drawing.Point(507, 764);
-            this.HexOutputCheckBox.Margin = new System.Windows.Forms.Padding(4);
-            this.HexOutputCheckBox.Name = "HexOutputCheckBox";
-            this.HexOutputCheckBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.HexOutputCheckBox.Size = new System.Drawing.Size(148, 20);
-            this.HexOutputCheckBox.TabIndex = 69;
-            this.HexOutputCheckBox.Text = "Hexadecimal output";
-            this.HexOutputCheckBox.UseVisualStyleBackColor = true;
-            this.HexOutputCheckBox.CheckStateChanged += new System.EventHandler(this.HexOutputCheckBox_CheckStateChanged);
-            // 
             // UseFileCheckBox19
             // 
             this.UseFileCheckBox19.AutoSize = true;
@@ -1166,7 +1138,7 @@ namespace COMport
             this.AcceptButton = this.ExitButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(712, 722);
+            this.ClientSize = new System.Drawing.Size(716, 723);
             this.Controls.Add(this.UseFileCheckBox19);
             this.Controls.Add(this.UseFileCheckBox18);
             this.Controls.Add(this.UseFileCheckBox17);
@@ -1187,8 +1159,6 @@ namespace COMport
             this.Controls.Add(this.UseFileCheckBox2);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.UseFileCheckBox1);
-            this.Controls.Add(this.HexOutputCheckBox);
-            this.Controls.Add(this.TimeStampCheckBox);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.MoreCheckBox);
             this.Controls.Add(this.label6);
@@ -1349,8 +1319,6 @@ namespace COMport
         public System.Windows.Forms.TextBox NLDelayTextBox;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Button ButtonExeText1;
-        private System.Windows.Forms.CheckBox TimeStampCheckBox;
-        private System.Windows.Forms.CheckBox HexOutputCheckBox;
         private System.Windows.Forms.CheckBox UseFileCheckBox19;
         private System.Windows.Forms.CheckBox UseFileCheckBox18;
         private System.Windows.Forms.CheckBox UseFileCheckBox17;

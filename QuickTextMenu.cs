@@ -9,6 +9,9 @@
 // @Tools:      Visual Studio 2019, C#
 //
 // @Revision:
+// 21.11.2024-MD V1.01.24 - 1) Move handling of pumping strings from COMport.cs and QuickTextMenu.cs
+//                          2) Save QuickTextMenu inter-character, newline and repeat delays with each page.
+//                          3) Move timestamp and hex output checkboxes to the main screen.
 // 10.10.2024-MD V1.01.23 - If command marked as "Use file" then pipe the contents of that file in as though typed.
 // 02.06.2023-MD V1.01.15 - Correction to right click and accept button.
 // 25.04.2023-MD V1.01.13 - Correction to Quick Text menu with equals character in it.
@@ -53,12 +56,19 @@ namespace COMport
         string loadFilename;
         bool RepeatCommandPrimmed = false;
         int RepeatCommand = REPEAT_DISABLED;
+        int quickTextLineDelay = 0;
+        int quickTextCharDelay = 0;
 
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Setup quick text menus.
+        /// </summary>
+        /// <param name="filename"></param>
         public QuickTextMenu(string filename)
         {
             InitializeComponent();
             loadFilename = filename;
-            this.Text = filename;
+            this.Text = filename;       // Put up the title for this quick text file.
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -70,33 +80,30 @@ namespace COMport
         private void QuickTextMenu_Load(object sender, EventArgs e)
         {
             string[] lines = new string[0];
+            int offset = 0;
 
-            if (File.Exists(loadFilename))
-            {
-                lines = File.ReadAllLines(loadFilename);
-            }
-            setText(lines, 1, ButtonExeText1, CommandLine1TextBox,    ManualEnter1CheckBox,  UseFileCheckBox1);
-            setText(lines, 2, ButtonExeText2, CommandLine2TextBox,    ManualEnter2CheckBox,  UseFileCheckBox2);
-            setText(lines, 3, ButtonExeText3, CommandLine3TextBox,    ManualEnter3CheckBox,  UseFileCheckBox3);
-            setText(lines, 4, ButtonExeText4, CommandLine4TextBox,    ManualEnter4CheckBox,  UseFileCheckBox4);
-            setText(lines, 5, ButtonExeText5, CommandLine5TextBox,    ManualEnter5CheckBox,  UseFileCheckBox5);
-            setText(lines, 6, ButtonExeText6, CommandLine6TextBox,    ManualEnter6CheckBox,  UseFileCheckBox6);
-            setText(lines, 7, ButtonExeText7, CommandLine7TextBox,    ManualEnter7CheckBox,  UseFileCheckBox7);
-            setText(lines, 8, ButtonExeText8, CommandLine8TextBox,    ManualEnter8CheckBox,  UseFileCheckBox8);
-            setText(lines, 9, ButtonExeText9, CommandLine9TextBox,    ManualEnter9CheckBox,  UseFileCheckBox9);
-            setText(lines, 10, ButtonExeText10, CommandLine10TextBox, ManualEnter10CheckBox, UseFileCheckBox10);
-            setText(lines, 11, ButtonExeText11, CommandLine11TextBox, ManualEnter11CheckBox, UseFileCheckBox11);
-            setText(lines, 12, ButtonExeText12, CommandLine12TextBox, ManualEnter12CheckBox, UseFileCheckBox12);
-            setText(lines, 13, ButtonExeText13, CommandLine13TextBox, ManualEnter13CheckBox, UseFileCheckBox13);
-            setText(lines, 14, ButtonExeText14, CommandLine14TextBox, ManualEnter14CheckBox, UseFileCheckBox14);
-            setText(lines, 15, ButtonExeText15, CommandLine15TextBox, ManualEnter15CheckBox, UseFileCheckBox15);
-            setText(lines, 16, ButtonExeText16, CommandLine16TextBox, ManualEnter16CheckBox, UseFileCheckBox16);
-            setText(lines, 17, ButtonExeText17, CommandLine17TextBox, ManualEnter17CheckBox, UseFileCheckBox17);
-            setText(lines, 18, ButtonExeText18, CommandLine18TextBox, ManualEnter18CheckBox, UseFileCheckBox18);
-            setText(lines, 19, ButtonExeText19, CommandLine19TextBox, ManualEnter19CheckBox, UseFileCheckBox19);
+            if (File.Exists(loadFilename)) lines = File.ReadAllLines(loadFilename);
+            offset = CheckForTimings(lines);
             //
-            CharDelayTextBox.Text = COMport.InterCharDelay.ToString();
-            NLDelayTextBox.Text = COMport.InterLineDelay.ToString();
+            setText(lines, offset + 1, ButtonExeText1, CommandLine1TextBox,    ManualEnter1CheckBox,  UseFileCheckBox1);
+            setText(lines, offset + 2, ButtonExeText2, CommandLine2TextBox,    ManualEnter2CheckBox,  UseFileCheckBox2);
+            setText(lines, offset + 3, ButtonExeText3, CommandLine3TextBox,    ManualEnter3CheckBox,  UseFileCheckBox3);
+            setText(lines, offset + 4, ButtonExeText4, CommandLine4TextBox,    ManualEnter4CheckBox,  UseFileCheckBox4);
+            setText(lines, offset + 5, ButtonExeText5, CommandLine5TextBox,    ManualEnter5CheckBox,  UseFileCheckBox5);
+            setText(lines, offset + 6, ButtonExeText6, CommandLine6TextBox,    ManualEnter6CheckBox,  UseFileCheckBox6);
+            setText(lines, offset + 7, ButtonExeText7, CommandLine7TextBox,    ManualEnter7CheckBox,  UseFileCheckBox7);
+            setText(lines, offset + 8, ButtonExeText8, CommandLine8TextBox,    ManualEnter8CheckBox,  UseFileCheckBox8);
+            setText(lines, offset + 9, ButtonExeText9, CommandLine9TextBox,    ManualEnter9CheckBox,  UseFileCheckBox9);
+            setText(lines, offset + 10, ButtonExeText10, CommandLine10TextBox, ManualEnter10CheckBox, UseFileCheckBox10);
+            setText(lines, offset + 11, ButtonExeText11, CommandLine11TextBox, ManualEnter11CheckBox, UseFileCheckBox11);
+            setText(lines, offset + 12, ButtonExeText12, CommandLine12TextBox, ManualEnter12CheckBox, UseFileCheckBox12);
+            setText(lines, offset + 13, ButtonExeText13, CommandLine13TextBox, ManualEnter13CheckBox, UseFileCheckBox13);
+            setText(lines, offset + 14, ButtonExeText14, CommandLine14TextBox, ManualEnter14CheckBox, UseFileCheckBox14);
+            setText(lines, offset + 15, ButtonExeText15, CommandLine15TextBox, ManualEnter15CheckBox, UseFileCheckBox15);
+            setText(lines, offset + 16, ButtonExeText16, CommandLine16TextBox, ManualEnter16CheckBox, UseFileCheckBox16);
+            setText(lines, offset + 17, ButtonExeText17, CommandLine17TextBox, ManualEnter17CheckBox, UseFileCheckBox17);
+            setText(lines, offset + 18, ButtonExeText18, CommandLine18TextBox, ManualEnter18CheckBox, UseFileCheckBox18);
+            setText(lines, offset + 19, ButtonExeText19, CommandLine19TextBox, ManualEnter19CheckBox, UseFileCheckBox19);
             //
             SaveButton.BackColor = SystemColors.Control;
             SaveButton.ForeColor = SAVE_NOT_REQUIRED;
@@ -195,6 +202,56 @@ namespace COMport
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
+        /// Check for the timings that is optional in the first line.
+        /// </summary>
+        /// <param name="lines"></param>
+        /// <returns></returns>
+        private int CheckForTimings(string[] lines)
+        {
+            int offset = 0;
+
+            // These are the default values if not defined in the file just read.
+            //
+            CharDelayTextBox.Text = COMport.InterCharDelay.ToString();
+            NLDelayTextBox.Text = COMport.InterLineDelay.ToString();
+            //
+            // If the file just read does define them, there will be three comma separated values.
+            //
+            // For example 10,500,5
+            //
+            // If a string is missing, then leave it as its default value.
+            //
+            if ((lines[0].Length > 0) && !lines[0].StartsWith("\""))
+            {
+                string[] parameters = lines[0].Split(',');
+
+                offset++; // So that the loading by setText() points to the button parameters.
+                //
+                if (parameters.Length > 0)
+                {
+                    if (parameters[0].Length > 0)
+                    {
+                        if (String.Compare(CharDelayTextBox.Text, parameters[0]) < 0) CharDelayTextBox.Text = parameters[0];
+                    }
+                }
+
+                if (parameters.Length > 1)
+                {
+                    if (parameters[1].Length > 0)
+                    {
+                        if (String.Compare(NLDelayTextBox.Text, parameters[1]) < 0) NLDelayTextBox.Text = parameters[1];
+                    }
+                }
+                if (parameters.Length > 2)
+                {
+                    if (parameters[2].Length > 0) RepeatEveryTextBox.Text = parameters[2];
+                }
+            }
+            return offset;
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
         /// Save the current text configuration
         /// </summary>
         /// <param name="sender"></param>
@@ -207,6 +264,24 @@ namespace COMport
             //
             using (StreamWriter output = File.CreateText(saveFilename))
             {
+                // Option to save the timings within the quick text page.
+                //
+                string timings = "";
+
+                if( CharDelayTextBox.Text != COMport.InterCharDelay.ToString() )
+                {
+                    timings += CharDelayTextBox.Text;
+                }
+                timings += ",";
+                //
+                if( NLDelayTextBox.Text != COMport.InterLineDelay.ToString() )
+                {
+                    timings += NLDelayTextBox.Text;
+                }
+                timings += "," + RepeatEveryTextBox.Text;
+                //
+                output.WriteLine(timings);
+                //
                 saveToQuickTextFile(output, "\"" + ButtonExeText1.Text + "\"=" + CommandLine1TextBox.Text,   ManualEnter1CheckBox,  UseFileCheckBox1);
                 saveToQuickTextFile(output, "\"" + ButtonExeText2.Text + "\"=" + CommandLine2TextBox.Text,   ManualEnter2CheckBox,  UseFileCheckBox2);
                 saveToQuickTextFile(output, "\"" + ButtonExeText3.Text + "\"=" + CommandLine3TextBox.Text,   ManualEnter3CheckBox,  UseFileCheckBox3);
@@ -242,7 +317,7 @@ namespace COMport
         {
             if (!checkbox.Checked && (textbox.Length > 0)) textbox += "\\n";
             if (fileRef.Checked) textbox = "<<" + textbox + ">>";
-            output.WriteLine(textbox );
+            output.WriteLine(textbox);
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -270,42 +345,6 @@ namespace COMport
                 {
                     SaveButton.PerformClick();
                 }
-            }
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void CharDelayTextBox_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                COMport.InterCharDelay = Convert.ToInt32(CharDelayTextBox.Text);
-            }
-            catch
-            {
-                COMport.InterCharDelay = 0;
-            }
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void NLDelaytextBox_TextChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                COMport.InterLineDelay = Convert.ToInt32(NLDelayTextBox.Text);
-            }
-            catch
-            {
-                COMport.InterLineDelay = 0;
             }
         }
 
@@ -480,6 +519,61 @@ namespace COMport
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
+        /// Send a text strings to the keyboard buffer, doing newline if not manual enter.
+        /// </summary>
+        /// <param name="toSend"></param>
+        /// <param name="manualEnter"></param>
+        /// <param name="pipeFile"></param>
+        public void sendLinesToKeyboard(string toSend, bool manualEnter, bool pipeFile)
+        {
+            // Splice and dice strings up into whole lines.
+            //
+            while (toSend.Contains("\\n"))
+            {
+                // Note that Environment.NewLine should not be equal to "\\n" (only the strangest of stange people would set it so)!
+                //
+                int idx = toSend.IndexOf("\\n");
+                string aline = toSend.Substring(0, idx);
+                toSend = toSend.Substring(idx + 2);
+                //
+                sendLinesToKeyboard(aline + Convert.ToChar(Program.comportform.CR), false, pipeFile);
+            }
+            if (pipeFile)
+            {
+                toSend = toSend.TrimEnd('\r');
+                //
+                if (File.Exists(toSend))
+                {
+                    string[] lines = File.ReadAllLines(toSend);
+
+                    foreach (string line in lines)
+                    {
+                        sendLinesToKeyboard(line, false, false); // Sends one line at a time to device.
+                    }
+                }
+                else
+                {
+                    sendLinesToKeyboard("// Can't find file: " + toSend, false, false); // Sends error message as a comment line.
+                }
+            }
+            else
+            {
+                if ((false == manualEnter) && !toSend.EndsWith(Convert.ToChar(Program.comportform.CR).ToString()))
+                {
+                    toSend += Convert.ToChar(Program.comportform.CR);
+                }
+                if (toSend.StartsWith("//"))
+                {
+                    // Display lines as comment by inserting control characters in to switch activity on/off . . .
+                    //
+                    toSend = Program.comportform.COMMENT_ON + toSend;
+                }
+                Program.comportform.sendToKeyboard(toSend, quickTextCharDelay, quickTextLineDelay);
+            }
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
         /// Execute a command in one of the prepared text boxes.
         /// </summary>
         /// <param name="command"></param>
@@ -487,25 +581,25 @@ namespace COMport
         {
             switch ( command )
             {
-                case 1: Program.comportform.sendLinesToKeyboard(CommandLine1TextBox.Text, ManualEnter1CheckBox.Checked, UseFileCheckBox1.Checked); break;
-                case 2: Program.comportform.sendLinesToKeyboard(CommandLine2TextBox.Text, ManualEnter2CheckBox.Checked, UseFileCheckBox2.Checked); break;
-                case 3: Program.comportform.sendLinesToKeyboard(CommandLine3TextBox.Text, ManualEnter3CheckBox.Checked, UseFileCheckBox3.Checked); break;
-                case 4: Program.comportform.sendLinesToKeyboard(CommandLine4TextBox.Text, ManualEnter4CheckBox.Checked, UseFileCheckBox4.Checked); break;
-                case 5: Program.comportform.sendLinesToKeyboard(CommandLine5TextBox.Text, ManualEnter5CheckBox.Checked, UseFileCheckBox5.Checked); break;
-                case 6: Program.comportform.sendLinesToKeyboard(CommandLine6TextBox.Text, ManualEnter6CheckBox.Checked, UseFileCheckBox6.Checked); break;
-                case 7: Program.comportform.sendLinesToKeyboard(CommandLine7TextBox.Text, ManualEnter7CheckBox.Checked, UseFileCheckBox7.Checked); break;
-                case 8: Program.comportform.sendLinesToKeyboard(CommandLine8TextBox.Text, ManualEnter8CheckBox.Checked, UseFileCheckBox8.Checked); break;
-                case 9: Program.comportform.sendLinesToKeyboard(CommandLine9TextBox.Text, ManualEnter9CheckBox.Checked, UseFileCheckBox9.Checked); break;
-                case 10: Program.comportform.sendLinesToKeyboard(CommandLine10TextBox.Text, ManualEnter10CheckBox.Checked, UseFileCheckBox10.Checked); break;
-                case 11: Program.comportform.sendLinesToKeyboard(CommandLine11TextBox.Text, ManualEnter11CheckBox.Checked, UseFileCheckBox11.Checked); break;
-                case 12: Program.comportform.sendLinesToKeyboard(CommandLine12TextBox.Text, ManualEnter12CheckBox.Checked, UseFileCheckBox12.Checked); break;
-                case 13: Program.comportform.sendLinesToKeyboard(CommandLine13TextBox.Text, ManualEnter13CheckBox.Checked, UseFileCheckBox13.Checked); break;
-                case 14: Program.comportform.sendLinesToKeyboard(CommandLine14TextBox.Text, ManualEnter14CheckBox.Checked, UseFileCheckBox14.Checked); break;
-                case 15: Program.comportform.sendLinesToKeyboard(CommandLine15TextBox.Text, ManualEnter15CheckBox.Checked, UseFileCheckBox15.Checked); break;
-                case 16: Program.comportform.sendLinesToKeyboard(CommandLine16TextBox.Text, ManualEnter16CheckBox.Checked, UseFileCheckBox16.Checked); break;
-                case 17: Program.comportform.sendLinesToKeyboard(CommandLine17TextBox.Text, ManualEnter17CheckBox.Checked, UseFileCheckBox17.Checked); break;
-                case 18: Program.comportform.sendLinesToKeyboard(CommandLine18TextBox.Text, ManualEnter18CheckBox.Checked, UseFileCheckBox18.Checked); break;
-                case 19: Program.comportform.sendLinesToKeyboard(CommandLine19TextBox.Text, ManualEnter19CheckBox.Checked, UseFileCheckBox19.Checked); break;
+                case 1: sendLinesToKeyboard(CommandLine1TextBox.Text, ManualEnter1CheckBox.Checked, UseFileCheckBox1.Checked); break;
+                case 2: sendLinesToKeyboard(CommandLine2TextBox.Text, ManualEnter2CheckBox.Checked, UseFileCheckBox2.Checked); break;
+                case 3: sendLinesToKeyboard(CommandLine3TextBox.Text, ManualEnter3CheckBox.Checked, UseFileCheckBox3.Checked); break;
+                case 4: sendLinesToKeyboard(CommandLine4TextBox.Text, ManualEnter4CheckBox.Checked, UseFileCheckBox4.Checked); break;
+                case 5: sendLinesToKeyboard(CommandLine5TextBox.Text, ManualEnter5CheckBox.Checked, UseFileCheckBox5.Checked); break;
+                case 6: sendLinesToKeyboard(CommandLine6TextBox.Text, ManualEnter6CheckBox.Checked, UseFileCheckBox6.Checked); break;
+                case 7: sendLinesToKeyboard(CommandLine7TextBox.Text, ManualEnter7CheckBox.Checked, UseFileCheckBox7.Checked); break;
+                case 8: sendLinesToKeyboard(CommandLine8TextBox.Text, ManualEnter8CheckBox.Checked, UseFileCheckBox8.Checked); break;
+                case 9: sendLinesToKeyboard(CommandLine9TextBox.Text, ManualEnter9CheckBox.Checked, UseFileCheckBox9.Checked); break;
+                case 10: sendLinesToKeyboard(CommandLine10TextBox.Text, ManualEnter10CheckBox.Checked, UseFileCheckBox10.Checked); break;
+                case 11: sendLinesToKeyboard(CommandLine11TextBox.Text, ManualEnter11CheckBox.Checked, UseFileCheckBox11.Checked); break;
+                case 12: sendLinesToKeyboard(CommandLine12TextBox.Text, ManualEnter12CheckBox.Checked, UseFileCheckBox12.Checked); break;
+                case 13: sendLinesToKeyboard(CommandLine13TextBox.Text, ManualEnter13CheckBox.Checked, UseFileCheckBox13.Checked); break;
+                case 14: sendLinesToKeyboard(CommandLine14TextBox.Text, ManualEnter14CheckBox.Checked, UseFileCheckBox14.Checked); break;
+                case 15: sendLinesToKeyboard(CommandLine15TextBox.Text, ManualEnter15CheckBox.Checked, UseFileCheckBox15.Checked); break;
+                case 16: sendLinesToKeyboard(CommandLine16TextBox.Text, ManualEnter16CheckBox.Checked, UseFileCheckBox16.Checked); break;
+                case 17: sendLinesToKeyboard(CommandLine17TextBox.Text, ManualEnter17CheckBox.Checked, UseFileCheckBox17.Checked); break;
+                case 18: sendLinesToKeyboard(CommandLine18TextBox.Text, ManualEnter18CheckBox.Checked, UseFileCheckBox18.Checked); break;
+                case 19: sendLinesToKeyboard(CommandLine19TextBox.Text, ManualEnter19CheckBox.Checked, UseFileCheckBox19.Checked); break;
                 //
                 default: RepeatCommandTimer.Enabled = false; break; // Invalid command number, stop the repeat timer.
             }
@@ -561,6 +655,16 @@ namespace COMport
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
+        /// Set the save button to indicate that a save is probably required.
+        /// </summary>
+        private void savePossiblyRequired()
+        {
+            SaveButton.BackColor = Color.White;
+            SaveButton.ForeColor = SAVE_POSSIBLY_REQUIRED;
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
         /// When something is updated, note that we need to save.
         /// Also, may need to modify the Manual Enter flags.
         /// </summary>
@@ -568,8 +672,7 @@ namespace COMport
         /// <param name="e"></param>
         private void Contents_Changed(object sender, EventArgs e)
         {
-            SaveButton.BackColor = Color.White;
-            SaveButton.ForeColor = SAVE_POSSIBLY_REQUIRED;
+            savePossiblyRequired();
             //
             updateManualFlags(sender, UseFileCheckBox1, ManualEnter1CheckBox);
             updateManualFlags(sender, UseFileCheckBox2, ManualEnter2CheckBox);
@@ -618,24 +721,40 @@ namespace COMport
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
-        /// Whenever the timestamp check flag changes, update the parent's record.
+        /// 
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void TimeStampCheckBox_CheckedChanged(object sender, EventArgs e)
+        private void CharDelayTextBox_TextChanged(object sender, EventArgs e)
         {
-            Program.comportform.setTimeStampRequiredFlag(TimeStampCheckBox.Checked);
+            try
+            {
+                quickTextCharDelay = Convert.ToInt32(CharDelayTextBox.Text);
+            }
+            catch
+            {
+                quickTextCharDelay = 0;
+            }
+            savePossiblyRequired();
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
-        /// Whenever the hexadecimal output check flag changes, update the parent's record.
+        /// 
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void HexOutputCheckBox_CheckStateChanged(object sender, EventArgs e)
+        private void NLDelayTextBox_TextChanged(object sender, EventArgs e)
         {
-            Program.comportform.setHexadecimalFlag(HexOutputCheckBox.Checked);
+            try
+            {
+                quickTextLineDelay = Convert.ToInt32(NLDelayTextBox.Text);
+            }
+            catch
+            {
+                quickTextLineDelay = 0;
+            }
+            savePossiblyRequired();
         }
     }
 }

@@ -1,3 +1,4 @@
+,,1
 "Command1"=PROCESSSTATUS\n
 "Command2"=AMBIENTSTATUS\n
 "Command3"=UNLOCKDOOR\n

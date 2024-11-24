@@ -9,6 +9,10 @@
 // @Tools:      Visual Studio 2019, C#
 //
 // @Revision:
+// 21.11.2024-MD V1.01.24 - 1) Move handling of pumping strings from COMport.cs and QuickTextMenu.cs
+//                          2) Save QuickTextMenu inter-character, newline and repeat delays with each page.
+//                          3) Move timestamp and hex output checkboxes to the main screen.
+//                          4) Increase the maximum number of projects from 20 to 50.
 // 10.10.2024-MD V1.01.23 - If command marked as "Use file" then pipe the contents of that file in as though typed.
 // 26.02.2024-MD V1.01.22 - Apply digital signature to EXE (see Project Properties\Build Events\Post-build event).
 // 08.02.2024-MD V1.01.21 - Add hexadecimal output option.
@@ -77,8 +81,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Reflection;
+using static System.Windows.Forms.AxHost;
 
 namespace COMport
 {
@@ -87,7 +91,7 @@ namespace COMport
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // Constants
         //
-        const string APP_NAME = "COMport", VERSION = "V1.01.23"; // UPDATE MANUALLY AS APPLICATION EVOLVES.
+        const string APP_NAME = "COMport", VERSION = "V1.01.24"; // UPDATE MANUALLY AS APPLICATION EVOLVES.
         //
         public const string TEXT_FILE_EXT = ".TXT";
         const string LASTUSED_TXT = APP_NAME + "_USER" + TEXT_FILE_EXT;
@@ -113,7 +117,7 @@ namespace COMport
 
         const string FILENAME_CSV = APP_NAME + ".CSV";              // Obsolite project filename (don't like using CSV extention).
         const string FILENAME_PROJECTS = APP_NAME + TEXT_FILE_EXT;  // New projects filename.
-        const int MAX_PROJECTS = 20;                                // Reads through FILENAME_PROJECTS file, but abandons data beyond this number of projects.
+        const int MAX_PROJECTS = 50;                                // Reads through FILENAME_PROJECTS file, but abandons data beyond this number of projects.
 
         struct project
         {
@@ -143,11 +147,9 @@ namespace COMport
         string typedCommandLine = "";
         bool DoingDropDown = false;
         bool generateDelimiter = false; // For half-duplex, following Tx of characters, insert space delimiter on next Rx character.
-        bool timeStampRequiredFlag = false;
-        bool hexOutputFlag = false;
         bool lastKeyWasCR = false;
 
-        const string COMMENT_ON = "\x15";                   // Ctrl+U (NAK) to stop character transmission to device until end of line.
+        public string COMMENT_ON = "\x15";                  // Ctrl+U (NAK) to stop character transmission to device until end of line.
         bool commentOnly = false;                           // Flags that characters are not to be sent to the device.
 
         // Sending the characters out requires a ring buffer to pace them out with a timer
@@ -155,7 +157,14 @@ namespace COMport
         //
         const int RING_BUFFER_SIZE = 512;
 
-        byte[] RingBuffer = new byte[RING_BUFFER_SIZE];
+        struct delayedCharacter
+        {
+            public byte character;
+            public int delay;
+        };
+
+        delayedCharacter[] RingBuffer = new delayedCharacter[RING_BUFFER_SIZE];
+
         byte input_ptr = 0;
         byte output_ptr = 0;
 
@@ -561,7 +570,7 @@ namespace COMport
 
             NoNewlineTimer.Enabled = false;
             //
-            if (hexOutputFlag)
+            if (HexOutputCheckBox.Checked)
             {
                 // Just dump the hexadecimal values to the display  (hexadecimal output option enabled).
                 //
@@ -571,11 +580,11 @@ namespace COMport
                     //
                     for (i = 0; i < readLength; i++)
                     {
-                        toDisplay += ((0 == i) ? " " : ",") + inputs[i].ToString("X2");
+                        toDisplay += ((0 == i) ? "" : ",") + inputs[i].ToString("X2");
                     }
                     if (Encoding.ASCII.GetString(inputs, i - 1, 1) == EnterKey) toDisplay += "\r\n";
                     //
-                    updateCommsTextBox(toDisplay);
+                    addTimestampAndUpdateCommsTextBox(toDisplay);
                 }
             }
             else
@@ -632,20 +641,8 @@ namespace COMport
                             i += (Environment.NewLine.Length - 1);
                         }
                     }
-                    if (generateDelimiter)
-                    {
-                        generateDelimiter = false;
-                        updateCommsTextBox(" ");
-                    }
-
-                    string timeStamp = "";
-                    if (timeStampRequiredFlag && lastKeyWasCR)
-                    {
-                        timeStamp = "[" + DateTimeOffset.Now.Second.ToString() + "." + DateTimeOffset.Now.Millisecond.ToString() + "] ";
-                        lastKeyWasCR = false;
-                    }
-                    updateCommsTextBox(timeStamp + toDisplay);
-
+                    addTimestampAndUpdateCommsTextBox(toDisplay);
+                    //
                     if (CheckState.Indeterminate == HalfDuplexCheckBox.CheckState)
                     {
                         updateCommsTextBox("\n");
@@ -656,22 +653,24 @@ namespace COMport
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
-        /// When the QuickTextMenu reference to Line time stamp changes, update local flag too.
+        /// Add optional timestamp and update the communications text box.
         /// </summary>
-        /// <param name="state"></param>
-        public void setTimeStampRequiredFlag(bool state)
+        /// <param name="toDisplay"></param>
+        private void addTimestampAndUpdateCommsTextBox(string toDisplay)
         {
-            timeStampRequiredFlag = state;
-        }
+            string timeStamp = "";
 
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
-        /// When the QuickTextMenu reference to hexadecimal output changes, update local flag too.
-        /// </summary>
-        /// <param name="state"></param>
-        public void setHexadecimalFlag(bool state)
-        {
-            hexOutputFlag = state;
+            if (generateDelimiter)
+            {
+                generateDelimiter = false;
+                timeStamp = " ";
+            }
+            if (TimeStampCheckBox.Checked && lastKeyWasCR)
+            {
+                timeStamp += "[" + DateTimeOffset.Now.Second.ToString() + "." + DateTimeOffset.Now.Millisecond.ToString() + "] ";
+                lastKeyWasCR = false;
+            }
+            updateCommsTextBox(timeStamp + toDisplay);
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -725,7 +724,7 @@ namespace COMport
                 {
                     // Paste the clipboard into the keyboard input stream.
                     //
-                    sendToKeyboard(Clipboard.GetText());
+                    sendToKeyboard(Clipboard.GetText(), InterCharDelay, InterLineDelay);
                     //
                     e.Handled = true;
                 }
@@ -740,13 +739,29 @@ namespace COMport
         /// <param name="e"></param>
         private void CommsTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            byte KeyboardChar = (byte)e.KeyChar;
+            AddToBuffer((byte)e.KeyChar, InterCharDelay, InterLineDelay);
+        }
 
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="KeyboardChar"></param>
+        private void AddToBuffer(byte KeyboardChar, int charDelay, int lineDelay)
+        {
             // If the character is printable and the ring buffer would not overflow . . .
             //
             if ((KeyboardChar < 0x80) && ((input_ptr + 1) != output_ptr))
             {
-                RingBuffer[input_ptr++] = KeyboardChar; // Place the new character into the ring buffer.
+                RingBuffer[input_ptr].character = KeyboardChar; // Place the new character into the ring buffer.
+                RingBuffer[input_ptr].delay = charDelay;        // Assume that it is just any old character.
+                //
+                // If a CR was sent, then use the line delay instead.
+                //
+                if(CR == KeyboardChar) RingBuffer[input_ptr].delay = lineDelay;
+                //
+                input_ptr++;
+                //
                 handleRingBuffer();                     // Deal with any idle characers in the ring buffer.
             }
             if (CR == KeyboardChar) lastKeyWasCR = true;
@@ -762,25 +777,14 @@ namespace COMport
             {
                 // There is currently no inter-character delay in progress, so just go ahead and send the characters.
                 //
-                sendToDevice(RingBuffer[output_ptr]);
+                sendToDevice(RingBuffer[output_ptr].character);
                 //
                 // If the inter-character delays are non-zero, start the character timer going ready to trigger the next one.
                 //
-                if (CR == RingBuffer[output_ptr])
+                if (RingBuffer[output_ptr].delay > 0)
                 {
-                    if (InterLineDelay > 0)
-                    {
-                        TXcharacterTimer.Interval = InterLineDelay;
-                        TXcharacterTimer.Start();
-                    }
-                }
-                else
-                {
-                    if (InterCharDelay > 0)
-                    {
-                        TXcharacterTimer.Interval = InterCharDelay;
-                        TXcharacterTimer.Start();
-                    }
+                    TXcharacterTimer.Interval = RingBuffer[output_ptr].delay;
+                    TXcharacterTimer.Start();
                 }
                 output_ptr++;
             }
@@ -1118,12 +1122,23 @@ namespace COMport
                     //
                     foreach( QuickTextMenu menu in Application.OpenForms.OfType<QuickTextMenu>() )
                     {
-                        menu.NLDelayTextBox.Text = InterLineDelay.ToString();
-                        menu.CharDelayTextBox.Text = InterCharDelay.ToString();
+                        setMenuWhereGreaterDelay(menu.NLDelayTextBox, InterLineDelay.ToString());
+                        setMenuWhereGreaterDelay(menu.CharDelayTextBox, InterCharDelay.ToString());
                     }
                     break;
                 }
             }
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Set the destination TextBox to the source string if source is greater.
+        /// </summary>
+        /// <param name="destination"></param>
+        /// <param name="source"></param>
+        private void setMenuWhereGreaterDelay( TextBox destination, string source )
+        {
+            if( String.Compare(destination.Text, source) < 0) destination.Text = source;
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1285,73 +1300,17 @@ namespace COMport
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
-        /// Send a text strings to the keyboard buffer, doing newline if not manual enter.
-        /// </summary>
-        /// <param name="toSend"></param>
-        /// <param name="manualEnter"></param>
-        /// <param name="pipeFile"></param>
-        public void sendLinesToKeyboard(string toSend, bool manualEnter, bool pipeFile)
-        {
-            // Splice and dice strings up into whole lines.
-            //
-            while (toSend.Contains("\\n"))
-            {
-                // Note that Environment.NewLine should not be equal to "\\n" (only the strangest of stange people would set it so)!
-                //
-                int idx = toSend.IndexOf("\\n");
-                string aline = toSend.Substring(0, idx);
-                toSend = toSend.Substring(idx + 2);
-                //
-                sendLinesToKeyboard(aline + Convert.ToChar(CR), false, pipeFile); // The CR will be converted within handleRingBuffer() further on down stream.
-            }
-            if (pipeFile)
-            {
-                toSend = toSend.TrimEnd('\r');
-                //
-                if (File.Exists(toSend))
-                {
-                    string[] lines = File.ReadAllLines(toSend);
-
-                    foreach (string line in lines)
-                    {
-                        sendLinesToKeyboard(line, false, false); // Sends one line at a time to device.
-                    }
-                }
-                else
-                {
-                    sendLinesToKeyboard("// Can't find file: " + toSend, false, false); // Sends error message as a comment line.
-                }
-            }
-            else
-            {
-                if (false == manualEnter)
-                {
-                    toSend += Convert.ToChar(CR);
-                }
-                if (toSend.StartsWith("//"))
-                {
-                    // Display lines as comment by inserting control characters in to switch activity on/off . . .
-                    //
-                    toSend = COMMENT_ON + toSend;
-                }
-                sendToKeyboard(toSend);
-            }
-        }
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
         /// Pump a single string to the keyboard buffer of CommTextBox.
         /// </summary>
         /// <param name="toSend"></param>
-        private void sendToKeyboard( string toSend )
+        public void sendToKeyboard( string toSend, int charDelay, int lineDelay )
         {
-            object sender = null;
-            KeyPressEventArgs e = new KeyPressEventArgs((char)Keys.Enter); // Set this to a bogus value that is then replaced within the following for loop.
+            byte chr;
 
             for (int idx = 0; idx < toSend.Length; idx++)
             {
-                e.KeyChar = Convert.ToChar(toSend.Substring(idx, 1));
-                CommsTextBox_KeyPress(sender, e);
+                chr = (byte)Convert.ToChar(toSend.Substring(idx, 1));
+                AddToBuffer(chr, charDelay, lineDelay);
             }
         }
 
@@ -1702,30 +1661,6 @@ namespace COMport
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
-        /// Read a line from the serial port or D2xx device
-        /// </summary>
-        /// <returns>Line read from the port</returns>
-        private string Port_ReadLine()
-        {
-            string response;
-
-#if DEBUG_LOGGING
-			logToTestFile(command);
-#endif
-            if (FTDI_D2XX == FTDI_mode)
-            {
-                response = D2xxDevice.ReadLine();
-            }
-            else
-            {
-                response = SerialPort.ReadLine();
-            }
-            return response;
-        }
-
-
-        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        /// <summary>
         /// Read a character from the serial port or D2xx device
         /// </summary>
         /// <returns>Character read from the port</returns>
@@ -1918,12 +1853,11 @@ namespace COMport
             else
             {
                 response = SerialPort.ReadLine();
-                //
-                if ("\r" == EnterKey) // The above CR read a line in.
-                {
-                    byte[] input = new byte[1];
-                    Port_Read(input, 0, 1); // Which would return (and discard) the LF character that followed the above CR.
-                }
+            }
+            if ("\r" == EnterKey) // The above CR read a line in.
+            {
+                byte[] input = new byte[1];
+                Port_Read(input, 0, 1); // Which would return (and discard) the LF character that followed the above CR.
             }
 #if DEBUG_LOGGING
 #if DEBUG_BY_STRING
