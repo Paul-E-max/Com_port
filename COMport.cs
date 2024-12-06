@@ -9,6 +9,7 @@
 // @Tools:      Visual Studio 2019, C#
 //
 // @Revision:
+// 05.12.2024-MD V1.01.25 - Correction, half duplex was relabelled as "no echo", changed again to "Echo".
 // 21.11.2024-MD V1.01.24 - 1) Move handling of pumping strings from COMport.cs and QuickTextMenu.cs
 //                          2) Save QuickTextMenu inter-character, newline and repeat delays with each page.
 //                          3) Move timestamp and hex output checkboxes to the main screen.
@@ -91,7 +92,7 @@ namespace COMport
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // Constants
         //
-        const string APP_NAME = "COMport", VERSION = "V1.01.24"; // UPDATE MANUALLY AS APPLICATION EVOLVES.
+        const string APP_NAME = "COMport", VERSION = "V1.01.25"; // UPDATE MANUALLY AS APPLICATION EVOLVES.
         //
         public const string TEXT_FILE_EXT = ".TXT";
         const string LASTUSED_TXT = APP_NAME + "_USER" + TEXT_FILE_EXT;

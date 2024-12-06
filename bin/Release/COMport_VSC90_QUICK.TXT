@@ -1,4 +1,4 @@
-,1000,2
+,150,1
 "Command1"=TYPE\n
 "Command2"=BUILD\n
 "Command3"=DATE\n
@@ -8,8 +8,8 @@
 "Command7"=// This is just a comment\n
 <<"Command8"=sample.txt\n>>
 "Command9"=TYPE\nBUILD\n
-"Command10"=\n
-"Command11"=\n
+"Command10"=ENUM\n
+"Command11"=OVDCONF\n
 "Command12"=\n
 "Command13"=\n
 "Command14"=\n
@@ -17,4 +17,4 @@
 "Command16"=\n
 "Command17"=\n
 "Command18"=\n
-"Command19"=\n
+"Command19"=BL# LAMPTRAY\n

@@ -262,11 +262,11 @@ namespace COMport
             this.HalfDuplexCheckBox.Location = new System.Drawing.Point(526, 12);
             this.HalfDuplexCheckBox.Margin = new System.Windows.Forms.Padding(4);
             this.HalfDuplexCheckBox.Name = "HalfDuplexCheckBox";
-            this.HalfDuplexCheckBox.Size = new System.Drawing.Size(77, 20);
+            this.HalfDuplexCheckBox.Size = new System.Drawing.Size(60, 20);
             this.HalfDuplexCheckBox.TabIndex = 5;
-            this.HalfDuplexCheckBox.Text = "no echo";
-            this.toolTips.SetToolTip(this.HalfDuplexCheckBox, "Tick if device does not use character echo (right-click to auto-new-line on displ" +
-        "ay)");
+            this.HalfDuplexCheckBox.Text = "Echo";
+            this.toolTips.SetToolTip(this.HalfDuplexCheckBox, "Tick if device requires Tx character to be echo\'d locally,\r\nas in half-duplexed. " +
+        " Use right-click to enable auto-new-line\r\non display.");
             this.HalfDuplexCheckBox.UseVisualStyleBackColor = true;
             this.HalfDuplexCheckBox.Click += new System.EventHandler(this.SelectConsoleFollowing_Click);
             this.HalfDuplexCheckBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.HalfDuplexCheckBox_MouseDown);

@@ -1,0 +1,28 @@
+24.11.2024 - V1.01.24 - Increase number of projects
+
+1) Increase the maximum number of projects from 20 to 50.
+2) Save Quick Text Menu inter-character, newline and repeat delays with each page.
+3) Move timestamp and hex output checkboxes to the main screen.
+
+11.10.2024 - V1.01.23 - If command marked as "Use file" then pipe the contents of that file in as though typed.
+
+26.02.2024 - V1.01.22 - Applied F&F digital signature
+
+08.02.2024 - V1.01.21 - Add hexadecimal output option
+
+20.11.2023 - V1.01.20 - Record last quick text displayed
+
+28.06.2023 - V1.01.19 - Increased GUI for COMnnn entries and inject TENMA CR
+
+27.06.2023 - V1.01.18 - Right-click "Tx on Enter" for auto-new-line on the display output.
+
+07.06.2023 - V1.01.17 - Embed the FTDI DLL within EXE file
+
+04.06.2023 - V1.01.16 - Add D2XX support
+
+1) Add D2XX support for VSC900, but others can be included
+2) Correction to right click and accept button.
+
+:
+:
+:
