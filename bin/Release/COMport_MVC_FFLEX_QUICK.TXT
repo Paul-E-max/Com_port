@@ -1,4 +1,4 @@
-,0,1
+,,1
 "Command1"=PROCESSSTATUS\n
 "Command2"=AMBIENTSTATUS\n
 "Command3"=UNLOCKDOOR\n
@@ -11,9 +11,9 @@
 "Command10"=REASON\n
 "Command11"=SAFETYPOWERPRESENT\n
 "Command12"=DOOR\n
-"Command13"=ProdGetCal 84\n
-"Command14"=ProdCal 84 0\n
-"Command15"=PURGEFANDRIVE 4095\n
+"Command13"=ProdGetCal 109\n
+"Command14"=ProdCal 109 6\nprodcal 110 30\nprodcal 111 20\nprodcal 112 30\n
+"Command15"=Factorydefaults\n
 "Command16"=LIGHTE 15 8004BFFFF4BF SOLID\n
 "Command17"=LIGHTE 15 300FFFFFF000 SOLID\n
 "Command18"=LIGHTE 15 FFFFFFFFFFFF SOLID\n

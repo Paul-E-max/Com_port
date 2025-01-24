@@ -1234,7 +1234,6 @@ namespace COMport
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
-            this.MinimizeBox = false;
             this.Name = "QuickTextMenu";
             this.Text = "COMport - Quick Text Menu";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.QuickTextMenu_FormClosing);

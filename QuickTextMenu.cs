@@ -221,31 +221,38 @@ namespace COMport
             //
             // If a string is missing, then leave it as its default value.
             //
-            if ((lines[0].Length > 0) && !lines[0].StartsWith("\""))
+            try
             {
-                string[] parameters = lines[0].Split(',');
-
-                offset++; // So that the loading by setText() points to the button parameters.
-                //
-                if (parameters.Length > 0)
+                if ((lines[0].Length > 0) && !lines[0].StartsWith("\""))
                 {
-                    if (parameters[0].Length > 0)
+                    string[] parameters = lines[0].Split(',');
+
+                    offset++; // So that the loading by setText() points to the button parameters.
+                              //
+                    if (parameters.Length > 0)
                     {
-                        if (String.Compare(CharDelayTextBox.Text, parameters[0]) < 0) CharDelayTextBox.Text = parameters[0];
+                        if (parameters[0].Length > 0)
+                        {
+                            if (String.Compare(CharDelayTextBox.Text, parameters[0]) < 0) CharDelayTextBox.Text = parameters[0];
+                        }
+                    }
+
+                    if (parameters.Length > 1)
+                    {
+                        if (parameters[1].Length > 0)
+                        {
+                            if (String.Compare(NLDelayTextBox.Text, parameters[1]) < 0) NLDelayTextBox.Text = parameters[1];
+                        }
+                    }
+                    if (parameters.Length > 2)
+                    {
+                        if (parameters[2].Length > 0) RepeatEveryTextBox.Text = parameters[2];
                     }
                 }
-
-                if (parameters.Length > 1)
-                {
-                    if (parameters[1].Length > 0)
-                    {
-                        if (String.Compare(NLDelayTextBox.Text, parameters[1]) < 0) NLDelayTextBox.Text = parameters[1];
-                    }
-                }
-                if (parameters.Length > 2)
-                {
-                    if (parameters[2].Length > 0) RepeatEveryTextBox.Text = parameters[2];
-                }
+            }
+            catch
+            {
+                // Default settings done, leave it at that.
             }
             return offset;
         }

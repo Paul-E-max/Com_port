@@ -1,3 +1,4 @@
+,,1
 "Command1"=VERSION\n
 "Command2"=BUILD\n
 "Command3"=DATE\n
@@ -10,7 +11,7 @@
 "Command10"=LIGHTSN\n
 "Command11"=ENUM\n
 "Command12"=TESTING ON\n
-"Command13"=\n
+"Command13"=FAN\n
 "Command14"=\n
 "Command15"=\n
 "Command16"=\n

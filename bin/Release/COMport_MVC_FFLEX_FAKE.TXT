@@ -1,9 +1,10 @@
-"Command1"=FAKE CLEAR\n
-"Command2"=FAKE ON\n
-"Command3"=FAKE OFF\n
-"Command4"=FAKE STAGE 99\n
-"Command5"=FAKE ERRORS 1 1\n
-"Command6"=FAKE STATUS 7 1\n
+,,1
+"Command1"=prodcal 109 6\nprodcal 110 30\nprodcal 111 20\nprodcal 112 30\n
+"Command2"=FAKE ALL\n
+"Command3"=prodgetcal 109\n
+"Command4"=poll processstatus 8000\n
+"Command5"=fake safety 0\n
+"Command6"=safetypowerpresent\n
 "Command7"=FAKE DOOR 0\n
 "Command8"=FAKE SAFETY ?\n
 "Command9"=FAKE FILTER 1 1000\n
@@ -16,4 +17,4 @@
 "Command16"=FAKE FUMES 1\n
 "Command17"=HEATERTEMP\n
 "Command18"=FILTER\n
-"Command19"=FAKE ALL\n
+"Command19"=FORCEBOOTLOADER 3\n

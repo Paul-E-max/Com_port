@@ -1,8 +1,9 @@
+,,1
 "Command1"=VERSION\n
 "Command2"=BUILD\n
 "Command3"=DATE\n
 "Command4"=ENUM\n
-"Command5"=RD 16\n
+"Command5"=\n
 "Command6"=ADDR 0x2F\n
 "Command7"=ADDR 0x79\n
 "Command8"=WR 0 0\n
@@ -13,7 +14,7 @@
 "Command13"=wr 0x13 0x07\n
 "Command14"=wr 0x26 0xb9\n
 "Command15"=wr 0\n
-"Command16"=rd 4\n
-"Command17"=\n
-"Command18"=\n
+"Command16"=ADDR 0x3E\n
+"Command17"=WR 4\n
+"Command18"=WR 2\n
 "Command19"=HELP\n

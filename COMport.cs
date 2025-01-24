@@ -9,6 +9,8 @@
 // @Tools:      Visual Studio 2019, C#
 //
 // @Revision:
+// 23.01.2025-MD V1.01.26 - Layout changes to avoid confussion as to which of hex, Tm and '?' are ticked.
+// 08.01.2025-MD V1.01.26 - Avoid '=' character in QUICK text filenames.
 // 05.12.2024-MD V1.01.25 - Correction, half duplex was relabelled as "no echo", changed again to "Echo".
 // 21.11.2024-MD V1.01.24 - 1) Move handling of pumping strings from COMport.cs and QuickTextMenu.cs
 //                          2) Save QuickTextMenu inter-character, newline and repeat delays with each page.
@@ -92,7 +94,7 @@ namespace COMport
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // Constants
         //
-        const string APP_NAME = "COMport", VERSION = "V1.01.25"; // UPDATE MANUALLY AS APPLICATION EVOLVES.
+        const string APP_NAME = "COMport", VERSION = "V1.01.26"; // UPDATE MANUALLY AS APPLICATION EVOLVES.
         //
         public const string TEXT_FILE_EXT = ".TXT";
         const string LASTUSED_TXT = APP_NAME + "_USER" + TEXT_FILE_EXT;
@@ -1400,7 +1402,7 @@ namespace COMport
         {
             if( (menuName.Length > 0) && !DoingDropDown )
             {
-                lastQuickTextSelected = menuName.Replace(' ', '_');
+                lastQuickTextSelected = menuName.Replace(' ', '_').Replace('=', '_');
 
                 QuickTextMenu menu = new QuickTextMenu(generateFullQuickTextMenuFilename(lastQuickTextSelected));
                 //
