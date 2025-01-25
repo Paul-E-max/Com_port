@@ -69,7 +69,7 @@ namespace COMport
             this.CommsTextBox.Font = new System.Drawing.Font("Courier New", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.CommsTextBox.ForeColor = System.Drawing.SystemColors.Window;
             this.CommsTextBox.Location = new System.Drawing.Point(0, 0);
-            this.CommsTextBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.CommsTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.CommsTextBox.MaxLength = 250000;
             this.CommsTextBox.Multiline = true;
             this.CommsTextBox.Name = "CommsTextBox";
@@ -98,7 +98,7 @@ namespace COMport
             "57600",
             "115200"});
             this.BaudComboBox.Location = new System.Drawing.Point(325, 6);
-            this.BaudComboBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.BaudComboBox.Margin = new System.Windows.Forms.Padding(2);
             this.BaudComboBox.Name = "BaudComboBox";
             this.BaudComboBox.Size = new System.Drawing.Size(60, 21);
             this.BaudComboBox.TabIndex = 1;
@@ -109,7 +109,7 @@ namespace COMport
             // 
             this.COMportComboBox.FormattingEnabled = true;
             this.COMportComboBox.Location = new System.Drawing.Point(249, 6);
-            this.COMportComboBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.COMportComboBox.Margin = new System.Windows.Forms.Padding(2);
             this.COMportComboBox.Name = "COMportComboBox";
             this.COMportComboBox.Size = new System.Drawing.Size(71, 21);
             this.COMportComboBox.TabIndex = 0;
@@ -123,7 +123,7 @@ namespace COMport
             // 
             this.ConnectButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ConnectButton.Location = new System.Drawing.Point(11, 5);
-            this.ConnectButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.ConnectButton.Margin = new System.Windows.Forms.Padding(2);
             this.ConnectButton.Name = "ConnectButton";
             this.ConnectButton.Size = new System.Drawing.Size(97, 24);
             this.ConnectButton.TabIndex = 2;
@@ -136,14 +136,14 @@ namespace COMport
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.panel1.Controls.Add(this.TimeStampCheckBox);
+            this.panel1.Controls.Add(this.TxOnEnterLabel);
             this.panel1.Controls.Add(this.ToolTipsCheckBox);
+            this.panel1.Controls.Add(this.clearSreenButton);
+            this.panel1.Controls.Add(this.onEnterComboBox);
             this.panel1.Controls.Add(this.QuickTextComboBox);
             this.panel1.Controls.Add(this.StartLogButton);
             this.panel1.Controls.Add(this.HexOutputCheckBox);
-            this.panel1.Controls.Add(this.onEnterComboBox);
-            this.panel1.Controls.Add(this.TxOnEnterLabel);
             this.panel1.Controls.Add(this.HalfDuplexCheckBox);
-            this.panel1.Controls.Add(this.clearSreenButton);
             this.panel1.Controls.Add(this.VersionComboBox);
             this.panel1.Controls.Add(this.BaudComboBox);
             this.panel1.Controls.Add(this.COMportComboBox);
@@ -188,7 +188,7 @@ namespace COMport
             // QuickTextComboBox
             // 
             this.QuickTextComboBox.FormattingEnabled = true;
-            this.QuickTextComboBox.Location = new System.Drawing.Point(704, 6);
+            this.QuickTextComboBox.Location = new System.Drawing.Point(521, 6);
             this.QuickTextComboBox.MaxDropDownItems = 16;
             this.QuickTextComboBox.Name = "QuickTextComboBox";
             this.QuickTextComboBox.Size = new System.Drawing.Size(93, 21);
@@ -205,7 +205,7 @@ namespace COMport
             // StartLogButton
             // 
             this.StartLogButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.StartLogButton.Location = new System.Drawing.Point(630, 5);
+            this.StartLogButton.Location = new System.Drawing.Point(447, 5);
             this.StartLogButton.Name = "StartLogButton";
             this.StartLogButton.Size = new System.Drawing.Size(68, 24);
             this.StartLogButton.TabIndex = 14;
@@ -235,7 +235,7 @@ namespace COMport
             "0x0A",
             "0x0D",
             "0x1B"});
-            this.onEnterComboBox.Location = new System.Drawing.Point(493, 6);
+            this.onEnterComboBox.Location = new System.Drawing.Point(666, 6);
             this.onEnterComboBox.Name = "onEnterComboBox";
             this.onEnterComboBox.Size = new System.Drawing.Size(47, 21);
             this.onEnterComboBox.TabIndex = 7;
@@ -246,7 +246,7 @@ namespace COMport
             // TxOnEnterLabel
             // 
             this.TxOnEnterLabel.AutoSize = true;
-            this.TxOnEnterLabel.Location = new System.Drawing.Point(449, 11);
+            this.TxOnEnterLabel.Location = new System.Drawing.Point(622, 11);
             this.TxOnEnterLabel.Name = "TxOnEnterLabel";
             this.TxOnEnterLabel.Size = new System.Drawing.Size(41, 13);
             this.TxOnEnterLabel.TabIndex = 6;
@@ -269,8 +269,8 @@ namespace COMport
             // 
             // clearSreenButton
             // 
-            this.clearSreenButton.Location = new System.Drawing.Point(545, 5);
-            this.clearSreenButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.clearSreenButton.Location = new System.Drawing.Point(718, 5);
+            this.clearSreenButton.Margin = new System.Windows.Forms.Padding(2);
             this.clearSreenButton.Name = "clearSreenButton";
             this.clearSreenButton.Size = new System.Drawing.Size(80, 24);
             this.clearSreenButton.TabIndex = 4;
@@ -283,7 +283,7 @@ namespace COMport
             // 
             this.VersionComboBox.FormattingEnabled = true;
             this.VersionComboBox.Location = new System.Drawing.Point(111, 6);
-            this.VersionComboBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.VersionComboBox.Margin = new System.Windows.Forms.Padding(2);
             this.VersionComboBox.Name = "VersionComboBox";
             this.VersionComboBox.Size = new System.Drawing.Size(134, 21);
             this.VersionComboBox.TabIndex = 3;
@@ -336,7 +336,7 @@ namespace COMport
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "COMport";
             this.Text = "COM port";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.COMportForm_FormClosing);

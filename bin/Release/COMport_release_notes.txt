@@ -1,3 +1,11 @@
+25.01.2025 - V1.01.27 - Made a mistake in changing the order of the buttons - confusing for previous users.
+24.01.2025 - V1.01.26 - Layout changes . . .
+
+1) Layout changes to avoid confusion as to which of Hex, Time and Help options are ticked.
+2) Avoid '=' character in QUICK text filenames.
+						
+06.12.2024 - V1.01.25 - Correction to half-duplex being relabled "no echo", should have been "echo".
+
 24.11.2024 - V1.01.24 - Increase number of projects
 
 1) Increase the maximum number of projects from 20 to 50.
