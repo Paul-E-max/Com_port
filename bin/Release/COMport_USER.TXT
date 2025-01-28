@@ -1,8 +1,8 @@
-project=DISCOVER
-connection=COM22
+project=MVC_FFLEX
+connection=COM7
 baudrate=115200
-halfDuplex=False
-onEnter=
+halfDuplex=True
+onEnter=0x0A
 toolTips=True
 connection_Unknown=COM18
 connection_AARI=D2XX

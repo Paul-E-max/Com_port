@@ -1,4 +1,5 @@
 25.01.2025 - V1.01.27 - Made a mistake in changing the order of the buttons - confusing for previous users.
+
 24.01.2025 - V1.01.26 - Layout changes . . .
 
 1) Layout changes to avoid confusion as to which of Hex, Time and Help options are ticked.

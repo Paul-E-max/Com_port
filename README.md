@@ -48,6 +48,25 @@ The file COMport.TXT lists common Foster and Freeman projects that can communica
 
 # Recent updates
 
+V1.01.27 - 25.01.2025
+
+Made a mistake in changing the order of the buttons - confusing for previous users.
+
+V1.01.26 - 24.01.2025
+
+1) Layout changes to avoid confusion as to which of Hex, Time and Help options are ticked.
+2) Avoid '=' character in QUICK text filenames.
+						
+V1.01.25 - 06.12.2024
+
+Correction to half-duplex being relabelled "no echo", should have been "echo".
+
+V1.01.24 - 24.11.2024
+
+1) Increase the maximum number of projects from 20 to 50.
+2) Save Quick Text Menu inter-character, newline and repeat delays with each page.
+3) Move timestamp and hex output checkboxes to the main screen.
+
 V1.01.23 - 11.10.2024
 
 Allow files to be piped in as though typed by the operator.
