@@ -11,10 +11,10 @@
 "Command10"=REASON\n
 "Command11"=SAFETYPOWERPRESENT\n
 "Command12"=DOOR\n
-"Command13"=ProdGetCal 109\n
-"Command14"=ProdCal 109 6\nprodcal 110 30\nprodcal 111 20\nprodcal 112 30\n
-"Command15"=Factorydefaults\n
-"Command16"=LIGHTE 15 8004BFFFF4BF SOLID\n
-"Command17"=LIGHTE 15 300FFFFFF000 SOLID\n
+"Command13"=AIRFLAP BEEP\n
+"Command14"=AIRFLAP QUIET\n
+"Command15"=PURGEFAN\n
+"Command16"=PURGEFANDRIVE 0\n
+"Command17"=PURGEFANDRIVE 
 "Command18"=LIGHTE 15 FFFFFFFFFFFF SOLID\n
 "Command19"=DOOR\nREASON\n

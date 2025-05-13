@@ -9,6 +9,7 @@
 // @Tools:      Visual Studio 2019, C#
 //
 // @Revision:
+// 13.05.2025-MD In OpenBySerial(), either "Unknown" or "BOOTLOAD" opens the first available D2XX port.
 // 01.06.2023-MD Tranplanted into DISCOVER COM port.
 // 11.05.2023-NA Initial version.
 //
@@ -87,6 +88,8 @@ namespace COMport
         /// <param name="DeviceSerial"></param>
         /// <returns>Available device count</returns>
         ///
+        /// Note that "Unknown" or "BOOTLOAD" will open the first D2XX port available.
+        ///
         public void OpenBySerial(string DeviceSerial)
         {
             UInt32 FTDI_DeviceCount = 0;
@@ -130,7 +133,7 @@ namespace COMport
             // Only open if there isn't another port open, to prevent errors
             if (FTDI_Device.IsOpen == false)
             {
-                if ((FTDI_DeviceCount > 0) && ("Unknown" == DeviceSerial)) DeviceSerial = ftdiDeviceList[0].SerialNumber; // Just use first available device.
+                if ((FTDI_DeviceCount > 0) && (("Unknown" == DeviceSerial) || ("BOOTLOAD" == DeviceSerial))) DeviceSerial = ftdiDeviceList[0].SerialNumber; // Just use first available device.
                 //
                 FTDI_Status = FTDI_Device.OpenBySerialNumber(DeviceSerial);
             }
