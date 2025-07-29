@@ -1,4 +1,4 @@
-,,1
+,10,1
 "Command1"=VERSION\n
 "Command2"=BUILD\n
 "Command3"=DATE\n
@@ -6,15 +6,15 @@
 "Command5"=bldr\n
 "Command6"=DEVICE\n
 "Command7"=\n
-"Command8"=\n
-"Command9"=\n
-"Command10"=\n
+"Command8"=READINLET\n
+"Command9"=READPURGE\n
+"Command10"=READBYPASS\n
 "Command11"=\n
-"Command12"=\n
-"Command13"=\n
+"Command12"=READPRESSURE\n
+"Command13"=a5?\n
 "Command14"=\n
-"Command15"=\n
-"Command16"=\n
-"Command17"=\n
+"Command15"=:000500008C\n
+"HEX error"=:040500008CEF02F08C\n
+"HEX good"=:040500008CEF02F08A\n
 "Command18"={J00RDD_\n
 "Command19"={ 99RDDG\n

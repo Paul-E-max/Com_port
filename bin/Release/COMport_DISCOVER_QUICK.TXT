@@ -12,9 +12,9 @@
 "Command11"=ENUM\n
 "Command12"=TESTING ON\n
 "Command13"=FAN\n
-"Command14"=\n
+"Command14"=CURRENT 1\nVOLTAGE 1\nCURRENT 2\nVOLTAGE 2\n
 "Command15"=\n
 "Command16"=\n
 "Command17"=\n
-"Command18"=\n
-"Command19"=\n
+"Command18"=FLOOD 50\n
+"Command19"=FLOOD 0\n

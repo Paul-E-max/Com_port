@@ -1,11 +1,11 @@
 ,,1
-"Command1"=VERSION\n
-"Command2"=S??\n
-"Command3"=UV?\n
-"Command4"=\n
-"Command5"=\n
-"Command6"=\n
-"Command7"=\n
+"Report lighting"=LIGHTING\n
+"Set level 1"=WR 17 10\n
+"Enable output 1"=WR 12 1\n
+"Read current 1"=WR 9\n
+"Readback data"=RD 6\n
+"Read voltage 1"=WR 10\n
+"Command7"=RDVOLTS 1\n
 "Command8"=\n
 "Command9"=\n
 "Command10"=\n

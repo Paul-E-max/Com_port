@@ -9,6 +9,7 @@
 // @Tools:      Visual Studio 2019, C#
 //
 // @Revision:
+// 29.07.2025-MD V1.01.29 - FTD2XX_NET.dll set to "copy if newer" in properties.  
 // 25.01.2025-MD V1.01.27 - Made a mistake in changing the order of the buttons - confusing for previous users.
 // 23.01.2025-MD V1.01.26 - Layout changes to avoid confussion as to which of hex, Tm and '?' are ticked.
 // 08.01.2025-MD V1.01.26 - Avoid '=' character in QUICK text filenames.
@@ -95,7 +96,7 @@ namespace COMport
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // Constants
         //
-        const string APP_NAME = "COMport", VERSION = "V1.01.28"; // UPDATE MANUALLY AS APPLICATION EVOLVES.
+        const string APP_NAME = "COMport", VERSION = "V1.01.29"; // UPDATE MANUALLY AS APPLICATION EVOLVES.
         //
         public const string TEXT_FILE_EXT = ".TXT";
         const string LASTUSED_TXT = APP_NAME + "_USER" + TEXT_FILE_EXT;

@@ -1,0 +1,20 @@
+,,1
+"RESET"=Z#~\n
+"READY"=SB-\n
+"Just OK low"=BF 100\n
+"Just BAD low"=BF 110\n
+"Very BAD low"=BF 165\n
+"Slit IN"=BW-\n
+"Slit OUT"=BW+\n
+"Very BAD high"=BF 175\n
+"Just BAD high"=BF 230\n
+"Just OK high"=BF 240\n
+"Command11"=BF+\n
+"Command12"=BMN ?\n
+"Command13"=BMX ?\n
+"Set SLITX min"=BMN 100\n
+"Set SLITX max"=BMX 240\n
+"Command16"=BFH\n
+"Command17"=BF?\n
+"Command18"=BF>\n
+"Command19"=BF<\n

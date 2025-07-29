@@ -1,20 +1,20 @@
-,150,1
-"Command1"=TYPE\n
+,200,6
+"Command1"=VERSION\n
 "Command2"=BUILD\n
 "Command3"=DATE\n
 "Command4"=LVER\n
 "Command5"=LBUILD\n
 "Command6"=LDATE\n
-"Command7"=// This is just a comment\n
-<<"Command8"=sample.txt\n>>
-"Command9"=TYPE\nBUILD\n
+"Command7"=TRANSCHECK\n
+"Command8"=beep 100 100\n
+"Command9"=beep 402 1000\n
 "Command10"=ENUM\n
 "Command11"=OVDCONF\n
-"Command12"=\n
-"Command13"=\n
-"Command14"=\n
+"Command12"=beep 4545 300\nbeep 4050 300\nbeep 3822 300\nbeep 3405 300\nbeep 3034 300\nbeep 2863 300\nbeep 2551 300\nbeep 2273 300\n
+"Command13"=beep 2273 300\nbeep 2551 300\nbeep 2863 300\nbeep 3034 300\nbeep 3405 300\nbeep 3822 300\nbeep 4050 300\nbeep 4545 300\n
+"Command14"=IRW 000011 50\n
 "Command15"=\n
-"Command16"=\n
-"Command17"=\n
-"Command18"=\n
+"Command16"=IF#\n
+"Command17"=FDW 50\nP6 115\nP8 115\n
+"Command18"=UV365 = 1023\n
 "Command19"=BL# LAMPTRAY\n

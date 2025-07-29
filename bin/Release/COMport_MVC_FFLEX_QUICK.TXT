@@ -1,4 +1,4 @@
-,,1
+,1000,1
 "Command1"=PROCESSSTATUS\n
 "Command2"=AMBIENTSTATUS\n
 "Command3"=UNLOCKDOOR\n
@@ -17,4 +17,4 @@
 "Command16"=PURGEFANDRIVE 0\n
 "Command17"=PURGEFANDRIVE 
 "Command18"=LIGHTE 15 FFFFFFFFFFFF SOLID\n
-"Command19"=DOOR\nREASON\n
+<<"Command19"=Example.txt\n>>

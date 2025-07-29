@@ -1,3 +1,5 @@
+13.05.2025 - V1.01.28 - Correction to connecting to "BOOTLOAD" via D2XX, assumes just first available item.
+
 25.01.2025 - V1.01.27 - Made a mistake in changing the order of the buttons - confusing for previous users.
 
 24.01.2025 - V1.01.26 - Layout changes . . .

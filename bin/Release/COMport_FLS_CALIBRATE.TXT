@@ -1,0 +1,20 @@
+,50,0.25
+"Out of STANDBY"=SB-\n
+"Slider HOME"=BFH\n
+"Nudge slider left"=BF<\n
+"Nudge slider right"=BF>\n
+"Insert SLIT"=BW-\n
+"Nudge SLIT left"=BW>\n
+"Nudge SLIT right"=BW<\n
+"Read settings"=WVLCAL\n
+"Lamp ON"=SP+\n
+"Set minimum"=SETMIN 120\n
+"Set maximum"=SETMAX 1650\n
+"Manual calibration"=RECALIBRATE 7\n
+"Enter next reading"=SETNM 
+"Go to UV end"=WVL 400\n
+"Select BLUE"=WVL 450\n
+"Select GREEN"=WVL 550\n
+"Select RED"=WVL 650\n
+"Go to IR end"=WVL 1000\n
+"Lamp OFF"=SP-\n

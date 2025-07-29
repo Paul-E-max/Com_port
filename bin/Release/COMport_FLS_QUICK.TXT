@@ -1,15 +1,15 @@
 ,,1
-"Command1"=VERSION\n
-"Command2"=DATE\n
-"elapsed seconds"=TZ\n
-"Command4"=STATUS\n
-"System Reset"=Z#~\n
-"Command6"=VER?\n
-"Command7"=\n
+"Command1"=OST 250\n
+"Command2"=OST 200\n
+"Command3"=OST 100\n
+"Command4"=OST 50\n
+"Command5"=OST -50\n
+"Command6"=OST -100\n
+"Command7"=OST -150\n
 "Command8"=\n
-"Command9"=\n
-"Command10"=\n
-"Command11"=\n
+"Command9"=BW-\n
+"Command10"=BW+\n
+"Command11"=SB-\n
 "Command12"=\n
 "Command13"=\n
 "Command14"=\n
@@ -17,4 +17,4 @@
 "Command16"=\n
 "Command17"=\n
 "Command18"=\n
-"Command19"=\n
+"Command19"=OST 10\n
