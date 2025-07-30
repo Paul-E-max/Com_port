@@ -39,7 +39,8 @@
   <ItemGroup>
     <Reference Include="FTD2XX_NET">
       <HintPath>FTDI\FTD2XX_NET.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -109,9 +110,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="COMport.ico" />
-    <EmbeddedResource Include="FTDI\FTD2XX_NET.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    <EmbeddedResource Include="FTDI\FTD2XX_NET.dll" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
