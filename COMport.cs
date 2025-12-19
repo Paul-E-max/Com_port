@@ -177,6 +177,11 @@ namespace COMport
         string lastQuickTextSelected = "";                  // Assume no Quick text menu has been selected.
 
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        // Plot form for real-time data visualization
+        //
+        PlotForm plotForm = null;
+
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         // FTDI specific items
         //
         const string D2XX_SELECTION = "D2XX";
@@ -647,6 +652,13 @@ namespace COMport
                         }
                     }
                     addTimestampAndUpdateCommsTextBox(toDisplay);
+                    //
+                    // Forward data to plot form if open
+                    //
+                    if (plotForm != null && plotForm.Visible)
+                    {
+                        plotForm.ProcessData(toDisplay);
+                    }
                     //
                     if (CheckState.Indeterminate == HalfDuplexCheckBox.CheckState)
                     {
@@ -1456,6 +1468,50 @@ namespace COMport
         private void ToolTipsCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             toolTips.Active = ToolTipsCheckBox.Checked;
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Show/hide the plot window when checkbox is toggled.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void PlotCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (PlotCheckBox.Checked)
+            {
+                // Create plot form if needed and show it
+                if (plotForm == null || plotForm.IsDisposed)
+                {
+                    plotForm = new PlotForm();
+                }
+                plotForm.StartPosition = FormStartPosition.Manual;
+                plotForm.Location = new System.Drawing.Point(this.Right + 10, this.Top);
+                plotForm.Show();
+            }
+            else
+            {
+                // Hide the plot form
+                if (plotForm != null && !plotForm.IsDisposed)
+                {
+                    plotForm.Hide();
+                }
+            }
+            CommsTextBox.Focus();
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Called by PlotForm when user closes it to sync the checkbox state.
+        /// </summary>
+        public void UncheckPlotCheckBox()
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(UncheckPlotCheckBox));
+                return;
+            }
+            PlotCheckBox.Checked = false;
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

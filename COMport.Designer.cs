@@ -38,6 +38,7 @@ namespace COMport
             this.ConnectButton = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.TimeStampCheckBox = new System.Windows.Forms.CheckBox();
+            this.PlotCheckBox = new System.Windows.Forms.CheckBox();
             this.ToolTipsCheckBox = new System.Windows.Forms.CheckBox();
             this.QuickTextComboBox = new System.Windows.Forms.ComboBox();
             this.StartLogButton = new System.Windows.Forms.Button();
@@ -135,6 +136,7 @@ namespace COMport
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.panel1.Controls.Add(this.PlotCheckBox);
             this.panel1.Controls.Add(this.TimeStampCheckBox);
             this.panel1.Controls.Add(this.TxOnEnterLabel);
             this.panel1.Controls.Add(this.ToolTipsCheckBox);
@@ -153,6 +155,19 @@ namespace COMport
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(914, 34);
             this.panel1.TabIndex = 4;
+            // 
+            // PlotCheckBox
+            // 
+            this.PlotCheckBox.AutoSize = true;
+            this.PlotCheckBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.PlotCheckBox.Location = new System.Drawing.Point(910, 10);
+            this.PlotCheckBox.Name = "PlotCheckBox";
+            this.PlotCheckBox.Size = new System.Drawing.Size(46, 17);
+            this.PlotCheckBox.TabIndex = 19;
+            this.PlotCheckBox.Text = "Plot";
+            this.toolTips.SetToolTip(this.PlotCheckBox, "Show/hide the real-time data plot window");
+            this.PlotCheckBox.UseVisualStyleBackColor = true;
+            this.PlotCheckBox.CheckedChanged += new System.EventHandler(this.PlotCheckBox_CheckedChanged);
             // 
             // TimeStampCheckBox
             // 
@@ -373,6 +388,7 @@ namespace COMport
         private System.Windows.Forms.Timer NoNewlineTimer;
         private System.Windows.Forms.CheckBox TimeStampCheckBox;
         private System.Windows.Forms.CheckBox HexOutputCheckBox;
+        private System.Windows.Forms.CheckBox PlotCheckBox;
     }
 }
 
