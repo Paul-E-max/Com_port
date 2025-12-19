@@ -1,0 +1,8 @@
+obj/*
+.vs/*
+bin/Debug/*
+*.LOG
+*.exe.config
+*.cache
+*.pdb
+*.suo
