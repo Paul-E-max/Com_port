@@ -1,0 +1,171 @@
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Filename:	TS044 VSC90 UV LED Driver PCB 0.4.test
+// Project:		VSC90
+// Author:      Foster & Freeman Ltd - Paul Evans
+// Modified:    17-07-24
+//
+// Description: This script tests the Driver with a constant resistance using 
+//              the TENMA Programmable Load and TENMA Programmable PSU. The 
+//              process involves equipment setup, configuration, and 
+//              evaluation of the PCB under test. The test script includes 
+//              step-by-step instructions and checks for ensuring proper 
+//              connection and operation of the equipment, as well as handling 
+//              pass/fail conditions.
+// This test script will connects to the Tenma PSU and the TE222 then controll the sequenceing of actions. 
+// 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+[0] force FAIL by default to avoid IMPORTANT message below.
+#1: Enter operator initials and PCB serial number:
+a. Enter operator intials.
+b. Enter serial number into the box below.
+c. Connect the PC (via USB) to the TENMA Programmable PSU.
+d. Connect the PC (via USB) to the TENMA Programmable Load.
+IMPORTANT: Observe ESD precautions for handling ESD sensitive devices.  
+DISPLAY: 1UVDRIVERsetup.png
+COMMENT: *Example image below*
+CLICK_OK:
+
+#2: Equipment Setup 1
+a. Connect the VSC90 Loopback(TE210) to J3.
+b. Connect the PSU lead(TE205) to the UUT at the connector J1. 
+c. Connect the PSU lead(TE205) Red male banana plug to the + of CH1 on the TENMA Programmable PSU. 
+d. Connect the PSU lead(TE205) Yellow male banana plug to the  +  of CH2 on the TENMA Programmable PSU.  
+e. Connect the PSU lead(TE205) Black male banana plugs to the  -  of CH1 & CH2 on the TENMA Programmable PSU.
+DISPLAY: TE205 Setup.jpg
+COMMENT: *Example image below*
+CLICK_OK:
+
+
+#3: Equipment Setup 2
+a. Connect the Load lead(TE206) to the UUT at the connector J2.
+b. Connect the 255mnm lead of the Load lead(TE206) to the TENMA Programmable LOAD.
+c. Set the PSU lead(TE205) switch to position A (255nm).
+d. Set the TENMA Programmable Load output to on.
+e. Set the TENMA Programmable PSU power switch to on.
+DISPLAY: TE206 Setup 1.jpg
+COMMENT: *Example image below*
+CLICK_OK:
+CONNECT: TENMAPSU
+IF_NOT:
+GOTO: #3: 
+
+#3.1: Connect to the TE222
+CONNECT: TE222				// Connect to the Nano in the TE222
+IF_NOT:
+GOTO: #3.1: 
+COMMAND: TE209 OUT ALL 1 	// set ALL relay to off (open)
+
+
+#4: Configure the PSU
+COMMAND: TENMAPSU OUT0
+COMMAND: TENMAPSU OCP1
+COMMAND: TENMAPSU OCPSET1:500
+COMMAND: TENMAPSU OCP2
+COMMAND: TENMAPSU OCPSET2:500
+COMMAND: TENMAPSU VSET1:12.00
+COMMAND: TENMAPSU ISET1:2.500
+COMMAND: TENMAPSU VSET2:12.00
+COMMAND: TENMAPSU ISET2:2.000
+
+
+#4.1: Connect and Configure the TENMA Programmable Load.
+CONNECT: TENMALOAD
+IF_NOT:
+GOTO: #4.1:
+COMMAND: TENMALOAD :INPut OFF
+COMMAND: TENMALOAD :FUNC RES
+COMMAND: TENMALOAD :RESistance 62OHM
+//COMMAND: TENMALOAD :RESistance 108OHM
+COMMAND: TENMALOAD :INPut ON
+
+#5:  Checking State is output OFF.	//Checking there is no current draw - if  is then the 
+COMMAND: TENMAPSU OUTCH1:1
+DELAY: 1000
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned voltage is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0 0 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+IF:
+GOTO: #6: 
+IMPORTANT: This test has failed, check the ??		
+PASS_FAIL: #4.1
+
+#6: (255nm) Read the current from the TEMMA and evaluate for PASS or FAIL.
+COMMAND: TENMAPSU OUTCH2:1
+DELAY: 2000 
+COMMAND: TENMALOAD :MEAS:CURR?
+READLINE: TENMALOAD TEMMAcurrent
+The returned voltage is =  %TEMMAcurrent%
+RANGE: %TEMMAcurrent% 0.240 0.05 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+
+#7: Check system for is in off state before start.
+COMMAND: TENMALOAD :INPut OFF
+COMMAND: TENMALOAD :RESistance 62OHM
+COMMAND: TENMAPSU OUTCH2:0
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned voltage is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.0 0.0 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 
+SUB: TestPassOrFail
+
+#8: Set the PSU lead(TE205) switch to position B (308nm).
+a. Set the PSU lead(TE205) switch to position B (308nm).
+b. Disconnect the 255mnm lead of the Load lead(TE206) from the TENMA Programmable LOAD.
+c. Connect the 308mnm lead of the Load lead(TE206) to the TENMA Programmable LOAD.
+IMPORTANT: Set the UV PSU lead(TE205) switch to position B (308nm)
+DISPLAY: Test8Setup.jpg
+COMMENT: *Example image below*
+CLICK_OK:
+
+
+#9: (308nm) Read the current from the TEMMA and evaluate for PASS or FAIL.
+IMPORTANT: Set the UV PSU lead(TE205) switch to position B (308nm)
+COMMAND: TENMAPSU OUTCH2:1
+COMMAND: TENMALOAD :INPut ON
+DELAY: 1000
+COMMAND: TENMALOAD :MEAS:CURR?
+READLINE: TENMALOAD TEMMAcurrent
+The returned voltage is =  %TEMMAcurrent%
+RANGE: %TEMMAcurrent% 0.327 0.05						
+SUB: TestPassOrFail
+
+
+#10: Turning off the load.
+COMMAND: TENMALOAD :INPut OFF
+COMMAND: TENMAPSU OUT0
+
+
+#11: Test complete.
+COMMAND: TENMALOAD :INPut OFF
+IF: %FAILED% > 0
+GOTO: #Failed:
+ELSE: #Passed:
+
+
+#Failed: A test failed
+This PCB has failed to pass all Tests
+Check the Log file for more details on the failed test(s).
+IMPORTANT: This PCB has failed to pass all Tests
+DISPLAY: test_failed.png
+CLICK_OK:
+GOTO: #QUIT:
+
+#Passed: next test
+a. All tests instructions have been completed and a log file created.
+b. Click OK to finish and power OFF.
+DISPLAY: AllTestsPassed.png
+CLICK_OK:
+
+#QUIT:
+COMMAND: TENMALOAD :INPut OFF
+COMMAND: TENMAPSU VSET1:0.00
+COMMAND: TENMAPSU ISET1:0.00
+COMMAND: TENMAPSU VSET2:0.00
+COMMAND: TENMAPSU ISET2:0.00
+COMMAND: TENMAPSU OUT0
+DISCONNECT: TENMALOAD
+DISCONNECT: TENMAPSU 
+// End of file
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

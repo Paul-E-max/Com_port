@@ -1,0 +1,3 @@
+when clickiung add notes- it overwrite operators notes for all serial number (pcbs tested)
+you need to hit entre for a new line to add a new noter and not overwrite.
+would be better if the "add notes" was added(updated) to the info.txt file  

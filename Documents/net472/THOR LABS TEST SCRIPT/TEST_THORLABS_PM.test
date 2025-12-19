@@ -1,0 +1,53 @@
+// ============================================================================
+// TEST_THORLABS_PM.test
+// Example test script for Thorlabs Power Meter integration
+// ============================================================================
+
+#1: Connect to the Thorlabs Power Meter
+CONNECT: ThorlabsPM
+IF_NOT:
+GOTO: #1:
+
+#2: Get device identification
+COMMAND: ThorlabsPM *IDN?
+READLINE: ThorlabsPM ID
+Device ID = %ID%
+CLICK_OK:
+
+#3: Set wavelength to 635nm
+COMMAND: ThorlabsPM SENS:CORR:WAV 635
+READLINE: ThorlabsPM RESULT
+Wavelength set = %RESULT%
+CLICK_OK:
+
+#4: Set averaging to 10
+COMMAND: ThorlabsPM SENS:AVER:COUN 10
+READLINE: ThorlabsPM RESULT
+Averaging set = %RESULT%
+
+#5: Enable auto-range
+COMMAND: ThorlabsPM SENS:POW:RANG:AUTO ON
+READLINE: ThorlabsPM RESULT
+Auto-range = %RESULT%
+DELAY: 500
+CLICK_OK:
+
+#6: Continuous Power Reading (Click OK to stop)
+Click OK button when ready to proceed to next test...
+
+#POWER_LOOP: Reading power
+COMMAND: ThorlabsPM MEAS:POW?
+READLINE: ThorlabsPM POWER
+Current Power = %POWER%
+DELAY: 500
+CLICK_OK: #7:
+
+GOTO: #POWER_LOOP:
+
+#7: Final power reading confirmed
+Final Power = %POWER%
+CLICK_OK:
+
+#8: Test complete
+IMPORTANT: Power Meter Test Complete
+DISCONNECT: ThorlabsPM

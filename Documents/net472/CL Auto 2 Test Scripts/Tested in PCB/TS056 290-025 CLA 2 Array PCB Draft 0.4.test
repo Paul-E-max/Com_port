@@ -1,0 +1,323 @@
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Filename:	TS056 CL Auto 2 Array PCB.test
+// Project:		CL Auto 2
+// Author:      Foster & Freeman Ltd - Paul Evans
+// Modified:    14/08/25
+//
+// Description: test ing the LED array PCB-draft
+// [ <addr_byte>  0x08  <reg>  <data> ]
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+{0} force FAIL by default to avoid IMPORTANT message below.
+#1: Equipment Setup 1
+a. Connect the 3v3 pull up and connect the GND to the Bus Priate cable.
+b. Connect the Arry1 lead to + of channel 2 on the PSU.
+c. Connect the Arry2 lead to + of channel 1 on the PSU.
+d. Connect the VPWR lead to + of channel 3 on the PSU.
+e. Connect the GND's of channel 1, 2 & 3 together.
+e. Set the TENMA Programmable PSU power switch to on.
+CLICK_OK:
+CONNECT: TENMAPSU
+IF_NOT:
+GOTO: #1: 
+
+#2: Equipment Setup 2 & Configure the PSU
+a. Connect the LED Array PCB to the TEXX (Refer to setup picture below).
+b. Place the UUT inside the LED Test Box with Web Camera (TE086).
+c. Enter the PCB serial number.
+COMMAND: TENMAPSU OUT0
+COMMAND: TENMAPSU OCP1
+COMMAND: TENMAPSU OCPSET1:1.01
+COMMAND: TENMAPSU OCPSET2:1.01
+COMMAND: TENMAPSU VSET1:15.00
+COMMAND: TENMAPSU ISET1:1.00
+COMMAND: TENMAPSU VSET2:15.00
+COMMAND: TENMAPSU ISET2:1.00
+//COMMAND: TENMAPSU OUTCH1:1
+//COMMAND: TENMAPSU OUTCH2:1
+CLICK_OK:
+
+
+#3: Connect and Configure the Bus Pirate
+CONNECT: BUS_PIRATE
+IF_NOT:
+GOTO: #3:
+COMMAND: BUS_PIRATE m4
+COMMAND: BUS_PIRATE 3
+COMMAND: BUS_PIRATE W
+COMMAND: BUS_PIRATE P
+//EXE: OpenWinCam.bat
+
+#4:Configure IC11 for temp and read AIN4 TH3 MSB & LSB for temperature:
+COMMAND: BUS_PIRATE {0x22 0x08 0x05 0x00}  
+SUB: READ_SENSOR
+//checks . . . MSB = %RS_MSB%, LSB = %RS_LSB% and decimal result = %RESULT%
+-------------------------------------
+Voltage = [3.3 * %RESULT% / (16 * 4095)]V
+-------------------------------------
+SET: Voltage = [3.3 * %RESULT% / (16 * 4095)]
+-------------------------------------
+RANGE: %Voltage% 2.50 0.15 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFailCL2
+IF_NOT:
+IMPORTANT: This PCB temp is reading higher than 29.64C or lower than 18.47C
+CLICK_OK:
+
+
+#5:Configure IC11 for temp and read AIN5 TH1 MSB & LSB for temperature:
+COMMAND: BUS_PIRATE {0x22 0x08 0x05 0x00}   
+SUB: READ_SENSOR_2
+//Checks . . . MSB = %RS_MSB%, LSB = %RS_LSB% and decimal result = %RESULT%
+-------------------------------------
+Voltage = [3.3 * %RESULT% / (16 * 4095)]V
+-------------------------------------
+SET: Voltage = [3.3 * %RESULT% / (16 * 4095)]
+-------------------------------------
+RANGE: %Voltage% 2.50 0.15 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFailCL2
+IF_NOT:
+IMPORTANT: This PCB temp is reading higher than 29.64C or lower than 18.47C
+CLICK_OK:
+
+#5.1:Configure IC11 for temp and read AIN6 TH2 MSB & LSB for temperature:
+COMMAND: BUS_PIRATE {0x22 0x08 0x05 0x00}   
+SUB: READ_SENSOR_3
+//Checks . . . MSB = %RS_MSB%, LSB = %RS_LSB% and decimal result = %RESULT%
+-------------------------------------
+Voltage = [3.3 * %RESULT% / (16 * 4095)]V
+-------------------------------------
+SET: Voltage = [3.3 * %RESULT% / (16 * 4095)]
+-------------------------------------
+RANGE: %Voltage% 2.50 0.15 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFailCL2
+IF_NOT:
+IMPORTANT: This PCB temp is reading higher than 29.64C or lower than 18.47C
+CLICK_OK:
+
+#6:  Configure IC9 & IC10 for test:
+COMMAND: BUS_PIRATE {0x40 0x0A 0x80} {0x40 0x00 0x00} {0x40 0x0A 0xFF} 
+COMMAND: BUS_PIRATE {0x24 0x08 0x05 0xFC} //DELAY: 100 
+COMMAND: BUS_PIRATE {0x24 0x08 0x07 0xFC} //(0x07)GPIO direction ,CH7..2=Output, CH1..0=Input//DELAY: 100
+COMMAND: BUS_PIRATE {0x24 0x08 0x09 0xFC} //(0x09) Output driver type CH7..2=Push-pull//DELAY: 100
+COMMAND: BUS_PIRATE {0x24 0x08 0x0B 0xFC}//(0x0B)Output levels CH7..2=High, CH1..0=Low
+//CLICK_OK:
+
+#7: Configure IC11 (Blue_Violet_Config)for LED test:
+COMMAND: BUS_PIRATE {0x22 0x08 0x05 0x04} //(0x07)GPIO direction ,CH7..2=Output, CH1..0=Input
+COMMAND: BUS_PIRATE {0x22 0x08 0x07 0x04} //(0x09) Output driver type CH7..2=Push-pull
+COMMAND: BUS_PIRATE {0x22 0x08 0x09 0x04} //(0x0B)Output levels CH7..2=High, CH1..0=Low
+COMMAND: BUS_PIRATE {0x22 0x08 0x0B 0x04} //
+//CLICK_OK:
+
+#8:ALL LEDs OFF driver 1
+COMMAND: BUS_PIRATE {0x40 0x0A 0xFF} // Turn OFF LEDS
+COMMAND: BUS_PIRATE {0x24 0x08 0x0B 0xFC} // Turn OFF LEDS
+DELAY: 100 
+//CLICK_OK:
+
+#9: AmberAD2.
+COMMAND: BUS_PIRATE {0x40 0x0A 0xBF} // LED ON
+COMMAND: TENMAPSU OUT1
+DELAY: 4000
+COMMAND: TENMAPSU VOUT1?
+READLINE: TENMAPSU PSUvoltage
+The returned current is =  %PSUvoltage%
+RANGE: %PSUvoltage% 10.73 0.05 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFailCL2
+COMMAND: TENMAPSU OUT0
+
+#10: GreenAD2
+COMMAND: BUS_PIRATE {0x40 0x0A 0xFE}
+COMMAND: TENMAPSU OUT1
+DELAY: 4000
+COMMAND: TENMAPSU VOUT1?
+READLINE: TENMAPSU PSUvoltage
+The returned current is =  %PSUvoltage%
+RANGE: %PSUvoltage% 12.50 0.05 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 							
+SUB: TestPassOrFailCL2
+COMMAND: TENMAPSU OUT0
+
+#11: Blue GreenAD2
+COMMAND: BUS_PIRATE {0x40 0x0A 0xFD}
+COMMAND: TENMAPSU OUT1
+DELAY: 4000
+COMMAND: TENMAPSU VOUT2?
+READLINE: TENMAPSU PSUvoltage
+The returned current is =  %PSUvoltage%
+RANGE: %PSUvoltage% 13.00 0.05 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 							
+SUB: TestPassOrFailCL2
+COMMAND: TENMAPSU OUT0
+
+#12: UVAD2
+COMMAND: BUS_PIRATE {0x40 0x0A 0xFB}
+COMMAND: TENMAPSU OUT1
+DELAY: 4000
+COMMAND: TENMAPSU VOUT2?
+READLINE: TENMAPSU PSUvoltage
+The returned current is =  %PSUvoltage%
+RANGE: %PSUvoltage% 15.10 0.05 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFailCL2
+COMMAND: TENMAPSU OUT0
+
+#13: VioletAD2
+COMMAND: BUS_PIRATE {0x40 0x0A 0xF7}
+COMMAND: TENMAPSU OUT1
+DELAY: 4000
+COMMAND: TENMAPSU VOUT2?
+READLINE: TENMAPSU PSUvoltage
+The returned current is =  %PSUvoltage%
+RANGE: %PSUvoltage% 13.89 0.05 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 							
+SUB: TestPassOrFailCL2
+COMMAND: TENMAPSU OUT0
+
+#14: BlueAD2
+COMMAND: BUS_PIRATE {0x40 0x0A 0xEF}
+COMMAND: TENMAPSU OUT1
+DELAY: 4000
+COMMAND: TENMAPSU VOUT2?
+READLINE: TENMAPSU PSUvoltage
+The returned current is =  %PSUvoltage%
+RANGE: %PSUvoltage% 12.95 0.05 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 													
+SUB: TestPassOrFailCL2
+COMMAND: TENMAPSU OUT0
+
+#15: RedAD2
+COMMAND: BUS_PIRATE {0x40 0x0A 0xDF}
+COMMAND: TENMAPSU OUT1
+DELAY: 4000
+COMMAND: TENMAPSU VOUT2?
+READLINE: TENMAPSU PSUvoltage
+The returned current is =  %PSUvoltage%
+RANGE: %PSUvoltage% 10.90 0.05 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 													
+SUB: TestPassOrFailCL2
+COMMAND: TENMAPSU OUT0
+
+#16: REDAD2 OFF
+COMMAND: BUS_PIRATE {0x40 0x0A 0xFF}
+COMMAND: TENMAPSU OUT1
+DELAY: 4000
+COMMAND: TENMAPSU VOUT2?
+READLINE: TENMAPSU PSUvoltage
+The returned current is =  %PSUvoltage%
+RANGE: %PSUvoltage% 0.93 0.05 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 													
+SUB: TestPassOrFailCL2
+COMMAND: TENMAPSU OUT0
+
+#17: GreenAD1
+COMMAND: BUS_PIRATE {0x24 0x08 0x0B 0xEC}
+COMMAND: TENMAPSU OUT1
+DELAY: 4000
+COMMAND: TENMAPSU VOUT2?
+READLINE: TENMAPSU PSUvoltage
+The returned current is =  %PSUvoltage%
+RANGE: %PSUvoltage% 12.28 0.05 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 												
+SUB: TestPassOrFailCL2
+COMMAND: TENMAPSU OUT0
+
+#18: Blue GreenAD1
+COMMAND: BUS_PIRATE {0x24 0x08 0x0B 0xDC}
+COMMAND: TENMAPSU OUT1
+DELAY: 4000
+COMMAND: TENMAPSU VOUT1?
+READLINE: TENMAPSU PSUvoltage
+The returned current is =  %PSUvoltage%
+RANGE: %PSUvoltage% 12.90 0.05 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 											
+SUB: TestPassOrFailCL2
+COMMAND: TENMAPSU OUT0
+
+#19: UVAD1
+COMMAND: BUS_PIRATE {0x24 0x08 0x0B 0xBC}
+COMMAND: TENMAPSU OUT1
+DELAY: 4000
+COMMAND: TENMAPSU VOUT1?
+READLINE: TENMAPSU PSUvoltage
+The returned current is =  %PSUvoltage%
+RANGE: %PSUvoltage% 14.99 0.05 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 													
+SUB: TestPassOrFailCL2
+COMMAND: TENMAPSU OUT0
+
+#20: VioletAD1
+COMMAND: BUS_PIRATE {0x24 0x08 0x0B 0x7C}
+COMMAND: TENMAPSU OUT1
+DELAY: 4000
+COMMAND: TENMAPSU VOUT1?
+READLINE: TENMAPSU PSUvoltage
+The returned current is =  %PSUvoltage%
+RANGE: %PSUvoltage% 13.88 0.05 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 							 						
+SUB: TestPassOrFailCL2
+COMMAND: TENMAPSU OUT0
+
+#21: AmberAD1.
+COMMAND: BUS_PIRATE {0x24 0x08 0x0B 0xF4} // LED ON
+COMMAND: TENMAPSU OUT1
+DELAY: 4000
+COMMAND: TENMAPSU VOUT2?
+READLINE: TENMAPSU PSUvoltage
+The returned current is =  %PSUvoltage%
+RANGE: %PSUvoltage% 10.59 0.05 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 													
+SUB: TestPassOrFailCL2
+COMMAND: TENMAPSU OUT0
+
+#22: RedAD1
+COMMAND: BUS_PIRATE {0x24 0x08 0x0B 0xF8}
+COMMAND: TENMAPSU OUT1
+DELAY: 4000
+COMMAND: TENMAPSU VOUT1?
+READLINE: TENMAPSU PSUvoltage
+The returned current is =  %PSUvoltage%
+RANGE: %PSUvoltage% 11.00 0.05 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 	
+SUB: TestPassOrFailCL2
+COMMAND: TENMAPSU OUT0
+
+#22.1: turn off LED
+COMMAND: TENMAPSU OUT0
+COMMAND: BUS_PIRATE {0x24 0x08 0x0B 0xFC}
+// COMMAND: TENMAPSU VOUT1?
+// READLINE: TENMAPSU PSUvoltage
+// The returned current is =  %PSUvoltage%
+// RANGE: %PSUvoltage% 0.00 0.05 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+// SUB: TestPassOrFailCL2
+
+#23: BlueAD1
+COMMAND: BUS_PIRATE {0x22 0x08 0x0B 0x00}
+COMMAND: TENMAPSU OUT1
+DELAY: 4000
+COMMAND: TENMAPSU VOUT1?
+READLINE: TENMAPSU PSUvoltage
+The returned current is =  %PSUvoltage%
+RANGE: %PSUvoltage% 13.06 0.05 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 					
+SUB: TestPassOrFailCL2
+COMMAND: BUS_PIRATE {0x22 0x08 0x0B 0x04}
+COMMAND: TENMAPSU OUT0
+
+#24: Test complete
+IF: %FAILED% > 0
+GOTO: #Failed:
+ELSE: #Passed:
+
+#Failed: A test failed
+a. This PCB has failed to pass all Tests
+b. Check the Log file for more details on the failed test(s).
+IMPORTANT: This PCB has failed to pass all Tests
+//DISPLAY: test_failed.png
+CLICK_OK:
+GOTO: #QUIT:
+
+#Passed: Test's Complete
+a. All tests instructions have been completed and a log file created.
+b. Click OK to finish and power OFF.
+//DISPLAY: AllTestsPassed.png
+CLICK_OK:
+
+#QUIT:
+COMMAND: TENMAPSU VSET1:0.00
+COMMAND: TENMAPSU ISET1:0.00
+COMMAND: TENMAPSU VSET2:0.00
+COMMAND: TENMAPSU ISET2:0.00
+COMMAND: TENMAPSU OUT0
+DISCONNECT: TENMAPSU
+DISCONNECT: BUS_PIRATE
+SAVE_LOG:
+//EXE: CloseWinCam.bat
+// End of file
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

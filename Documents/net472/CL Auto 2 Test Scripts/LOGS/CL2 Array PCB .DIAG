@@ -1,0 +1,13 @@
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+09:55:28 Filename:  C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\CL Auto 2 Test Scripts\LOGS\CL2 Array PCB .DIAG
+09:55:28 App name:  TEST_SEQUENCER.EXE - V1.01.39
+09:55:28 Test file: C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\CL Auto 2 Test Scripts\CL2 Array PCB .TEST 20/08/2025 09:55:24
+09:55:28 Updated:   20.08.2025
+09:55:28 
+09:56:40 0.1: IC11 for temp and read AIN5 TH1 MSB & LSB for temperature: - RANGE: 0.219 2.55 0.15                                          
+09:56:40 Failure occurred on line 69 at 09:56:40 20.08.2025
+09:56:40 0.1: IC11 for temp and read AIN5 TH1 MSB & LSB for temperature:                                                                   
+09:56:40 Failure occurred on line 21 (TestPassOrFail) at 09:56:40 20.08.2025
+09:57:11 
+09:57:11 Finished:  C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\CL Auto 2 Test Scripts\LOGS\CL2 Array PCB .DIAG
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

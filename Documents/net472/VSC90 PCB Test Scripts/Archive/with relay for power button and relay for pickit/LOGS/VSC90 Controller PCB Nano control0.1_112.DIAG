@@ -1,0 +1,20 @@
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+15:14:25 Filename:  C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\VSC90 PCB Test Scripts\with relay for power button and relay for pickit\LOGS\VSC90 Controller PCB Nano control0.1_112.DIAG
+15:14:25 App name:  TEST_SEQUENCER.EXE - V1.01.33
+15:14:25 Test file: C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\VSC90 PCB Test Scripts\with relay for power button and relay for pickit\VSC90 Controller PCB Nano control0.1.TEST 30/07/2024 14:31:22
+15:14:25 Operator:      PE
+15:14:25 Updated:   30.07.2024
+15:14:25 
+15:15:12 7: Tests the I2C to the EEPROM and 3.3V supply                                                                                  
+15:15:12 Failure occurred on line 21 (TestPassOrFail) at 15:15:12 30.07.2024
+16:01:06 9.1: Test filter wheel driver and hall sensor feedback. - RANGE: 1 0 0
+16:01:06 Failure occurred on line 175 at 15:13:53 30.07.2024
+16:01:06 9.1: Test filter wheel driver and hall sensor feedback.
+16:01:06 Failure occurred on line 21 (TestPassOrFail) at 15:13:53 30.07.2024
+16:01:06 0.1: Close up lens river and hall sensor feedback. - RANGE: 1 0 0
+16:01:06 Failure occurred on line 203 at 15:14:01 30.07.2024
+16:01:06 0.1: Close up lens river and hall sensor feedback.
+16:01:06 Failure occurred on line 21 (TestPassOrFail) at 15:14:01 30.07.2024
+16:01:06 
+16:01:06 Finished:  C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\VSC90 PCB Test Scripts\with relay for power button and relay for pickit\LOGS\VSC90 Controller PCB Nano control0.1_112.DIAG
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

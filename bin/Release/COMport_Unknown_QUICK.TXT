@@ -1,4 +1,4 @@
-,10,1
+5,100,1
 "Command1"=VERSION\n
 "Command2"=BUILD\n
 "Command3"=DATE\n

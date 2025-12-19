@@ -1,0 +1,179 @@
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Filename:	 Bus Pirate  VSC90 Translight PCB.test
+// Project:		VSC90
+// Author:      Foster & Freeman Ltd - Paul Evans
+// Modified:    24/05/24
+//
+// Description: using the Bus Pirate & Probe kit to test the PCB
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+[0] force FAIL by default to avoid IMPORTANT message below.
+
+#1: Enter operator initials and PCB serial number:
+a. Enter operator intials.
+b. Enter serial number into the box below.
+IMPORTANT: Observe ESD precautions for handling ESD sensitive devices.  
+//DISPLAY: lamptrayPCB1.jpg
+CLICK_OK:
+
+#2: Equipment Setup 1
+a. Using TE159 connect the PSU to the VSC90 Controller Test Box(TE209).
+b. Connect the PC (via USB) to K5 on the Test box (TE209).
+c. Connect the PC (via USB) to the TENMA Programmable PSU.
+d. Connect the PC to the LED Test Box with Web Camera (TE086).
+//DISPLAY: TE132.jpg
+CLICK_OK:
+
+
+#3: Equipment Setup 2
+a. Connect the UUT to the VSC90 Controller Test Box(TE209).
+b. Connect the VSC90 Translight Spot PCB TE213 to the UUT(Refer to setup picture below).
+b. Place the UUT inside the LED Test Box with Web Camera (TE086).
+c. Set the TENMA Programmable PSU power switch to on.
+DISPLAY: TE213.png
+CLICK_OK:
+EXE: OpenWinCam.bat
+CONNECT: TENMAPSU
+IF_NOT:
+GOTO: #3: 
+
+#4: Configure the PSU
+COMMAND: TENMAPSU OUT0
+COMMAND: TENMAPSU OCP1
+COMMAND: TENMAPSU OCPSET1:500
+COMMAND: TENMAPSU VSET1:12.00
+COMMAND: TENMAPSU ISET1:1.00
+COMMAND: TENMAPSU VSET2:0.00
+COMMAND: TENMAPSU ISET2:0.00
+COMMAND: TENMAPSU OUTCH1:1
+
+#4.1: Power on the test box.
+Press the I/O Power button on the VSC90 Controller Test Box(TE209) to turn on.
+DELAY: 9000
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned voltage is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.111 0.015 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+IF:
+GOTO: #4.2: 
+IMPORTANT: This test has failed, check the power button has been pressed, power supply, USB connection and the ftdi chip.		
+PASS_FAIL: #4.1
+GOTO: #5
+
+#4.2: Connect to the test box
+CONNECT: VSC90
+IF_NOT: 
+GOTO: #4.1:
+
+
+#4: WHITE 5000K LEDs test:
+a. Check that ONLY the WHITE 5000K LEDs (LED11, LED12, LED13, LED14) are ON.
+COMMAND: VSC90 TRANSFLOOD 0010 1023
+DELAY: 2500
+// PASS_FAIL: #4:
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.825 0.015 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+COMMAND: VSC90 TRANSOFF
+
+
+#5: IR 850/860NM LEDs test:
+a. Check that ONLY the IR 850/860NM LEDs (LED21, LED22, LED23, LED24) are ON.
+COMMAND: VSC90 TRANSFLOOD 0001 750
+DELAY: 2500
+// PASS_FAIL: #5:
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.621 0.015 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+COMMAND: VSC90 TRANSOFF
+
+#6: UV 365NM LEDs tests.
+a. Check that ONLY the  the UV 365NM LEDs (LED31, LED32, LED33, LED34) are ON.
+COMMAND: VSC90 TRANSFLOOD 1000 1023
+DELAY: 2500
+// PASS_FAIL: #6:
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.820 0.015 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+COMMAND: VSC90 TRANSOFF
+
+#7: Turn off any LEDs still on
+COMMAND: VSC90 TRANSOFF
+
+
+#8: Spot WHITE 5000K  test:
+a. Check that ONLY the WHITE SPOT LED (LED1) is ON.
+COMMAND: VSC90 TRANSSPOT 0001 1023
+DELAY: 2500
+// PASS_FAIL: #8:
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.372 0.015 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+COMMAND: VSC90 TRANSOFF
+
+
+#9: Spot IR  850nm test:
+a. Check that ONLY the IR LED 850nm LED (LED2) is ON.
+COMMAND: VSC90 TRANSSPOT 0010 750
+DELAY: 2500
+// PASS_FAIL: #9:
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.296 0.015 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+COMMAND: VSC90 TRANSOFF
+
+
+#10: IR LED 780nm LED test:
+a. Check that ONLY the IR LED 780nm LED (LED3)is ON.
+COMMAND: VSC90 TRANSSPOT 1000 1023
+DELAY: 2500
+// PASS_FAIL: #10:
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.299 0.015 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+COMMAND: VSC90 TRANSOFF
+
+
+
+
+#11: Test complete
+IF: %FAILED% > 0
+GOTO: #Failed:
+ELSE: #Passed:
+
+#Failed: A test failed
+a. This PCB has failed to pass all Tests
+b. Check the Log file for more details on the failed test(s).
+IMPORTANT: This PCB has failed to pass all Tests
+DISPLAY: test_failed.png
+CLICK_OK:
+GOTO: #QUIT:
+
+#Passed: Test's Complete
+a. All tests instructions have been completed and a log file created.
+b. Click OK to finish.
+DISPLAY: AllTestsPassed.png
+CLICK_OK:
+
+#QUIT:
+DISCONNECT: VSC90
+COMMAND: TENMAPSU VSET1:0.00
+COMMAND: TENMAPSU ISET1:0.00
+COMMAND: TENMAPSU VSET2:0.00
+COMMAND: TENMAPSU ISET2:0.00
+COMMAND: TENMAPSU OUT0
+EXE: CloseWinCam.bat
+// End of file
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

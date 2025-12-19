@@ -1,20 +1,20 @@
-,,1
+,100,1
 "Command1"=VERSION\n
 "Command2"=BUILD\n
 "Command3"=DATE\n
 "Command4"=STATUS\n
 "Command5"=STATUSX\n
-"Command6"=HOME\n
-"Command7"=HOME\nPLT 1\nPLT 2\n
-"Command8"=PLT 0\n
-"Command9"=PLTSTATUS\n
-"Command10"=HOMERATE 30000\n
-"Command11"=HOMERATE 0\n
-"Command12"=STEPRATE 30000\n
-"Command13"=STEPRATE 0\n
-"Command14"=MOVE 2\nstatusx\n
-"Command15"=MOVE -1000\n
-"Command16"=MOVE 1000\n
-"Command17"=SLEEP 10\n
-"Command18"=ON\n
-"Command19"=bldr\n
+"Command6"=HALL\n
+"Command7"=STANDBY\n
+"Command8"=ON\n
+"Command9"=SLEEP\n
+"Command10"=STEPRATE 5000\n
+"Command11"=HOMERATE 5000\n
+"Command12"=HOME\n
+"Command13"=MOVE 100\n
+"Command14"=MOVE 1\n
+"Command15"=MOVE -100\n
+"Command16"=MOVE -1\n
+"Command17"=H+\n
+"Command18"=H-\n
+"Command19"=EEPROMDUMP 6\n

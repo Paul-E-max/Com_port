@@ -1,0 +1,129 @@
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Filename:	MLPRO 2 TOF Interface PCB.test
+// Project:		MLPRO 2
+// Author:      Foster & Freeman Ltd - Paul Evans
+// Modified:    06.03.2024 Rev1
+//
+// Description: Tests the MLPRO 2  TOF PCB
+// 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+[0] force FAIL by default to avoid IMPORTANT message below.
+
+#1: Enter operator initials and PCB serial number:
+a. Enter operator intials.
+b. Enter serial number into the box above.
+c. Using SW1 on the PCB set the address to position 5. 
+COMMENT: *Example image below*
+IMPORTANT: Observe ESD precautions for handling ESD sensitive devices.  
+DISPLAY: TOFSetAddress.jpg
+CLICK_OK:
+
+#2: Setup equipment 1
+a. Set adjustable PSU output 1 to 12V ±0.1V, 1.5A ±0.1A and switch the output off.
+b. Using TE159, connect the PSU to the ML PRO 2 Controller Test Box (TE192).
+c. Connect the PC (via USB) to K5 on the ML PRO 2 Controller Test Box (TE192).
+d. Connect the USB cable from the LED Test Box with Web Camera (TE086) to the PC. 
+COMMENT: *Example image below*
+DISPLAY: TE192Setup.jpg
+CLICK_OK:
+
+#3: Setup equipment 2
+a. Connect the PCB (PL2) to the ML PRO 2 Controller Test Box (TE192).   
+b. Connect cable A to X2 on the PCB.
+c. Connect cable B to X1 on the PCB.
+d. Connect the flat flex cable to j2 on the PCB
+e. Fit the PCB to the ML PRO PCB Fixture 1 (TE190) can connect the test PCB (TE068).
+f. Switch the output of the adjustable PSU on and power on the MLPRO 2 Controller Test Box (TE192).
+IMPORTANT: Ensure the blue paper is covering the LED window before powering on.
+DISPLAY: TOF Setup.jpg
+COMMENT: *Example image below*
+CLICK_OK:
+CONNECT: MLPRO2 
+IF_NOT:
+GOTO: #2
+
+#4: PCB communication check
+COMMAND: MLPRO2  BENUM
+READLINE: MLPRO2  BENUM
+IF:
+Check the expected result is a match with the Returned result.
+Expected result is = RS2
+
+Returned result is = %BENUM%
+ELSE:
+Bad result . . . sorry
+PASS_FAIL: #4
+
+
+#5: LED off test
+View the LED window and check that the LED is off.
+DISPLAY: TOF LED.png
+PASS_FAIL: #5
+
+#6: Ringlight driver test
+COMMAND: MLPRO2 RING 001111 1023
+Check the Red LED is on.
+CLICK_OK:
+COMMAND: MLPRO2  READAMPS 
+READLINE: MLPRO2  READAMPS
+The returned Current is = %READAMPS%
+
+RANGE: %READAMPS% 372 30					// PASS if value is between a range
+IF:											// IF a ture result the next line below actions
+GOTO: #6.1: 								// if results match goto next test
+IMPORTANT: This test has failed 
+Unexpected current reading 					// print this for test log information
+PASS_FAIL: #6 								// Increments fail count and adds comment in log file
+GOTO: #7
+
+
+#6.1: Ringlight driver test - test passed
+TEST: PASSED
+Result = Test Pass
+CLICK_OK:								// Increments PASS count and adds comment in log file
+COMMAND: MLPRO2 RING 000000 0
+
+
+#7: Focus LED test
+IMPORTANT: Ensure the blue paper is covering the LED window before powering on.
+CLICK_OK:
+COMMAND: MLPRO2 RING 000000 0
+COMMAND: MLPRO2 FOCUSLED 1
+a. Check the Red LED is on.
+PASS_FAIL: #7
+COMMAND: MLPRO2 FOCUSLED 0
+
+
+#8: Range finder test
+COMMAND: MLPRO2  RRB
+READLINE: MLPRO2  RRB
+The returned Range finder distance is = %RRB%
+
+RANGE: %RRB% 60 5							// PASS if value is between a range
+IF:											// IF a ture result the next line below actions
+GOTO: #8.1: 								// if results match goto next test
+IMPORTANT: This test has failed 
+Unexpected reading 							// print this for test log information
+PASS_FAIL: #8								// Increments fail count and adds comment in log file
+GOTO: #9
+
+
+#8.1: Range finder test - test passed
+TEST: PASSED
+Result = Test Pass
+CLICK_OK:									// Increments PASS count and adds comment in log file
+
+
+#9: Test complete:
+EXE: CloseWinCam.bat
+COMMAND: MLPRO2 If#							// turn off any LEDs still on 
+a. All tests instructions have been completed and a log file created.
+b. Click OK to finish and then power off the PSU and disconnect the PCB.
+CLICK_OK:
+
+
+#QUIT:
+DISCONNECT: MLPRO2
+// End of file
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

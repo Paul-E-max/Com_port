@@ -1,0 +1,11 @@
+#6: Diag
+test 11111
+555
+44
+#7:Diag
+test2
+#SUB_BAD: Run
+test3
+test3.1
+#8: Run
+test4

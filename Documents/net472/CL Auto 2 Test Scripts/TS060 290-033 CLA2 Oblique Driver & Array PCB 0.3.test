@@ -1,0 +1,316 @@
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Filename:	TS060 290-033 Oblique Driver & ArrayPCB.test
+// Project:		CL Auto 2
+// Author:      Foster & Freeman Ltd - Paul Evans
+// Modified:    04/11/25
+//
+// Description: This script test the Driver and LED output for the Oblique.
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+{0} force FAIL by default to avoid IMPORTANT message below.
+#1: Equipment Setup 1.
+a. Connect the Bus Priate and PSU to the test PC.
+b. Connect the Bus Priate to the TE247 and set the pull-up shut to ON.
+c. Connect the GND's to - of channel 1 on the PSU.
+d. Connect the VPWR to + of channel 1 on the PSU.
+e. Set the TENMA Programmable PSU power switch to on.
+CLICK_OK:
+CONNECT: TENMAPSU
+IF_NOT:
+GOTO: #1: 
+
+#2: Equipment Setup 2 & Configure the PSU.
+a. Connect the UUT to the test LED array.
+b. Place the UUT inside the test box with camera.
+c. Enter the PCB serial number.
+COMMAND: TENMAPSU OUT0
+COMMAND: TENMAPSU OCP1
+COMMAND: TENMAPSU OCPSET1:0.750
+COMMAND: TENMAPSU VSET1:12.00
+COMMAND: TENMAPSU ISET1:0.450
+CLICK_OK:
+
+#3: Connect and Configure the Bus Pirate.
+CONNECT: BUS_PIRATE
+IF_NOT:
+GOTO: #3:
+COMMAND: BUS_PIRATE m4
+COMMAND: BUS_PIRATE 3
+COMMAND: BUS_PIRATE W // sets the power rail to on, and drives a voltage to pin 5 C_PWR_ON
+COMMAND: BUS_PIRATE P
+
+#4: Power supply enabled.
+COMMAND: TENMAPSU OUTCH1:1
+CLICK_OK:
+
+#5: Ready to begin the test?
+//ConfigMCGPIO
+COMMAND: BUS_PIRATE {0x4A 0x0A 0x80} {0x4A 0x00 0x07} {0x4A 0x10 0x00}
+COMMAND: BUS_PIRATE {0x4A 0x1A 0x0F}{0x4A 0x0A 0x00} //All Leds OFF
+CLICK_OK:
+
+#6: White LED Test – all 4 quads (LOW)
+// 60ma
+COMMAND: BUS_PIRATE {0x4A 0x0A 0x20}{0x4A 0x1A 0x00}{0x4A 0x1A 0x20}
+DELAY: 1500
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.020 0.005 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+COMMAND: BUS_PIRATE {0x4A 0x1A 0x0F}{0x4A 0x0A 0x00} //All Leds OFF
+
+#7: White LED Test – all 4 quads (MID)
+//80mA
+COMMAND: BUS_PIRATE {0x4A 0x0A 0x20}{0x4A 0x1A 0x00}{0x4A 0x1A 0x80}
+DELAY: 1500
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.080 0.005 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+COMMAND: BUS_PIRATE {0x4A 0x1A 0x0F}{0x4A 0x0A 0x00} //All Leds OFF
+
+#8: White LED Test – all 4 quads (MAX)
+//181mA
+COMMAND: BUS_PIRATE {0x4A 0x0A 0x20}{0x4A 0x1A 0x00}{0x4A 0x1A 0xE0}
+DELAY: 1500
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.180 0.005 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+COMMAND: BUS_PIRATE {0x4A 0x1A 0x0F}{0x4A 0x0A 0x00} //All Leds OFF
+
+#9: White LED Test - turn ON Quad A.
+//20mA
+Did 3 LEDs turn on?
+COMMAND: BUS_PIRATE {0x4A 0x0A 0x20}{0x4A 0x1A 0x00} {0x4A 0x1A 0x87}
+PASS_FAIL:
+COMMAND: BUS_PIRATE {0x4A 0x1A 0x0F}{0x4A 0x0A 0x00} //All Leds OFF
+
+#10: White LED Test - turn ON Quad B.
+//20mA
+Did 3 LEDs turn on?
+COMMAND: BUS_PIRATE {0x4A 0x0A 0x20}{0x4A 0x1A 0x00} {0x4A 0x1A 0x8E}
+PASS_FAIL:
+COMMAND: BUS_PIRATE {0x4A 0x1A 0x0F}{0x4A 0x0A 0x00} //All Leds OFF
+
+#11: White LED Test - turn ON Quad C.
+//20mA
+Did 3 LEDs turn on?
+COMMAND: BUS_PIRATE {0x4A 0x0A 0x20}{0x4A 0x1A 0x00} {0x4A 0x1A 0x8B}
+PASS_FAIL:
+COMMAND: BUS_PIRATE {0x4A 0x1A 0x0F}{0x4A 0x0A 0x00} //All Leds OFF
+
+#12: White LED Test - turn ON Quad D.
+//20mA
+Did 3 LEDs turn on?
+COMMAND: BUS_PIRATE {0x4A 0x0A 0x20}{0x4A 0x1A 0x00} {0x4A 0x1A 0x8D}
+PASS_FAIL:
+COMMAND: BUS_PIRATE {0x4A 0x1A 0x0F}{0x4A 0x0A 0x00} //All Leds OFF
+
+
+//////////////////////////////////////////////////////////////////////////////
+#13: Red LED Test – all 4 quads (LOW)
+//44ma
+COMMAND: BUS_PIRATE {0x4A 0x0A 0x08}{0x4A 0x1A 0x00}{0x4A 0x1A 0x60}
+DELAY: 1500
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.045 0.005 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+COMMAND: BUS_PIRATE {0x4A 0x1A 0x0F}{0x4A 0x0A 0x00} //All Leds OFF
+
+#14: Red LED Test – all 4 quads (MID)
+//58mA
+COMMAND: BUS_PIRATE {0x4A 0x0A 0x08}{0x4A 0x1A 0x00}{0x4A 0x1A 0x80}
+DELAY: 1500
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.060 0.005 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+COMMAND: BUS_PIRATE {0x4A 0x1A 0x0F}{0x4A 0x0A 0x00} //All Leds OFF
+
+#15: Red LED Test – all 4 quads (MAX)
+//110mA
+COMMAND: BUS_PIRATE {0x4A 0x0A 0x08}{0x4A 0x1A 0x00}{0x4A 0x1A 0xE0}
+DELAY: 1500
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.110 0.005 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+COMMAND: BUS_PIRATE {0x4A 0x1A 0x0F}{0x4A 0x0A 0x00} //All Leds OFF
+
+
+#16: Green LED Test – all 4 quads (LOW)
+//54ma
+COMMAND: BUS_PIRATE {0x4A 0x0A 0x10}{0x4A 0x1A 0x00}{0x4A 0x1A 0x60}
+DELAY: 1500
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.055 0.005 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+COMMAND: BUS_PIRATE {0x4A 0x1A 0x0F}{0x4A 0x0A 0x00} //All Leds OFF
+
+#17: Green LED Test – all 4 quads (MID)
+//72ma
+COMMAND: BUS_PIRATE {0x4A 0x0A 0x10}{0x4A 0x1A 0x00}{0x4A 0x1A 0x80}
+DELAY: 1500
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.070 0.005 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+COMMAND: BUS_PIRATE {0x4A 0x1A 0x0F}{0x4A 0x0A 0x00} //All Leds OFF
+
+#18: Green LED Test – all 4 quads (MAX)
+//140ma
+COMMAND: BUS_PIRATE {0x4A 0x0A 0x10}{0x4A 0x1A 0x00}{0x4A 0x1A 0xE0}
+DELAY: 1500
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.140 0.005 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+COMMAND: BUS_PIRATE {0x4A 0x1A 0x0F}{0x4A 0x0A 0x00} //All Leds OFF
+
+
+#19: Blue LED Test – all 4 quads (LOW)
+//60ma
+COMMAND: BUS_PIRATE {0x4A 0x0A 0x40}{0x4A 0x1A 0x00}{0x4A 0x1A 0x60}
+DELAY: 1500
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.060 0.005 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+COMMAND: BUS_PIRATE {0x4A 0x1A 0x0F}{0x4A 0x0A 0x00} //All Leds OFF
+
+#20: Blue LED Test – all 4 quads (MID)
+//80ma
+COMMAND: BUS_PIRATE {0x4A 0x0A 0x40}{0x4A 0x1A 0x00}{0x4A 0x1A 0x80}
+DELAY: 1500
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.080 0.005 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+COMMAND: BUS_PIRATE {0x4A 0x1A 0x0F}{0x4A 0x0A 0x00} //All Leds OFF
+
+#21: Blue LED Test – all 4 quads (MAX)
+//180ma
+COMMAND: BUS_PIRATE {0x4A 0x0A 0x40}{0x4A 0x1A 0x00}{0x4A 0x1A 0xE0}
+DELAY: 1500
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.180 0.005 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+COMMAND: BUS_PIRATE {0x4A 0x1A 0x0F}{0x4A 0x0A 0x00} //All Leds OFF
+
+/////////////////////////////////////////////////////
+
+#22: Warning: UV saftey concern.
+Warning! Esure the LEDs array is inside the test box and the door is shut.
+CLICK_OK:
+
+#23: UV LED Test – all 4 quads (LOW)
+//72ma
+COMMAND: BUS_PIRATE {0x4A 0x0A 0x80}{0x4A 0x1A 0x00}{0x4A 0x1A 0x60}
+DELAY: 1500
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.070 0.005 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+COMMAND: BUS_PIRATE {0x4A 0x1A 0x0F}{0x4A 0x0A 0x00} //All Leds OFF
+
+#24: UV LED Test – all 4 quads (MID)
+//97ma
+COMMAND: BUS_PIRATE {0x4A 0x0A 0x80}{0x4A 0x1A 0x00}{0x4A 0x1A 0x80}
+DELAY: 1500
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.095 0.005 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+COMMAND: BUS_PIRATE {0x4A 0x1A 0x0F}{0x4A 0x0A 0x00} //All Leds OFF
+
+#25: UV LED Test – all 4 quads (MAX)
+//233
+COMMAND: BUS_PIRATE {0x4A 0x0A 0x80}{0x4A 0x1A 0x00}{0x4A 0x1A 0xE0}
+DELAY: 2500
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.230 0.005 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+COMMAND: BUS_PIRATE {0x4A 0x1A 0x0F}{0x4A 0x0A 0x00} //All Leds OFF
+
+#26: UV LED Test - turn ON Quad A.
+//20mA
+Did 3 LEDs turn on?
+COMMAND: BUS_PIRATE {0x4A 0x0A 0x80}{0x4A 0x1A 0x00} {0x4A 0x1A 0x87}
+PASS_FAIL:
+COMMAND: BUS_PIRATE {0x4A 0x1A 0x0F}{0x4A 0x0A 0x00} //All Leds OFF
+
+#27: UV LED Test - turn ON Quad B.
+//20mA
+Did 3 LEDs turn on?
+COMMAND: BUS_PIRATE {0x4A 0x0A 0x80}{0x4A 0x1A 0x00} {0x4A 0x1A 0x8E}
+PASS_FAIL:
+COMMAND: BUS_PIRATE {0x4A 0x1A 0x0F}{0x4A 0x0A 0x00} //All Leds OFF
+
+#28: UV LED Test - turn ON Quad C.
+//20mA
+Did 3 LEDs turn on?
+COMMAND: BUS_PIRATE {0x4A 0x0A 0x80}{0x4A 0x1A 0x00} {0x4A 0x1A 0x8B}
+PASS_FAIL:
+COMMAND: BUS_PIRATE {0x4A 0x1A 0x0F}{0x4A 0x0A 0x00} //All Leds OFF
+
+#29: UV LED Test - turn ON Quad D.
+//20mA
+Did 3 LEDs turn on?
+COMMAND: BUS_PIRATE {0x4A 0x0A 0x80}{0x4A 0x1A 0x00} {0x4A 0x1A 0x8D}
+PASS_FAIL:
+COMMAND: BUS_PIRATE {0x4A 0x1A 0x0F}{0x4A 0x0A 0x00} //All Leds OFF
+
+#30: Powering off the PSU. 
+COMMAND: TENMAPSU OUT0
+
+
+#12: Test complete
+IF: %FAILED% > 0
+GOTO: #Failed:
+ELSE: #Passed:
+
+#Failed: A test failed.
+a. This PCB has failed to pass all Tests
+b. Check the Log file for more details on the failed test(s).
+IMPORTANT: This PCB has failed to pass all Tests
+//DISPLAY: test_failed.png
+CLICK_OK:
+GOTO: #QUIT:
+
+#Passed: Test's Complete.
+a. All tests instructions have been completed and a log file created.
+b. Click OK to finish and power OFF.
+//DISPLAY: AllTestsPassed.png
+CLICK_OK:
+
+#QUIT:
+COMMAND: TENMAPSU VSET1:0.00
+COMMAND: TENMAPSU ISET1:0.00
+COMMAND: TENMAPSU VSET2:0.00
+COMMAND: TENMAPSU ISET2:0.00
+COMMAND: TENMAPSU OUT0
+COMMAND: BUS_PIRATE w
+DISCONNECT: TENMAPSU
+DISCONNECT: BUS_PIRATE
+// End of file
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

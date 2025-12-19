@@ -1,0 +1,17 @@
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+12:39:22 Filename:  C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\CL Auto 2 Test Scripts\LOGS\TS059 290-031 CL2 Auto 2 Coax Array PCB Draft 0.1.DIAG
+12:39:22 App name:  TEST_SEQUENCER.EXE - V1.01.41
+12:39:22 Test file: C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\CL Auto 2 Test Scripts\TS059 290-031 CL2 Auto 2 Coax Array PCB Draft 0.1.TEST 04/11/2025 12:02:50
+12:39:22 Updated:   27.11.2025
+12:39:22 
+12:40:13 6: Turn on LED 1. - RANGE: 0.000 0.060 0.005                                                                                    
+12:40:13 Failure occurred on line 61 at 12:40:13 27.11.2025
+12:40:13 6: Turn on LED 1.                                                                                                               
+12:40:13 Failure occurred on line 21 (TestPassOrFail) at 12:40:13 27.11.2025
+12:40:21 7: Turn on LED 2. - RANGE: 0.000 0.060 0.005                                                                                    
+12:40:21 Failure occurred on line 73 at 12:40:21 27.11.2025
+12:40:21 7: Turn on LED 2.                                                                                                               
+12:40:21 Failure occurred on line 21 (TestPassOrFail) at 12:40:21 27.11.2025
+12:40:28 
+12:40:28 Finished:  C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\CL Auto 2 Test Scripts\LOGS\TS059 290-031 CL2 Auto 2 Coax Array PCB Draft 0.1.DIAG
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

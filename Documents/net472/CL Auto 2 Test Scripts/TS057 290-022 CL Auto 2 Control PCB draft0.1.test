@@ -1,0 +1,41 @@
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Filename:	CL Auto 2 test dev 1.test
+// Project:		CL Auto 2
+// Author:      Foster & Freeman Ltd - Paul Evans
+// Modified:    09/06/25
+//
+// Description: start of development for the test scripts using test sequencer .
+// 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+#1: Configure the path of the command definition file
+a. Enter the PCB serial number.
+BINCOMMAND_PATH: C:\WorkArea\TS014_TEST_SEQUENCER\bin\Release\TESTS\auto2_mcu.descriptor.pb
+// need to have this file (above) embedded in the build files for TS014.
+
+
+BINCONNECT: AUTO2
+// need the TEST_SEQUENCER_PROJECTS.TXT file to be updated to include AUTO2.
+
+
+
+//TG BINCOMMAND_PATH: C:\WorkArea\290\rootfs\pb_experiment\translator_cs_bindings\tests\TranslatorCsBindings.Tests\Tests.cs
+
+
+BINCOMMAND: AUTO2 channel:1, serial_write_request: {serial: 'asdfasdf'}
+BINCOMMAND: AUTO2 channel:1, serial_read_request: {}
+//•	Use “{“ or “}” characters for Bus Pirate and they are changed to “[“ or “]” during transmission... is this only when connect to bus pirate?
+
+
+
+//•	Lines beginning with a "#" signal the start of an individual test.
+BINCOMMAND: AUTO2 channel:1, id_request: {}
+BINVERIFY: channel:1, id_request: {} ### AUTO2 
+
+
+
+BINVERIFY: channel:1, serial_read_request: {} ### AUTO2
+
+
+SAVE_LOG:
+

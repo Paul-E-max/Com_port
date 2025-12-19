@@ -1,0 +1,141 @@
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Filename:	MLPRO 2 Flood Array-Front PCB.test
+// Project:		MLPRO 2
+// Author:      Foster & Freeman Ltd - Paul Evans
+// Modified:   06.03.2024 Rev1
+//
+// Description: Tests the MLPRO 2 Flood Array-Front PCB
+// 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+[0] force FAIL by default to avoid IMPORTANT message below.
+
+#1: Enter operator initials and PCB serial number:
+a. Enter operator intials.
+b. Enter serial number into the box above.
+COMMENT: *Example image below*
+IMPORTANT: Observe ESD precautions for handling ESD sensitive devices.  
+DISPLAY: PCB266-020-025.png
+CLICK_OK:
+
+#2: Setup equipment 1
+a. Set adjustable PSU output 1 to 12V ±0.1V, 1.5A ±0.1A and switch the output off.
+b. Using TE159, connect the PSU to the ML PRO 2 Controller Test Box (TE192).
+c. Connect the PC (via USB3 Cable Type B) to K5 the ML PRO 2 Controller Test Box (TE192).
+d. Connect the USB cable from the TE086 (LED Test Box with Web Camera) to the PC. 
+COMMENT: *Example image below*
+DISPLAY: TE192Setup.jpg
+CLICK_OK:
+
+
+#3: Setup equipment 2
+a. Using the ribbon cable(TE006) connect the Test Box (TE192) at PL6 to PL2 on the ML-PRO Flood Front PCB.  
+b. Connect the Test Oblique PCB (TE068) to CONN1 on the ML-PRO Front Flood PCB (266-020). 
+c. Set SW1 on the ML-PRO Flood Front PCB (266-020) to the address to position 2.
+d. Fit the PCB to the ML PRO PCB Fixture 1 (TE190) and connect the test PCB (TE068).
+e. Place the PCB inside the LED Test Box with Web Camera (TE086).
+f. Switch the output of the adjustable PSU on and power on the ML PRO 2 Controller Test Box (TE192).
+DISPLAY: ObliqueSetup3.jpg
+COMMENT: *Example image below*
+CLICK_OK:
+CONNECT: MLPRO2 
+IF_NOT:
+GOTO: #2
+
+
+#4: PCB communication check
+COMMAND: MLPRO2  BENUM
+READLINE: MLPRO2  BENUM
+IF:
+Check the expected result is a match.
+Expected result is =  FR1,FR2,
+
+Returned result is = %BENUM%
+ELSE:
+Result  = Fail 
+PASS_FAIL: #4
+EXE: OpenWinCam.bat
+
+
+#5: RED LED Test
+a. View the windows camera feed and check for 2 LED hot spots.
+IMPORTANT: You may see light reflections
+COMMAND: MLPRO2  FLOOD 000000 4095
+DELAY: 100
+COMMAND: MLPRO2 FLOOD 100000 4095
+DELAY: 2000
+PASS_FAIL: #5
+
+#6: GREEN LED Test
+a. View the windows camera feed and check for 2 LED hot spots.
+IMPORTANT: You may see light reflections
+COMMAND: MLPRO2 FLOOD 000000 4095
+DELAY: 100
+COMMAND: MLPRO2 FLOOD 010000 4095
+DELAY: 2000
+PASS_FAIL: #6
+
+#7: BLUEGREEN LED Test
+a. View the windows camera feed and check for 2 LED hot spots.
+IMPORTANT: You may see light reflections
+COMMAND: MLPRO2 FLOOD 000000 4095
+DELAY: 100
+COMMAND: MLPRO2 FLOOD 001000 4095
+DELAY: 2000
+PASS_FAIL: #7
+
+#8: BLUE LED Test
+a. View the windows camera feed and check for 2 LED hot spots.
+IMPORTANT: You may see light reflections
+COMMAND: MLPRO2 FLOOD 000000 4095
+DELAY: 100
+COMMAND: MLPRO2 FLOOD 000100 4095
+DELAY: 2000
+PASS_FAIL: #8
+
+#9: VIOLET LED Test
+a. View the windows camera feed and check for 2 LED hot spots.
+IMPORTANT: You may see light reflections
+COMMAND: MLPRO2 FLOOD 000000 4095
+DELAY: 100
+COMMAND: MLPRO2 FLOOD 000010 4095
+DELAY: 2000
+PASS_FAIL: #9
+
+#10: UV LED Test
+a. View the windows camera feed and check for 2 LED hot spots.
+IMPORTANT: You may see light reflections
+COMMAND: MLPRO2 FLOOD 000000 4095
+DELAY: 100
+COMMAND: MLPRO2 FLOOD 000001 4095
+DELAY: 2000
+PASS_FAIL: #10
+
+#11: White LED test
+COMMAND: MLPRO2 FLOOD 000001 0
+COMMAND: MLPRO2 SIDEWHITE 1024
+a. View the windows camera feed and check for 2 LED hot spots.
+PASS_FAIL: #11
+COMMAND: MLPRO2 SIDEWHITE 0
+
+#12: All off LED Test
+COMMAND: MLPRO2 FLOOD 000000 0
+Check all lights are off and click OK.
+CLICK_OK:
+
+
+#13: Test complete:
+EXE: CloseWinCam.bat
+COMMAND: MLPRO2 If#	// turn off any LEDs still on: 
+a. All tests instructions have been completed and a log file created.
+b. Click OK to finish and then power off the PSU and disconnect the PCB.
+IMPORTANT: Check operator intials and serial number have been enterd.
+CLICK_OK:
+
+
+#QUIT:
+EXE: CloseWinCam.bat
+COMMAND: MLPRO2 FLOOD 000000 0
+DISCONNECT: MLPRO2
+// End of file
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

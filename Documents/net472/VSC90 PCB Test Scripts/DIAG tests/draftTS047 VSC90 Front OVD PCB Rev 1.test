@@ -1,0 +1,283 @@
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Filename:	TS047 VSC90 Front OVD PCB Rev1.test
+// Project:		VSC90
+// Author:      Foster & Freeman Ltd - Paul Evans
+// Modified:    29/07/24
+//
+// Description: // Description: Using the nano inside TE209 to control the relay (x2) for 5V regulator  to the PICKkit4 and the power on button.
+// Check current fw and if not expect updates the fw. 
+// Steps 3 to 4.6 are setup/logic for the test box itself
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+[0] force FAIL by default to avoid IMPORTANT message below.
+
+#1: Enter operator initials and PCB serial number:
+a. Enter operator intials.
+b. Enter serial number into the box below.
+IMPORTANT: Observe ESD precautions for handling ESD sensitive devices.  
+DISPLAY: 284-028.png
+CLICK_OK:
+
+#2: Equipment Setup 1
+a. Using TE159 connect the PSU to the Controller Test Box(TE209).
+b. Connect the PC (via USB) to K5 on the Test box (TE209).
+c. Connect the PC (via USB) to the TENMA Programmable PSU.
+d. Connect the PC to the LED Test Box with Web Camera (TE086).
+//DISPLAY: TE132.jpg
+CLICK_OK:
+
+
+#3: Equipment Setup 2
+a. Connect the UUT to the Controller Test Box(TE209).
+b. Connect the Front OVD PCB to the PCB Fixture (TE217).
+c. Place the UUT inside the LED Test Box with Web Camera (TE086).
+d. Set the TENMA Programmable PSU power switch to on.
+CLICK_OK:
+EXE: OpenWinCam.bat
+
+#3.1: Connect to the Nano
+CONNECT: TE209				// Connect to the Nano in the TE209
+IF_NOT:
+GOTO: #3.1: 
+COMMAND: TE209 OUT RC7 1 	// TURN Power button RELAY OFF
+COMMAND: TE209 OUT RC6 1 	// TURN Pickit RELAY OFF
+
+// #3.2: Connect to the PSU
+// CONNECT: TENMAPSU
+// IF_NOT:
+// GOTO: #3.2: 
+
+// #4: Configure the PSU
+// COMMAND: TENMAPSU OUT0
+// COMMAND: TENMAPSU OCP1
+// COMMAND: TENMAPSU OCPSET1:500
+// COMMAND: TENMAPSU VSET1:12.00
+// COMMAND: TENMAPSU ISET1:1.500
+// COMMAND: TENMAPSU OUTCH1:1
+
+#4.1: Power on the test box.
+COMMAND: TE209 OUT RC7 0 		// TURN power button RELAY ON
+DELAY: 500
+COMMAND: TE209 OUT RC7 1 		// TURN power button RELAY OFF
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned voltage is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.060 0.015 // Set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+IF: 							// True result, current is good
+GOTO: #4.2: 
+IMPORTANT: This test has failed, check the power button has been pressed, power supply, USB connection and the ftdi chip.		
+PASS_FAIL: #4.1:
+
+
+#4.2: Connect to the test box
+a. If error message below is displayed, then click OK to continue. 
+.
+ERROR on line 71, CONNECT_ VSC90 - Not available.
+DELAY: 8000 					// GIVE TIME FOR THE PC AND NEW ftdi TO WAKE
+CONNECT: VSC90	 				// Test connection to the FDTI chip
+IF_NOT: 						// If wrong FTDI porgram
+GOTO: #4.3: 					// Reprogram the FTDI and PIC
+GOTO: #4.6: 					// FTDI is correct now check the PIC is programmed correctly 
+
+
+#4.3: program the FTDI 
+EXE: ftdi_programmer_vsc90.exe
+
+#4.3.1: program the PIC.
+COMMAND: TE209 OUT RC6 0 		// TURN PICKIT RELAY ON
+DELAY: 1000
+EXE: VSC90FWself_powered.bat
+DELAY: 2000
+COMMAND: TE209 OUT RC6 1 		// TURN PICKIT RELAY OFF
+COMMAND: TENMAPSU OUTCH1:0
+DELAY: 2000
+GOTO: #4.4: // 
+
+#4.3.2: program the PIC attempt 2 
+DISCONNECT: VSC90
+COMMAND: TE209 OUT RC6 0 		// TURN PICKIT RELAY ON
+EXE: VSC90FWself_powered.bat
+DELAY: 2000
+COMMAND: TE209 OUT RC6 1 		// TURN PICKIT RELAY OFF
+COMMAND: TENMAPSU OUTCH1:0
+DELAY: 2000
+
+
+#4.4:  Power on the test box.
+COMMAND: TENMAPSU OUTCH1:1
+COMMAND: TE209 OUT RC7 0 		// TURN power button RELAY ON
+DELAY: 500
+COMMAND: TE209 OUT RC7 1 		// TURN power button RELAY OFF
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned voltage is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.060 0.015 // Set the range as per TS014_TEST_SEQUENCER_scripts.docx 				
+IF_NOT: 
+GOTO: #4.4: 					// There is fault with the current reading, go back and try again 
+
+#4.5: Connect again
+DELAY: 7000 					// GIVE TIME FOR THE pc AND NEW ftdi TO WAKE
+CONNECT: VSC90
+IF_NOT: 
+GOTO: #4: 						// GO BACK TO THE START
+
+#4.6: PCB Program version check.
+COMMAND: VSC90  TYPE 			// Check connection to the PIC chip
+READLINE: VSC90  TYPE
+Returned product is = %TYPE%
+[%TYPE% STR_EQ VSC90] 			// Evaluates the FW by checking inside the [] and set true or false flag
+IF:
+GOTO: #5: 						// Checks and programming complete goto the start of tests
+ELSE: 							// PIC is not programmed correctly still
+IMPORTANT: Cannot program the test box (PIC). Please check connections to the PIC Kit and PCB.
+CLICK_OK:
+GOTO: #4.3.2: 					// Try programming the PIC again
+
+
+#5: Setup and configure Front OVD
+COMMAND: VSC90 FOVDSHIFT=1
+COMMAND: VSC90 ResetFOVD
+
+
+#6: Test LED 1
+COMMAND: VSC90 SetFOVD=1 1023
+DELAY: 2000
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.235 0.010 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+IMPORTANT: The returned current is =  %PSUcurrent%
+
+
+#7: Test LED 2
+COMMAND: VSC90 SetFOVD=2 800
+DELAY: 2000
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.230 0.010 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+
+#8: Test LED 3
+COMMAND: VSC90 SetFOVD=3 1023
+DELAY: 2000
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.230 0.010 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+
+
+#9: Test LED 4
+COMMAND: VSC90 SetFOVD=4 800
+DELAY: 2000
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.230 0.010 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+
+
+#10: Test LED 5
+COMMAND: VSC90 SetFOVD=5 1023
+DELAY: 2000
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.233 0.010 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+
+
+#11: Test LED 6
+COMMAND: VSC90 SetFOVD=6 800
+DELAY: 2000
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.233 0.010 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+
+
+#12: Test LED 7
+COMMAND: VSC90 SetFOVD=7 1023
+DELAY: 2000
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.233 0.010 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+
+
+#13: Test LED 8
+COMMAND: VSC90 SetFOVD=8 800
+DELAY: 2000
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.234 0.010 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+
+
+#14: Test LED 9
+COMMAND: VSC90 SetFOVD=9 1023
+DELAY: 2000
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.234 0.010 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+
+
+#15: Test LED 10
+COMMAND: VSC90 SetFOVD=10 800
+DELAY: 2000
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.234 0.010 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+
+
+#16: Test LED 11
+COMMAND: VSC90 SetFOVD=11 1023
+DELAY: 2000
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.234 0.010 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+
+
+#17: Test complete
+COMMAND: VSC90 off
+IF: %FAILED% > 0
+GOTO: #Failed:
+ELSE: #Passed:
+
+#Failed: a test failed
+This PCB has failed to pass all Tests
+Check the Log file for more details on the failed test(s).
+IMPORTANT: This PCB has failed to pass all Tests
+DISPLAY: test_failed.png
+CLICK_OK:
+GOTO: #QUIT:
+
+#Passed: Test's Complete
+a. All tests instructions have been completed and a log file created.
+b. Click OK to finish and power OFF.
+DISPLAY: AllTestsPassed.png
+CLICK_OK:
+
+#QUIT:
+COMMAND: TENMAPSU VSET1:0.00
+COMMAND: TENMAPSU ISET1:0.00
+COMMAND: TENMAPSU VSET2:0.00
+COMMAND: TENMAPSU ISET2:0.00
+COMMAND: TENMAPSU OUT0
+DISCONNECT: TENMAPSU
+DISCONNECT: TE209
+DISCONNECT: VSC90
+EXE: CloseWinCam.bat
+// End of file
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

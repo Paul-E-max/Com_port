@@ -1,0 +1,13 @@
+Light background,False
+Enable bell,False
+Images disabled,False
+Test filename,C:\Users\THREADRIPPER\Desktop\Laser test app\TS014_copy\bin\Release\TESTS\TEST_THORLABS_PM.TEST
+Operators
+Quick note 1,
+Quick note 2,
+Quick note 3,
+Big screen,False,1.5
+Instructions,8.25
+PCB No.,
+Serial No.,
+Default editor,Notepad++.exe

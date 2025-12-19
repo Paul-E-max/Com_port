@@ -1,0 +1,115 @@
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Filename:	MLPRO 2 RinglightPCB.test
+// Project:		MLPRO 2
+// Author:      Foster & Freeman Ltd - Paul Evans
+// Modified:    08.12.2023
+//
+// Description: Tests the MLPRO 2 Ringlight PCB
+// 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+[0] force FAIL by default to avoid IMPORTANT message below.
+#1: Enter operator initials and PCB serial number:
+a. Enter operator intials.
+b. Enter serial number into the box below.
+IMPORTANT: Observe ESD precautions for handling ESD sensitive devices.  
+DISPLAY: PCB 287-027.png
+
+
+
+#2: Setup equipment 1
+a. Set adjustable PSU output 1 to 12V ±0.1V, 0.5A ±0.1A. Switch the output off.
+b. Using TE159, connect the PSU to the Peripheral lighting PCB Test Jig (TE132).
+c. Connect the PC (via USB) to the Peripheral lighting PCB Test Jig(TE132).
+d. Connect the USB cable to the K5 on the Peripheral lighting PCB Test Jig(TE132).
+
+DISPLAY: TE132.jpg
+CLICK_OK:
+
+
+#3: Setup equipment:
+a. Connect the TE192 Test box to the TE132 Peripheral lighting PCB Test Jig.   
+b. Connect the PCB to the TE192 Test box.
+c. Connect the TE086 (LED Test Box with Web Camera) to the PC and place the PCB inside.
+d. Switch the output of the adjustable PSU on and power on the TE132 Peripheral lighting PCB Test Jig. 
+//DISPLAY: Setup.jpg
+COMMENT: *Example image below*
+CLICK_OK:
+CONNECT: MLPRO2 
+COMMAND: MLPRO2 If#	// turn off any LEDs still on: 
+IF_NOT:
+GOTO: #2
+
+
+#4: PCB communication check
+COMMAND: MLPRO2  BENUM
+READLINE: MLPRO2  BENUM
+IF:
+Check the expected result is a match.
+Expected result is = RS,RS1,RS2
+.
+..
+...
+
+Returned result is = %BENUM%
+ELSE:
+Bad result . . . sorry
+PASS_FAIL: #4
+EXE: OpenWinCam.bat
+
+
+#5: RING LIGHT LED  = RED
+a. Check for 4 LED hot spots
+COMMAND: MLPRO2 RING 100000 650
+DELAY: 750
+PASS_FAIL: #5
+
+#6: RING LIGHT LED = BLUEGREEN
+a. Check for 4 LED hot spots
+COMMAND: MLPRO2 RING 001000 650
+DELAY: 700
+PASS_FAIL: #6
+
+#7: RING LIGHT LED = VIOLET
+a. Check for 4 LED hot spots
+COMMAND: MLPRO2 RING 000010 650
+DELAY: 700
+PASS_FAIL: #7
+
+#8: RING LIGHT LED = UV
+a. Check for 4 LED hot spots
+COMMAND: MLPRO2 RING 000001 650
+DELAY: 700
+PASS_FAIL: #8
+
+#9: RING LIGHT LED = GREEN
+a. Check for 4 LED hot spots
+COMMAND: MLPRO2 RING 07000 650
+DELAY: 700
+PASS_FAIL: #9
+
+#10: RING LIGHT LED = BLUE
+a. Check for 4 LED hot spots
+COMMAND: MLPRO2 RING 000100 650
+DELAY: 700
+PASS_FAIL: #10
+
+#12: Test complete:
+EXE: CloseWinCam.bat
+COMMAND: MLPRO2 If#	// turn off any LEDs still on: 
+a. All tests instructions have been completed and a log file created.
+b. Click OK to finish and then power off the PSU and disconnect the PCB.
+@ -102,7 +65,6 @@ CLICK_OK:
+
+#QUIT:
+SAVE_LOG:
+EXE: CloseWinCam.bat
+COMMAND: MLPRO2 If#	// turn off any LEDs still on: 
+DISCONNECT: MLPRO2
+// turn off any LEDs still on: 
+
+// turn off any LEDs still on: 
+
+// End of file
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+

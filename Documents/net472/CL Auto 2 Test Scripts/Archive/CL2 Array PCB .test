@@ -1,0 +1,221 @@
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Filename:	TS056 CL Auto 2 Array PCB.test
+// Project:		CL Auto 2
+// Author:      Foster & Freeman Ltd - Paul Evans
+// Modified:    14/08/25
+//
+// Description: test ing the LED array PCB-draft
+// [ <addr_byte>  0x08  <reg>  <data> ]
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+// {0} force FAIL by default to avoid IMPORTANT message below.
+//#1: Equipment Setup 1
+// a. Connect the 3v3 pull up and connect the GND to the Bus Priate cable.
+// b. Connect the Arry1 lead to + of channel 1 on the PSU.
+// c. Connect the Arry2 lead to + of channel 2 on the PSU.
+// d. Connect the VPWR lead to + of channel 3 on the PSU.
+// e. Connect the GND's of channel 1, 2 & 3 together.
+// e. Set the TENMA Programmable PSU power switch to on.
+// CLICK_OK:
+// CONNECT: TENMAPSU
+// IF_NOT:
+// GOTO: #1: 
+
+// #2: Equipment Setup 2 & Configure the PSU
+// a. Connect the LED Array PCB to the TEXX (Refer to setup picture below).
+// b. Place the UUT inside the LED Test Box with Web Camera (TE086).
+// COMMAND: TENMAPSU OUT0
+// COMMAND: TENMAPSU OCP1
+// COMMAND: TENMAPSU OCPSET1:500
+// COMMAND: TENMAPSU OCPSET2:500
+// COMMAND: TENMAPSU VSET1:16.00
+// COMMAND: TENMAPSU ISET1:1.000
+// COMMAND: TENMAPSU VSET2:16.00
+// COMMAND: TENMAPSU ISET2:1.000
+// CLICK_OK:
+// COMMAND: TENMAPSU OUTCH1:1
+// COMMAND: TENMAPSU OUTCH2:1
+
+#3: Connect and Configure the Bus Pirate
+CONNECT: Unknown
+IF_NOT:
+GOTO: #3:
+COMMAND: Unknown m4
+COMMAND: Unknown 3
+COMMAND: Unknown W
+COMMAND: Unknown P
+//EXE: OpenWinCam.bat
+
+#4:Configure IC11 for temp and read AIN4 TH3 MSB & LSB for temperature:
+COMMAND: Unknown {0x22 0x08 0x05 0x00}   
+SUB: READ_SENSOR
+//Checks . . . MSB = %RS_MSB%, LSB = %RS_LSB% and decimal result = %RESULT%
+-------------------------------------
+SET: Voltage = [3.3 * %RESULT% / (16 * 4095)]
+-------------------------------------
+RANGE: %Voltage% 2.55 0.15 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+CLICK_OK:
+
+#5:Configure IC11 for temp and read AIN5 TH1 MSB & LSB for temperature:
+COMMAND: Unknown {0x22 0x08 0x05 0x00}   
+SUB: READ_SENSOR_2
+//Checks . . . MSB = %RS_MSB%, LSB = %RS_LSB% and decimal result = %RESULT%
+-------------------------------------
+Voltage = [3.3 * %RESULT% / (16 * 4095)]V
+-------------------------------------
+SET: Voltage = [3.3 * %RESULT% / (16 * 4095)]
+-------------------------------------
+RANGE: %Voltage% 2.55 0.15 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+CLICK_OK:
+
+#5:Configure IC11 for temp and read AIN6 TH2 MSB & LSB for temperature:
+COMMAND: Unknown {0x22 0x08 0x05 0x00}   
+SUB: READ_SENSOR_3
+//Checks . . . MSB = %RS_MSB%, LSB = %RS_LSB% and decimal result = %RESULT%
+-------------------------------------
+Voltage = [3.3 * %RESULT% / (16 * 4095)]V
+-------------------------------------
+SET: Voltage = [3.3 * %RESULT% / (16 * 4095)]
+-------------------------------------
+RANGE: %Voltage% 2.55 0.15 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+CLICK_OK:
+
+#6:  Configure IC9 & IC10 for test:
+COMMAND: Unknown {0x40 0x0A 0x80} {0x40 0x00 0x00} {0x40 0x0A 0xFF} 
+//Meaning:0x40 is ic10 address.
+//OLATA = 0x80 → preload PORTA latch so only bit 7 high.
+//IODIRA = 0x00 → make all PORTA pins outputs.
+//OLATA = 0xFF → drive all PORTA pins high.//
+COMMAND: Unknown {0x24 0x08 0x05 0xFC} 
+//configure channels 7..2 as GPIOs and 1..0 as analog inputs (0 = analog, 1 = GPIO).
+// This matches leaving AIN0/1 as analog and converting AIN2–AIN7 to GPIO.
+COMMAND: Unknown {0x24 0x08 0x07 0xFC} //(0x07)GPIO direction ,CH7..2=Output, CH1..0=Input
+COMMAND: Unknown {0x24 0x08 0x09 0xFC} //(0x09) Output driver type CH7..2=Push-pull
+COMMAND: Unknown {0x24 0x08 0x0B 0xFC}//(0x0B)Output levels CH7..2=High, CH1..0=Low
+
+
+#8:ALL LEDs OFF driver 1
+COMMAND: Unknown {0x40 0x0A 0xFF} // Turn OFF LEDS
+COMMAND: Unknown {0x24 0x08 0x0B 0xFC} // Turn OFF LEDS
+#8.1:Configure IC11 for temp and read AIN6 TH2 MSB & LSB for temperature:
+COMMAND: Unknown {0x22 0x08 0x05 0x00}   
+SUB: READ_SENSOR_3
+Checks . . . MSB = %RS_MSB%, LSB = %RS_LSB% and decimal result = %RESULT%
+-------------------------------------
+Voltage = [3.3 * %RESULT% / (16 * 4095)]V
+-------------------------------------
+CLICK_OK:
+
+#9: AmberAD2.
+COMMAND: Unknown {0x40 0x0A 0xBF} // LED ON
+CLICK_OK:
+#9.1:Configure IC11 for temp and read AIN6 TH2 MSB & LSB for temperature:
+COMMAND: Unknown {0x22 0x08 0x05 0x00}   
+SUB: READ_SENSOR_3
+Checks . . . MSB = %RS_MSB%, LSB = %RS_LSB% and decimal result = %RESULT%
+-------------------------------------
+Voltage = [3.3 * %RESULT% / (16 * 4095)]V
+-------------------------------------
+CLICK_OK:
+
+#7: Configure IC11 (Blue_Violet_Config)for LED test:
+COMMAND: Unknown {0x22 0x08 0x05 0x04} //(0x07)GPIO direction ,CH7..2=Output, CH1..0=Input
+COMMAND: Unknown {0x22 0x08 0x07 0x04} //(0x09) Output driver type CH7..2=Push-pull
+COMMAND: Unknown {0x22 0x08 0x09 0x04} //(0x0B)Output levels CH7..2=High, CH1..0=Low
+COMMAND: Unknown {0x22 0x08 0x0B 0x04} //
+
+#10: GreenAD2
+COMMAND: Unknown {0x40 0x0A 0xFE}
+CLICK_OK:
+#11: Blue GreenAD2
+COMMAND: Unknown {0x40 0x0A 0xFD}
+CLICK_OK:
+#12: UVAD2
+COMMAND: Unknown {0x40 0x0A 0xFB}
+CLICK_OK:
+#13: VioletAD2
+COMMAND: Unknown {0x40 0x0A 0xF7}
+CLICK_OK:
+#14: BlueAD2
+COMMAND: Unknown {0x40 0x0A 0xEF}
+CLICK_OK:
+#15: RedAD2
+COMMAND: Unknown {0x40 0x0A 0xDF}
+CLICK_OK:
+#16: REDAD2 OFF
+COMMAND: Unknown {0x40 0x0A 0xFF}
+CLICK_OK:
+
+
+#17: GreenAD1
+COMMAND: Unknown {0x24 0x08 0x0B 0xEC}
+CLICK_OK:
+#18: Blue GreenAD1
+COMMAND: Unknown {0x24 0x08 0x0B 0xDC}
+CLICK_OK:
+#19: UVAD1
+COMMAND: Unknown {0x24 0x08 0x0B 0xBC}
+CLICK_OK:
+#20: VioletAD1
+COMMAND: Unknown {0x24 0x08 0x0B 0x7C}
+CLICK_OK:
+#21: AmberAD1.
+COMMAND: Unknown {0x24 0x08 0x0B 0xF4} // LED ON
+CLICK_OK:
+#22: RedAD1
+COMMAND: Unknown {0x24 0x08 0x0B 0xF8}
+CLICK_OK:
+COMMAND: Unknown {0x24 0x08 0x0B 0xFC}
+#2: BlueAD1
+COMMAND: Unknown {0x22 0x08 0x0B 0x00}
+CLICK_OK:
+COMMAND: Unknown {0x22 0x08 0x0B 0x04}
+
+#4:Configure IC11 for temp and read AIN4 TH3 MSB & LSB for temperature:
+COMMAND: Unknown {0x22 0x08 0x05 0x00}   
+SUB: READ_SENSOR
+//Checks . . . MSB = %RS_MSB%, LSB = %RS_LSB% and decimal result = %RESULT%
+-------------------------------------
+SET: Voltage = [3.3 * %RESULT% / (16 * 4095)]
+-------------------------------------
+RANGE: %Voltage% 2.55 0.15 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+CLICK_OK:
+
+#11: Test complete
+IF: %FAILED% > 0
+GOTO: #Failed:
+ELSE: #Passed:
+
+#Failed: A test failed
+a. This PCB has failed to pass all Tests
+b. Check the Log file for more details on the failed test(s).
+IMPORTANT: This PCB has failed to pass all Tests
+//DISPLAY: test_failed.png
+CLICK_OK:
+GOTO: #QUIT:
+
+#Passed: Test's Complete
+a. All tests instructions have been completed and a log file created.
+b. Click OK to finish and power OFF.
+//DISPLAY: AllTestsPassed.png
+CLICK_OK:
+
+#QUIT:
+COMMAND: TENMAPSU VSET1:0.00
+COMMAND: TENMAPSU ISET1:0.00
+COMMAND: TENMAPSU VSET2:0.00
+COMMAND: TENMAPSU ISET2:0.00
+COMMAND: TENMAPSU OUT0
+//EXE: CloseWinCam.bat
+//PASS_FAIL: #5:
+// COMMAND: TENMAPSU IOUT1?
+// READLINE: TENMAPSU PSUcurrent
+// The returned current is =  %PSUcurrent%
+// RANGE: %PSUcurrent% 0.585 0.005 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+// SUB: TestPassOrFail
+// End of file
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -1,0 +1,28 @@
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Filename:	TestPassOrFail.test
+// Project:		none
+// Author:      Foster & Freeman Ltd - Paul Evans
+// Modified:    09/05/24, Test instruction.
+//
+// Description: a subroutine to log the test result
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+IF:
+GOTO: #SUB_OK
+GOTO: #SUB_BAD
+ 
+#SUB_OK:
+Result = Test Pass
+TEST: PASSED
+RETURN:
+ 
+#SUB_BAD:
+IMPORTANT: This test has failed
+TEST: FAILED 
+//CLICK_OK:
+RETURN:
+
+
+//
+// Note that there is an implied RETURN at the end of a file . . .
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -1,0 +1,21 @@
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Filename:	READ_SENSOR_CurrentDriver.TEST
+// Project:		Reading of CLA 2 driver current sensor via Bus Pirate.
+// Author:      Foster & Freeman Ltd - Paul Evans
+// Modified:    09.12.2025 - Initial tests.
+//
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Reading the Bus Pirate . . .
+COMMAND: BUS_PIRATE { 0x82 0x04 { 0x83 r:2 }
+READLINE: BUS_PIRATE WASTE
+READLINE: BUS_PIRATE WASTE
+READLINE: BUS_PIRATE WASTE
+READLINE: BUS_PIRATE WASTE
+READLINE: BUS_PIRATE WASTE
+READ: BUS_PIRATE WASTE RS_MSB WASTE WASTE 
+SET: RESULT = [%RS_MSB%]
+
+//
+// End of file
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

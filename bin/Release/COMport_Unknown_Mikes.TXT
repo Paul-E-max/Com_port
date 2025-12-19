@@ -1,0 +1,20 @@
+,50,1
+"Conf BUS PIR"=m4\n3\nW\nP\n
+"Conf U1"=[0x22 0x08 0x05 0x00]\n
+"Read sensor"=[0x22 0x08 0x11 0x04][0x23 r r]\n
+"Command4"=\n
+"Command5"=\n
+"Command6"=\n
+"Command7"=\n
+"Command8"=\n
+"Command9"=\n
+"Command10"=\n
+"Command11"=\n
+"Command12"=\n
+"Command13"=\n
+"Command14"=\n
+"Command15"=\n
+"Command16"=\n
+"Command17"=\n
+"Command18"=\n
+"Command19"=\n

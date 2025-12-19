@@ -1,0 +1,76 @@
+; - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+; Filename:		TEST_SEQUENCER_PROJECTS.TXT
+; Project:		TEST_SEQUENCER
+; Author:		Foster & Freeman Ltd - Michael Dodd
+; Created:		15.12.2022 and updated 04.05.2023
+;
+; All lines beginning with a semi-colon are ignored.
+;
+; All devices this application can communicate with are listed below, one line
+; per device.  Each line is made up of parameters separated by commas. Blank
+; fields consist of just a comma and can be dropped altogether if no more
+; parameters are to be supplied on that line.
+;
+; Parameters for each line are as follows:-
+;
+; Parameter		Description
+; ---------		-----------
+;
+; Project:		Selects the device that this application should talk to.
+;
+; Baud:			Baudrate used in communications with the connected device.
+;				Use "D2XX" for FTDI D2XX devices.
+;				Use "TLPM" for Thorlabs Power Meters (PM100USB, PM100D, etc.)
+;
+; Echo off:		Echo off command, blank if not available.
+;
+; Echo on:		Echo on command, blank if not available.
+;
+; Get ID:		Command to get the device identification, blank if not available.
+;
+; Response:		Used where response to Get ID differs from the Project name.
+;				Note that the response only has to begin with the Project name
+;				for this entry to be accepted.
+;
+; Half-duplex:	Enter Yes for devices that do not echo each character as they are
+;				sent.  Use No or leave blank for full-duplex communications.
+;
+; Tx on Enter:	Execution of a command is normally performed by CR (0x0D) character.
+;				If a different character is used, include it here as a hexadecimal
+;				code prefixed by "0x".  Note that since this code is used to send a
+;				command, the implication is that the target device will use the same
+;				code to indicate the end of a response.  For example, MVC_FFLEX uses
+;				LF (0x0A) to indicate a	command line is to be executed and sends LF
+;				at the end of a response.
+;
+; NL delay:		Delay following an enter in milliseconds, defaults to zero.
+;
+; Char delay:	Delay between characters in milliseconds, defaults to zero.
+;
+;
+; Project		Baud	Echo off 	Echo on 	Get ID		Response	Half-duplex		Tx on ENTER	 N.L. delay	Char delay
+; -------		----	--------	------- 	------		--------	-----------		-----------	 ----------	----------
+  Unknown,		115200
+  AARI,			9600,	ECHO OFF,	ECHO ON,	VERSION
+  BOOTLOAD,		9600,	,			,			VERSION
+  BUS_PIRATE,	115200,	,			,			i,			Bus
+  CSU,			9600
+  DISCOVER-Top,	115200,	ECHO OFF,	ECHO ON,	VERSION
+  DISCOVER-Base,115200,	ECHO OFF,	ECHO ON,	VERSION
+  FLS,         	57600,  ,           ,           VERSION,    =,          Yes,			0x0A,			10
+  I2C,			115200,	ECHO OFF,	ECHO ON,	VERSION,    ,           ,               ,               10
+  MVC_FFLEX,	115200, ,			,			VERSION,	0 03,		Yes,			0x0A,			20, 	5
+  PDii,			9600,	ECHO OFF,	ECHO ON,	VERSION
+  VSC900,		D2XX,	,			,			TYPE,		,			Yes,			0x0A,			100
+  LAMP_TRAY,	9600,	,			,			IDENTIFY,	VSC9000_TRAY,Yes,			0x0A,			10
+  MLPRO,		D2XX,	,			,			TYPE,		VSC80.1,	Yes,			0x0A
+  MLPRO2,		D2XX,	,			,			TYPE,		VSC80.1,	Yes,			0x0A
+  VSC80,		D2XX,	,			,			TYPE,		,			Yes,			0x0A
+  VSC90,		D2XX,	,			,			TYPE,		VSC90,		Yes,			0x0A
+  TENMALOAD,	115200,	,			,			*IDN?,		TENMA 72-13210,Yes,		    0x0A
+  TENMAPSU,		115200,	,			,			*IDN?,		TENMA 72-2645,Yes,			0x0A
+;
+; Thorlabs Power Meter (requires TLPM driver type)
+; Commands: MEAS:POW? (read power), *IDN? (get ID), SENS:CORR:WAV <nm> (set wavelength)
+  ThorlabsPM,	TLPM,	,			,			*IDN?,		Thorlabs,	Yes
+  PM100USB,		TLPM,	,			,			*IDN?,		PM100USB,	Yes

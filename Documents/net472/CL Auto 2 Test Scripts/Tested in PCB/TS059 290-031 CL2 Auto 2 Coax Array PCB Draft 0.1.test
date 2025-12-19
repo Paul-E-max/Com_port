@@ -1,0 +1,158 @@
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Filename:	TS058 290-031 CL Auto 2 COAX PCB.test
+// Project:		CL Auto 2
+// Author:      Foster & Freeman Ltd - Paul Evans
+// Modified:    03/11/25
+//
+// Description: test the COAX LED output, semi automatic tests as the LEDS are current driven. Meaning the current level remains the same but the LEDs are dimmed by the sharing or available current.
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+{0} force FAIL by default to avoid IMPORTANT message below.
+#1: Equipment Setup 1
+a. Connect the Bus Priate and PSU to the test PC.
+b. Connect the Bus Priate to the TE247 and set the pull-up shut to ON.
+c. Connect the GND's to - of channel 1 on the PSU.
+d. Connect the VPWR to + of channel 1 on the PSU.
+e. Set the TENMA Programmable PSU power switch to on.
+CLICK_OK:
+CONNECT: TENMAPSU
+IF_NOT:
+GOTO: #1: 
+
+#2: Equipment Setup 2 & Configure the PSU
+a. Connect the COAX PCB to the TE247 via either X1,X2,X3.
+b. Place the UUT inside the LED Test Box with Web Camera (TE086).
+c. Enter the PCB serial number.
+COMMAND: TENMAPSU OCP1
+COMMAND: TENMAPSU OCPSET1:0.150
+COMMAND: TENMAPSU VSET1:12.00
+COMMAND: TENMAPSU ISET1:0.120
+COMMAND: TENMAPSU OUTCH1:1
+COMMAND: TENMAPSU OUTCH2:0
+
+#3: Connect and Configure the Bus Pirate
+CONNECT: BUS_PIRATE
+IF_NOT:
+GOTO: #3:
+COMMAND: BUS_PIRATE m4
+COMMAND: BUS_PIRATE 4
+COMMAND: BUS_PIRATE W
+COMMAND: BUS_PIRATE P
+EXE: OpenWinCam.bat
+
+#4:Configure IC for output :
+COMMAND: BUS_PIRATE {0x4A 0x0A 0x80}{0x4A 0x00 0x07}{0x4A 0x0A 0x00}   //Config_GPIO_A
+COMMAND: BUS_PIRATE {0x4A 0x10 0x00}{0x4A 0x1A 0xF0}					//Config_GPIO_B
+
+#5: Set all off and check current measurement.
+COMMAND: BUS_PIRATE {0x4A 0x0A 0x00}{0x4A 0x1A 0xF0}					//ENABLE_n LED Off
+DELAY: 1000
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.00 0.005 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+
+#6: Turn on LED 1.
+COMMAND: BUS_PIRATE {0x4A 0x0A 0x00}{0x4A 0x1A 0xF0}{0x4A 0x1A 0x0A}
+DELAY: 2000
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.060 0.005 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+Check that only 1 LED is illuminated.
+PASS_FAIL:
+COMMAND: BUS_PIRATE {0x4A 0x0A 0x00}{0x4A 0x1A 0xF0}					//ENABLE_n LED Off
+
+#7: Turn on LED 2.
+COMMAND: BUS_PIRATE {0x4A 0x1A 0x09}
+DELAY: 2000
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.060 0.005 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+Check that only 1 LED is illuminated.
+PASS_FAIL:
+COMMAND: BUS_PIRATE {0x4A 0x0A 0x00}{0x4A 0x1A 0xF0}					//ENABLE_n LED Off
+
+#8: Turn on LED 3.
+COMMAND: BUS_PIRATE {0x4A 0x1A 0x0C}
+DELAY: 2000
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.060 0.005 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+Check that only 1 LED is illuminated.
+PASS_FAIL:
+COMMAND: BUS_PIRATE {0x4A 0x0A 0x00}{0x4A 0x1A 0xF0}					//ENABLE_n LED Off
+
+#9: Turn on LED 4.
+COMMAND: BUS_PIRATE {0x4A 0x0A 0x80} {0x4A 0x1A 0x02}
+DELAY: 2000
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.060 0.005 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+Check that only 1 LED is illuminated.
+PASS_FAIL:
+COMMAND: BUS_PIRATE {0x4A 0x0A 0x00}{0x4A 0x1A 0xF0}					//ENABLE_n LED Off
+
+#10: Turn on LED 5.
+COMMAND: BUS_PIRATE {0x4A 0x0A 0x80}{0x4A 0x1A 0x01}
+DELAY: 2000
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.060 0.005 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+Check that only 1 LED is illuminated.
+PASS_FAIL:
+COMMAND: BUS_PIRATE {0x4A 0x0A 0x00}{0x4A 0x1A 0xF0}					//ENABLE_n LED Off
+
+#11: Turn on LED 6.
+COMMAND: BUS_PIRATE {0x4A 0x0A 0x80}{0x4A 0x1A 0x04}
+DELAY: 2000
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.060 0.005 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+Check that only 1 LED is illuminated.
+PASS_FAIL:
+COMMAND: BUS_PIRATE {0x4A 0x0A 0x00}{0x4A 0x1A 0xF0}					//ENABLE_n LED Off
+
+#12: Test complete
+IF: %FAILED% > 0
+GOTO: #Failed:
+ELSE: #Passed:
+
+#Failed: A test failed
+a. This PCB has failed to pass all Tests
+b. Check the Log file for more details on the failed test(s).
+IMPORTANT: This PCB has failed to pass all Tests
+//DISPLAY: test_failed.png
+CLICK_OK:
+GOTO: #QUIT:
+
+#Passed: Test's Complete
+a. All tests instructions have been completed and a log file created.
+b. Click OK to finish and power OFF the PSU.
+//DISPLAY: AllTestsPassed.png
+CLICK_OK:
+
+#QUIT:
+COMMAND: TENMAPSU OUT0
+COMMAND: TENMAPSU VSET1:0.00
+COMMAND: TENMAPSU ISET1:0.00
+COMMAND: TENMAPSU VSET2:0.00
+COMMAND: TENMAPSU ISET2:0.00
+DISCONNECT: TENMAPSU
+DISCONNECT: BUS_PIRATE
+SAVE_LOG:
+EXE: CloseWinCam.bat
+// End of file
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -1,0 +1,13 @@
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+11:01:09 Filename:  C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\VSC90 PCB Test Scripts\LOGS\TS044 VSC90 UV LED Driver PCB Draft 0.2.DIAG
+11:01:09 App name:  TEST_SEQUENCER.EXE - V1.01.34
+11:01:09 Test file: C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\VSC90 PCB Test Scripts\TS044 VSC90 UV LED Driver PCB Draft 0.2.TEST 17/07/2024 13:49:00
+11:01:09 Updated:   02.08.2024
+11:01:09 
+13:49:10 9: (308nm) Read the current from the TEMMA and evaluate for PASS or FAIL. - RANGE: 0.1813A 0.327 0.05
+13:49:10 Failure occurred on line 123 at 10:48:57 02.08.2024
+13:49:10 9: (308nm) Read the current from the TEMMA and evaluate for PASS or FAIL.
+13:49:10 Failure occurred on line 21 (TestPassOrFail) at 10:48:57 02.08.2024
+13:49:10 
+13:49:10 Finished:  C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\VSC90 PCB Test Scripts\LOGS\TS044 VSC90 UV LED Driver PCB Draft 0.2.DIAG
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

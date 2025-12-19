@@ -1,0 +1,13 @@
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+11:50:32 Filename:  C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\VSC90 PCB Test Scripts\LOGS\draftTS040 Flood Array PCB Rev 1.DIAG
+11:50:32 App name:  TEST_SEQUENCER.EXE - V1.01.35
+11:50:32 Test file: C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\VSC90 PCB Test Scripts\draftTS040 Flood Array PCB Rev 1.TEST 03/09/2024 11:00:06
+11:50:32 Updated:   03.09.2024
+11:50:32 
+11:50:57 6: Voltage check - RANGE: 12212 12000 50		                                                                                      
+11:50:57 Failure occurred on line 148 at 11:50:57 03.09.2024
+11:50:57 0.1:                                                                                                                                
+11:50:57 Failure occurred on line 21 (TestPassOrFail) at 11:50:57 03.09.2024
+11:51:17 
+11:51:17 Finished:  C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\VSC90 PCB Test Scripts\LOGS\draftTS040 Flood Array PCB Rev 1.DIAG
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

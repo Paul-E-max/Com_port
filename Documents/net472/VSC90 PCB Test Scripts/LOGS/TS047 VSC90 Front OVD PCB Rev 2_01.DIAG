@@ -1,0 +1,22 @@
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+12:13:55 Filename:  C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\VSC90 PCB Test Scripts\LOGS\TS047 VSC90 Front OVD PCB Rev 2_01.DIAG
+12:13:55 App name:  TEST_SEQUENCER.EXE - V1.01.35
+12:13:55 Test file: C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\VSC90 PCB Test Scripts\TS047 VSC90 Front OVD PCB Rev 2.TEST 18/11/2024 09:26:05
+12:13:55 Operator:      pe
+12:13:55 Updated:   18.12.2024
+12:13:55 
+12:15:29 6: Test LED 1 - RANGE: 0.148 0.235 0.013                                                                                        
+12:15:29 Failure occurred on line 153 at 12:15:29 18.12.2024
+12:15:29 0.1:                                                                                                                                
+12:15:29 Failure occurred on line 21 (TestPassOrFail) at 12:15:29 18.12.2024
+12:15:58 7: Test LED 2 - RANGE: 0.059 0.230 0.013                                                                                        
+12:15:58 Failure occurred on line 164 at 12:15:58 18.12.2024
+12:15:58 0.1:                                                                                                                                
+12:15:58 Failure occurred on line 21 (TestPassOrFail) at 12:15:58 18.12.2024
+12:16:04 8: Test LED 3 - RANGE: 0.147 0.230 0.013                                                                                        
+12:16:04 Failure occurred on line 173 at 12:16:04 18.12.2024
+12:16:05 0.1:                                                                                                                                
+12:16:05 Failure occurred on line 21 (TestPassOrFail) at 12:16:05 18.12.2024
+12:18:13 
+12:18:13 Finished:  C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\VSC90 PCB Test Scripts\LOGS\TS047 VSC90 Front OVD PCB Rev 2_01.DIAG
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

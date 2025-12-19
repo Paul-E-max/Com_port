@@ -1,0 +1,24 @@
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+15:28:38 Filename:  C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\VSC90 PCB Test Scripts\LOGS\DIAG_01.DIAG
+15:28:38 App name:  TEST_SEQUENCER.EXE - V1.01.35
+15:28:38 Test file: C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\VSC90 PCB Test Scripts\DIAG.TEST 03/09/2024 15:11:27
+15:28:38 Operator:      pe
+15:28:38 Updated:   03.09.2024
+15:28:38 
+15:28:41 1: Test recording of DIAG entries for PASS or FAIL responses within a test - Suggest you hit FAIL the first time round and PA...
+15:28:41 DIAG: This is a line for diagnostics file
+15:28:41 Failure occurred on line 12 at 15:28:41 03.09.2024
+15:29:39 2: Test JPG image within DIAG - Hit FAIL the first time round.                                                                  
+15:29:39 DIAG: DISPLAY: T1.JPG
+15:29:39 DIAG: T1.JPG is displayed below
+15:29:39 Failure occurred on line 23 at 15:29:39 03.09.2024
+15:29:39 3: Test TXT file displayed by DIAG command - Hit FAIL the first time round.                                                     
+15:29:39 DIAG: DISPLAY: DIAG_TEXT.txt
+15:29:39 DIAG: DIAG_TEXT.txt is displayed above
+15:29:39 Failure occurred on line 29 at 15:29:39 03.09.2024
+15:29:40 4: Test CLEAR within DIAG - Hit FAIL the first time round.                                                                      
+15:29:40 DIAG: Picture should not appear below
+15:29:40 Failure occurred on line 36 at 15:29:40 03.09.2024
+15:29:40 
+15:29:40 Finished:  C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\VSC90 PCB Test Scripts\LOGS\DIAG_01.DIAG
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

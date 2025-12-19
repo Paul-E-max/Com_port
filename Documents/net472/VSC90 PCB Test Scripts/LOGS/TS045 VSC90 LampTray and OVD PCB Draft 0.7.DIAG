@@ -1,0 +1,25 @@
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+12:59:13 Filename:  C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\VSC90 PCB Test Scripts\LOGS\TS045 VSC90 LampTray and OVD PCB Draft 0.7.DIAG
+12:59:13 App name:  TEST_SEQUENCER.EXE - V1.01.35
+12:59:13 Test file: C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\VSC90 PCB Test Scripts\TS045 VSC90 LampTray and OVD PCB Draft 0.7.TEST 08/08/2024 10:07:22
+12:59:13 Updated:   12.08.2024
+12:59:13 
+13:00:36 7.1: Test COAX driver and hall sensor feedback - RANGE: 139 3 0                                                                   
+13:00:36 Failure occurred on line 171 at 13:00:36 12.08.2024
+13:00:36 0.1:                                                                                                                                
+13:00:36 Failure occurred on line 21 (TestPassOrFail) at 13:00:36 12.08.2024
+13:00:42 9: Left flap setup: - RANGE: 0 2 0                                                                                              
+13:00:42 Failure occurred on line 195 at 13:00:42 12.08.2024
+13:00:42 0.1:                                                                                                                                
+13:00:42 Failure occurred on line 21 (TestPassOrFail) at 13:00:42 12.08.2024
+13:00:45 10: Right Flap setup - RANGE: 0 4 0                                                                                              
+13:00:45 Failure occurred on line 207 at 13:00:45 12.08.2024
+13:00:45 0.1:                                                                                                                                
+13:00:45 Failure occurred on line 21 (TestPassOrFail) at 13:00:45 12.08.2024
+13:00:47 11: Front Flap setup: - RANGE: 0 16 0                                                                                            
+13:00:47 Failure occurred on line 218 at 13:00:47 12.08.2024
+13:00:48 0.1:                                                                                                                                
+13:00:48 Failure occurred on line 21 (TestPassOrFail) at 13:00:48 12.08.2024
+13:02:26 
+13:02:26 Finished:  C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\VSC90 PCB Test Scripts\LOGS\TS045 VSC90 LampTray and OVD PCB Draft 0.7.DIAG
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -251,6 +251,38 @@ namespace COMport
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
+        /// Configure device settings for proper operation.
+        /// Call this after connection to get meaningful readings.
+        /// </summary>
+        /// <param name="wavelengthNm">Wavelength in nm (default 635 for red LED)</param>
+        /// <param name="avgCount">Averaging count (default 10)</param>
+        /// <param name="autoRange">Enable auto-range (default true)</param>
+        public bool ConfigureSettings(double wavelengthNm = 635, int avgCount = 10, bool autoRange = true)
+        {
+            if (!_isConnected || _device == null)
+                return false;
+
+            try
+            {
+                Debug.WriteLine($"[TLPM] Configuring: wavelength={wavelengthNm}nm, avg={avgCount}, autoRange={autoRange}");
+                
+                _device.setWavelength(wavelengthNm);
+                _device.setAvgCnt((short)avgCount);
+                _device.setPowerAutoRange(autoRange);
+                
+                Debug.WriteLine("[TLPM] Configuration complete");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _lastError = $"Configuration error: {ex.Message}";
+                Debug.WriteLine($"[TLPM] {_lastError}");
+                return false;
+            }
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
         /// Get device identification string.
         /// </summary>
         public string GetIdentification()

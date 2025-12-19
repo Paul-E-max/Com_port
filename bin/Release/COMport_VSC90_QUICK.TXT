@@ -9,12 +9,12 @@
 "Command8"=beep 100 100\n
 "Command9"=beep 402 1000\n
 "Command10"=ENUM\n
-"Command11"=OVDCONF\n
-"Command12"=beep 4545 300\nbeep 4050 300\nbeep 3822 300\nbeep 3405 300\nbeep 3034 300\nbeep 2863 300\nbeep 2551 300\nbeep 2273 300\n
-"Command13"=beep 2273 300\nbeep 2551 300\nbeep 2863 300\nbeep 3034 300\nbeep 3405 300\nbeep 3822 300\nbeep 4050 300\nbeep 4545 300\n
+"Command11"=SPOTOFF\n
+"Command12"=WHITESPOT 1023\n
+"Command13"=UV365 = 1023\n
 "Command14"=IRW 000011 50\n
-"Command15"=\n
-"Command16"=IF#\n
-"Command17"=FDW 50\nP6 115\nP8 115\n
-"Command18"=UV365 = 1023\n
-"Command19"=BL# LAMPTRAY\n
+"Command15"=FDW 5\n
+"Command16"=FDW 50\n
+"Command17"=FDW 100\n
+"Command18"=IF#\n
+"Command19"=Z#~\n

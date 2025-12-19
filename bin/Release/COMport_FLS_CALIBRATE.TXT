@@ -10,7 +10,7 @@
 "Lamp ON"=SP+\n
 "Set minimum"=SETMIN 120\n
 "Set maximum"=SETMAX 1650\n
-"Manual calibration"=RECALIBRATE 7\n
+"Manual calibration"=RECALIBRATE 9\n
 "Enter next reading"=SETNM 
 "Go to UV end"=WVL 400\n
 "Select BLUE"=WVL 450\n

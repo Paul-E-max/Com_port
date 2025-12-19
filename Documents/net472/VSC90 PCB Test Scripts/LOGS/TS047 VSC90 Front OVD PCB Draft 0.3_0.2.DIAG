@@ -1,0 +1,18 @@
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+11:11:58 Filename:  C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\VSC90 PCB Test Scripts\LOGS\TS047 VSC90 Front OVD PCB Draft 0.3_0.2.DIAG
+11:11:58 App name:  TEST_SEQUENCER.EXE - V1.01.33
+11:11:58 Test file: C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\VSC90 PCB Test Scripts\TS047 VSC90 Front OVD PCB Draft 0.3.TEST 31/07/2024 10:45:24
+11:11:58 Operator:      PE
+11:11:58 Updated:   31.07.2024
+11:11:58 
+11:13:50 9.1: Test filter wheel driver and hall sensor feedback. - RANGE: 1 0 0
+11:13:50 Failure occurred on line 175 at 15:13:53 30.07.2024
+11:13:50 9.1: Test filter wheel driver and hall sensor feedback.
+11:13:50 Failure occurred on line 21 (TestPassOrFail) at 15:13:53 30.07.2024
+11:13:50 0.1: Close up lens river and hall sensor feedback. - RANGE: 1 0 0
+11:13:50 Failure occurred on line 203 at 15:14:01 30.07.2024
+11:13:50 0.1: Close up lens river and hall sensor feedback.
+11:13:50 Failure occurred on line 21 (TestPassOrFail) at 15:14:01 30.07.2024
+11:13:50 
+11:13:50 Finished:  C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\VSC90 PCB Test Scripts\LOGS\TS047 VSC90 Front OVD PCB Draft 0.3_0.2.DIAG
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

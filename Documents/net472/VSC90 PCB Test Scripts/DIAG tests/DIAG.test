@@ -1,0 +1,44 @@
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Filename:	DIAG.test
+// Project:		TS014
+// Author:      Foster & Freeman Ltd - Michael Dodd
+// Modified:    29.07.2024, Test instruction.
+//
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+#1: Test recording of DIAG entries for PASS or FAIL responses within a test
+Suggest you hit FAIL the first time round and PASS the next time to demonstrate the clearing of a result.
+DIAG: This is a line for diagnostics file
+PASS_FAIL:
+
+#1.2: Test recording of FP DIAG numbers
+Suggest you hit FAIL the first and second time round, then finally remove error by hitting PASS.
+DIAG: This is a line for diagnostics file
+PASS_FAIL:
+
+#2: Test JPG image within DIAG
+Hit FAIL the first time round.
+DIAG: DISPLAY: T1.JPG
+DIAG: T1.JPG is displayed below
+PASS_FAIL:
+
+#3: Test TXT file displayed by DIAG command
+Hit FAIL the first time round.
+DIAG: DISPLAY: DIAG_TEXT.txt
+DIAG: DIAG_TEXT.txt is displayed above
+PASS_FAIL:
+
+#4: Test CLEAR within DIAG
+Hit FAIL the first time round.
+DIAG: DISPLAY: T1.JPG
+DIAG: CLEAR:
+DIAG: Picture should not appear below
+PASS_FAIL:
+
+#QUIT:
+Done - thank you for trying.
+SAVE_LOG:
+
+//
+// End of file
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

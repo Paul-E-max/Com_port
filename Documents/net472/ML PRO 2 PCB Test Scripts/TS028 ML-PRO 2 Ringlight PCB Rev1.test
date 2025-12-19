@@ -1,0 +1,137 @@
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Filename:	MLPRO 2 RinglightPCB.test
+// Project:		MLPRO 2
+// Author:      Foster & Freeman Ltd - Paul Evans
+// Modified:    06.03.2024 Rev1
+//
+// Description: Tests the MLPRO 2 Ringlight PCB
+// 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+[0] force FAIL by default to avoid IMPORTANT message below.
+#1: Setup equipment:
+a. Enter operator initials.
+b. Enter serial number into the box above.
+DISPLAY: PCB 287-027.png
+CLICK_OK:
+
+#2: Setup equipment1:
+a. Set adjustable PSU output 1 to 12V ±0.1V, 1.5A ±0.1A. Switch the output off.
+b. Using TE159, connect the PSU to the ML PRO 2 Controller Test Box (TE192).
+c. Connect the PC (via USB) to the ML PRO 2 Controller Test Box (TE192).
+d. Connect the USB cable to the K5 on the ML PRO 2 Controller Test Box (TE192).
+DISPLAY: TE192Setup.jpg
+CLICK_OK:
+
+#3: Setup equipment:
+a. Connect the MLPRO 2 Test Box (TE194) to the ML PRO 2 Controller Test Box (TE192).  
+b. Using the 20-way ribbon cable connect the PCB to the TE192 Test box.
+c. Connect the LED Test Box with Web Camera (TE086) to the PC and place the PCB inside.
+d. Switch the output of the adjustable PSU on and power on the TE132 Peripheral lighting PCB Test Jig. 
+DISPLAY: 1ringlightSetup.jpg
+COMMENT: *Example image below*
+CLICK_OK:
+CONNECT: MLPRO2 
+COMMAND: MLPRO2 If#										// turn off any LEDs still on: 
+IF_NOT:
+GOTO: #2
+
+
+#4: PCB communication check
+COMMAND: MLPRO2  BENUM
+READLINE: MLPRO2  BENUM
+Returned result is = %BENUM%
+IF: %BENUM% STR_EQ RS,RS1,RS2, 							//  a correct expected Return result 
+GOTO: #4.1: 
+.
+The returned result is NOT as exected, investigate the fault and click RETRY to repeat the test.
+.
+.
+The expected result is = BL1,BL2,BR1,BR2,FL1,FL2,FR1,FR2,RS,RS1,RS2, 
+IMPORTANT: Test has FAILED                Test has FAILED                   Test has FAILED                   Test has FAILED
+COMMENT: If you want to continue fault-finding the rest of the PCB, click on ‘Skip’
+SKIP_FAIL: #4
+GOTO: #5
+
+#4.1: PCB communication check - test passed
+TEST: PASSED
+COMMENT: Test passed
+CLICK_OK:
+EXE: OpenWinCam.bat
+
+
+#5: RING LIGHT LED  = RED
+a. Check for 4 LED hot spots
+COMMAND: MLPRO2 RING 100000 650
+DELAY: 750
+PASS_FAIL: #5
+
+#6: RING LIGHT LED = BLUEGREEN
+a. Check for 4 LED hot spots
+COMMAND: MLPRO2 RING 001000 650
+DELAY: 700
+PASS_FAIL: #6
+
+#7: RING LIGHT LED = VIOLET
+a. Check for 4 LED hot spots
+COMMAND: MLPRO2 RING 000010 650
+DELAY: 700
+PASS_FAIL: #7
+
+#8: RING LIGHT LED = UV
+a. Check for 4 LED hot spots
+COMMAND: MLPRO2 RING 000001 650
+DELAY: 700
+PASS_FAIL: #8
+
+#9: RING LIGHT LED = GREEN
+a. Check for 4 LED hot spots
+COMMAND: MLPRO2 RING 010000 650
+DELAY: 700
+PASS_FAIL: #9
+
+#10: RING LIGHT LED = BLUE
+a. Check for 4 LED hot spots
+COMMAND: MLPRO2 RING 000100 650
+DELAY: 700
+PASS_FAIL: #10
+
+#11: Full load test - 4 output on at the same time 
+COMMAND: MLPRO2 RING 001111 1023
+DELAY: 1500
+COMMAND: MLPRO2 READAMPS
+READLINE: MLPRO2 READAMPS
+Returned Version is = %READAMPS%
+RANGE: %READAMPS% 950 50					// value range 900-1000
+IF:											// if value is between range then goto
+GOTO: #11.1: 
+The returned result is NOT as exected, investigate the fault and click RETRY to repeat the test.
+.
+.
+The expected result is =  greater than 10V 
+IMPORTANT: Test has FAILED                Test has FAILED                   Test has FAILED                   Test has FAILED
+COMMENT: If you want to continue fault-finding the rest of the PCB, click on ‘Skip’
+SKIP_FAIL: #11
+GOTO: #12
+
+#11.1: PCB communication check - test passed
+TEST: PASSED
+test passed
+CLICK_OK:
+
+
+#12: Test complete:
+EXE: CloseWinCam.bat
+COMMAND: MLPRO2 If#	// turn off any LEDs still on: 
+a. All tests instructions have been completed and a log file created.
+b. Click OK to finish and then power off the PSU and disconnect the PCB.
+CLICK_OK:
+
+#QUIT:
+EXE: CloseWinCam.bat
+COMMAND: MLPRO2 If#	// turn off any LEDs still on: 
+DISCONNECT: MLPRO2
+
+// End of file
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+

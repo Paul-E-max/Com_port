@@ -1,0 +1,212 @@
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Filename:	 PCB.test
+// Project:		
+// Author:      Foster & Freeman Ltd - Paul Evans
+// Modified:    
+//
+// Description: Tests the 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+[0] force FAIL by default to avoid IMPORTANT message below.
+
+#1: Enter operator initials and PCB serial number:
+a. Enter operator intials.
+b. Enter serial number into the box below.
+IMPORTANT: Observe ESD precautions for handling ESD sensitive devices.  
+DISPLAY: 284-028.png
+CLICK_OK:
+
+#2: Equipment Setup 1
+a. Using TE159 connect the PSU to the VSC90 Controller Test Box(TE209).
+b. Connect the PC (via USB) to K5 on the Test box (TE209).
+c. Connect the PC (via USB) to the TENMA Programmable PSU.
+d. Connect the PC to the LED Test Box with Web Camera (TE086).
+//DISPLAY: TE132.jpg
+CLICK_OK:
+
+
+#3: Equipment Setup 2
+a. Connect the UUT to the VSC90 Controller Test Box(TE209).
+b. Place the UUT inside the LED Test Box with Web Camera (TE086).
+c. Set the TENMA Programmable PSU power switch to on.
+CLICK_OK:
+EXE: OpenWinCam.bat
+CONNECT: TENMAPSU
+IF_NOT:
+GOTO: #3: 
+
+#4: Configure the PSU
+COMMAND: TENMAPSU OUT0
+COMMAND: TENMAPSU OCP1
+COMMAND: TENMAPSU OCPSET1:500
+COMMAND: TENMAPSU VSET1:12.00
+COMMAND: TENMAPSU ISET1:1.00
+COMMAND: TENMAPSU VSET2:0.00
+COMMAND: TENMAPSU ISET2:0.00
+COMMAND: TENMAPSU OUTCH1:1
+
+#4.1: Power on the test box.
+Press the I/O Power button on the VSC90 Controller Test Box(TE209) to turn on.
+DELAY: 10000
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned voltage is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.071 0.015 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+IF:
+GOTO: #4.2: 
+IMPORTANT: This test has failed, check the power button has been pressed, power supply, USB connection and the ftdi chip.		
+PASS_FAIL: #4.1
+GOTO: #5
+
+#4.2: Connect to the test box
+CONNECT: VSC90
+IF_NOT: 
+GOTO: #4.1:
+
+#5: setup and configure Front OVD
+COMMAND: VSC90 FOVDSHIFT=1
+COMMAND: VSC90 ResetFOVD
+// COMMAND: VSC90 ENUM
+// READLINE: VSC90 ENUM 
+// Check the expected result is a match.
+// Expected result is = SPOT,TEMP,ZOOM,EEPROM,
+// Returned result is = %ENUM%
+// [%ENUM% STR_EQ SPOT,TEMP,ZOOM,EEPROM,]// evaluates inside the [] and set true or false flag
+// SUB: TestPassOrFail // sends the outcome to flag to the subroutine for evaluation
+
+#6: Test LED 1
+COMMAND: VSC90 SetFOVD=1 500
+DELAY: 2000
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+RANGE: %PSUcurrent% 0.206 0.005 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+IMPORTANT: The returned current is =  %PSUcurrent%
+
+
+#7: Test LED 2
+COMMAND: VSC90 SetFOVD=2 800
+DELAY: 2000
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.252 0.005 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+
+#8: Test LED 3
+COMMAND: VSC90 SetFOVD=3 500
+DELAY: 2000
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.208 0.005 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+
+
+#9: Test LED 4
+COMMAND: VSC90 SetFOVD=4 800
+DELAY: 2000
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.252 0.005 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+
+
+#10: Test LED 5
+COMMAND: VSC90 SetFOVD=5 500
+DELAY: 2000
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.206 0.005 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+
+
+#11: Test LED 6
+COMMAND: VSC90 SetFOVD=6 800
+DELAY: 2000
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.253 0.005 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+
+
+#12: Test LED 7
+COMMAND: VSC90 SetFOVD=7 500
+DELAY: 2000
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.206 0.005 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+
+
+#13: Test LED 8
+COMMAND: VSC90 SetFOVD=8 800
+DELAY: 2000
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.253 0.005 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+
+
+#14: Test LED 9
+COMMAND: VSC90 SetFOVD=9 500
+DELAY: 2000
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.207 0.005 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+
+
+#15: Test LED 10
+COMMAND: VSC90 SetFOVD=10 800
+DELAY: 2000
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.252 0.005 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+
+
+#16: Test LED 11
+COMMAND: VSC90 SetFOVD=11 500
+DELAY: 2000
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned current is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.208 0.005 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+
+
+#17: Test complete
+COMMAND: VSC90 off
+IF: %FAILED% > 0
+GOTO: #Failed:
+ELSE: #Passed:
+
+#Failed: a test failed
+This PCB has failed to pass all Tests
+Check the Log file for more details on the failed test(s).
+IMPORTANT: This PCB has failed to pass all Tests
+DISPLAY: test_failed.png
+CLICK_OK:
+GOTO: #QUIT:
+
+#Passed: Test's Complete
+a. All tests instructions have been completed and a log file created.
+b. Click OK to finish and power OFF.
+DISPLAY: AllTestsPassed.png
+CLICK_OK:
+
+#QUIT:
+COMMAND: TENMAPSU VSET1:0.00
+COMMAND: TENMAPSU ISET1:0.00
+COMMAND: TENMAPSU OUT0
+EXE: CloseWinCam.bat
+// End of file
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

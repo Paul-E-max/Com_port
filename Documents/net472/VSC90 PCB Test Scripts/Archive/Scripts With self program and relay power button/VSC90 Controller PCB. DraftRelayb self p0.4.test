@@ -1,0 +1,249 @@
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Filename:	VSC90 Controller PCB.test
+// Project:		VSC90
+// Author:      Foster & Freeman Ltd - Paul Evans
+// Modified:    16-07-24
+//
+// Description: using the relay + nano for the power button.
+//using the tenma PSU for the power to the PICKit4 
+//Tests the 12V, 3.3V, I2C, EEPROM, USB, FTDI, motor and hall sensors
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+[0] force FAIL by default to avoid IMPORTANT message below.
+
+#1: Enter operator initials and PCB serial number:
+a. Enter operator intials.
+b. Enter serial number into the box above.
+IMPORTANT: Observe ESD precautions for handling ESD sensitive devices.  
+//DISPLAY: lamptrayPCB1.jpg
+//CLICK_OK:
+
+#2: Equipment Setup 1
+a. Using TE159 connect the PSU to the Test box (TE209).
+b. Connect the PC (via USB) to K5 on the Test box (TE209).
+c. Connect the PC (via USB) to the TENMA Programmable PSU.
+d. Connect the PC to the LED Test Box with Web Camera (TE086).
+//DISPLAY: TE132.jpg
+//CLICK_OK:
+
+
+#3: Equipment Setup 2
+a. Connect the UUT to the Test box (TE209).
+b. Connect the COAX PCB to the J3 on the UUT.
+c. Place the UUT inside the LED Test Box with Web Camera (TE086).
+d. Set the TENMA Programmable PSU power switch to on.
+//CLICK_OK:
+CONNECT: I2C
+COMMAND: I2C OUT RA0 0 // TURN RELAY OFF
+CONNECT: TENMAPSU
+IF_NOT:
+GOTO: #3: 
+
+#4: Configure the PSU
+COMMAND: TENMAPSU OUT0
+COMMAND: TENMAPSU OCP1
+COMMAND: TENMAPSU OCPSET1:500
+COMMAND: TENMAPSU VSET1:12.00
+COMMAND: TENMAPSU ISET1:1.00
+COMMAND: TENMAPSU VSET2:5.00
+COMMAND: TENMAPSU ISET2:0.300
+COMMAND: TENMAPSU OUTCH1:1
+COMMAND: TENMAPSU OUTCH2:0
+
+#4.1: Power on the test box.
+COMMAND: I2C OUT RA0 1 //TURN RELAY ON
+DELAY: 500
+COMMAND: I2C OUT RA0 0 // TURN RELAY OFF
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned voltage is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.060 0.015 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+IF: //true result, current is good
+GOTO: #4.2: 
+
+IMPORTANT: This test has failed, check the power button has been pressed, power supply, USB connection and the ftdi chip.		
+PASS_FAIL: #4.1:
+
+
+#4.2: Connect to the test box
+a. If error message below is diplayed, click OK to continue. 
+.
+ERROR on line 71, CONNECT_ VSC90 - Not available 
+
+DELAY: 9000 // GIVE TIME FOR THE pc AND NEW ftdi TO WAKE
+CONNECT: VSC90 // test connection to the FDTI chip
+IF_NOT: // wrong FTDI porgram
+GOTO: #4.3: // reprogram the FTDI and PIC
+GOTO: #4.6: // FTDI is correct now check the PIC is programmed correctly 
+
+
+#4.3: program the FTDI 
+EXE: ftdi_programmer_vsc90.exe
+
+#4.3.1: program the PIC
+COMMAND: TENMAPSU OUTCH2:1
+EXE: VSC90FWself_powered.bat
+DELAY: 2000
+COMMAND: TENMAPSU OUTCH2:0
+COMMAND: TENMAPSU OUTCH1:0
+DELAY: 2000
+GOTO: #4.4: // 
+
+#4.3.2: program the PIC attempt 2 
+DISCONNECT: VSC90
+COMMAND: TENMAPSU OUTCH2:1
+EXE: VSC90FWself_powered.bat
+DELAY: 2000
+COMMAND: TENMAPSU OUTCH2:0
+COMMAND: TENMAPSU OUTCH1:0
+DELAY: 2000
+
+
+#4.4:  Press the I/O Power button and turn on the test box
+COMMAND: TENMAPSU OUTCH1:1
+COMMAND: I2C OUT RA0 1 //TURN RELAY ON
+DELAY: 500
+COMMAND: I2C OUT RA0 0 // TURN RELAY OFF
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned voltage is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.060 0.015 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 				
+IF_NOT: 
+GOTO: #4.4: // user didnt press the IO in time or there is fault 
+
+#4.5: Connect again
+DELAY: 7000 // GIVE TIME FOR THE pc AND NEW ftdi TO WAKE
+CONNECT: VSC90
+IF_NOT: 
+GOTO: #4: // GO BACK TO THE START
+
+#4.6: PCB Program version check.
+COMMAND: VSC90  TYPE // Connection to the PIC chip
+READLINE: VSC90  TYPE
+Returned product is = %TYPE%
+[%TYPE% STR_EQ VSC90] // evaluates inside the [] and set true or false flag
+IF:
+GOTO: #5: // checks and programming complete goto the start of tests
+ELSE: // PIC is not programmed correctly still
+IMPORTANT: Cannot program the test box (PIC). Please check connections to the PIC Kit and PCB.
+CLICK_OK:
+GOTO: #4.3.2: // try programming the PIC again
+
+
+#5: Voltage check
+COMMAND: VSC90 ReadVolts
+READLINE: VSC90 ReadVolts
+Returned Voltage is = %ReadVolts%
+RANGE: %ReadVolts% 12000 15					
+SUB: TestPassOrFail
+
+
+#7: Tests the I2C to the EEPROM and 3.3V supply
+COMMAND: VSC90 ENUM
+READLINE: VSC90 ENUM
+Check the expected result is a match.
+Expected result is = ZOOM,EEPROM,
+Returned result is = %ENUM%
+//CLICK_OK:
+[%ENUM% STR_EQ ZOOM,EEPROM,] // evaluates inside the [] and set true or false flag
+SUB: TestPassOrFail // sends the outcome to flag to the subroutine for evaluation
+
+
+#8: USB3 and USB2 ports test
+a. Test K6 using the USB tester (TE013) and check that USB3 enumerated is displayed.
+b. Test K3 using the USB tester (TE013) and check that USB3 enumerated is displayed.
+c. Test both ports on CONN7 using the USB tester (TE013) and check that USB2 enumerated is displayed. 
+d. Test both ports on CONN6 using the USB tester (TE013) and check that USB2 enumerated is displayed. 
+PASS_FAIL: #8
+
+
+#9: Test filter wheel driver and hall sensor feedback.
+a. Connect the Motor Driver and Hall Sensor Jig (TE212) to the CONN2 and J3 on the UUT.
+b. Click OK to continue.
+IMPORTANT: Ensure that the Brown cable is fitted in the correct orientation.
+DISPLAY: Filterwheel.png
+CLICK_OK:
+COMMAND: VSC90 C1h // home it
+DELAY: 2000
+COMMAND: VSC90 C1X // read the vaule to check if the hall sensor is activated 
+READLINE: VSC90 FILTER_Hall 
+Returned result is = %FILTER_Hall%
+RANGE: %FILTER_Hall% 1 0 // test if the hall sensor is activated
+SUB: TestPassOrFail
+
+
+#9.1: Test filter wheel driver and hall sensor feedback.
+COMMAND: VSC90 CQ -450 // move it back to the hall sensor
+DELAY: 2000
+COMMAND: VSC90 C1X // read the vaule to check if the hall sensor is activated 
+READLINE: VSC90 FILTER_Hall 
+Returned result is = %FILTER_Hall%
+RANGE: %FILTER_Hall% 0 0 // test if the hall sensor is activated
+SUB: TestPassOrFail
+
+
+
+#10: Test Close up lens river and hall sensor feedback.
+a. Connect the Motor Driver and Hall Sensor Jig (TE212) to the CONN5 and J1 on the UUT.
+b. Click OK to continue.
+IMPORTANT: Ensure that the Brown cable is fitted in the correct orientation.
+DISPLAY: CloseUp.png
+CLICK_OK:
+COMMAND: VSC90 C3=1				//1 = Move into optical path 
+DELAY: 2000
+COMMAND: VSC90 C3X				// read the vaule to check if the hall sensor is activated 
+READLINE: VSC90 CLOSEUP_Hall
+Returned result is = %CLOSEUP_Hall%
+// CLICK_OK:
+RANGE: %CLOSEUP_Hall% 1 0
+SUB: TestPassOrFail
+
+
+#10.1:Test Close up lens river and hall sensor feedback.
+COMMAND: VSC90 C3h// home it
+DELAY: 2000
+COMMAND: VSC90 C3X
+READLINE: VSC90 CLOSEUP_Hall
+Returned result is = %CLOSEUP_Hall%
+// CLICK_OK:
+RANGE: %CLOSEUP_Hall% 0 0
+SUB: TestPassOrFail
+
+
+
+#11: Test complete
+COMMAND: VSC90 If#	// turn off any LEDs still on: 
+COMMAND: TENMAPSU VSET1:0.00
+COMMAND: TENMAPSU ISET1:0.00
+COMMAND: TENMAPSU OUT0
+IF: %FAILED% > 0
+GOTO: #Failed:
+ELSE: #Passed:
+
+
+#Failed: A test failed
+a. This PCB has failed to pass all Tests
+b. Check the Log file for more details on the failed test(s).
+IMPORTANT: This PCB has failed to pass all Tests
+DISPLAY: test_failed.png
+CLICK_OK:
+GOTO: #QUIT:
+
+#Passed: next test
+a. All tests instructions have been completed and a log file created.
+b. Click OK to finish.
+DISPLAY: AllTestsPassed.png
+CLICK_OK:
+
+#QUIT:
+
+COMMAND: TENMAPSU VSET1:0.00
+COMMAND: TENMAPSU ISET1:0.00
+COMMAND: TENMAPSU OUT0
+DISCONNECT: TENMAPSU
+DISCONNECT: IC2
+COMMAND: VSC90 C1Z
+COMMAND: VSC90 C3Z
+DISCONNECT: VSC90
+// End of file
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

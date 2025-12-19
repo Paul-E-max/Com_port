@@ -1,0 +1,57 @@
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Filename:	
+// Project:		
+// Author:      Foster & Freeman Ltd - Paul Evans
+// Modified:    5.1.2024
+//
+// Description: This script shows how to read a device and evaulate the return automatically by definng the correct output
+//
+// 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+[0] force FAIL by default to avoid IMPORTANT message below.
+#1: Connect to equipment
+CLICK_OK:
+CONNECT: MLPRO2 
+COMMAND: MLPRO2 If#	// turn off any LEDs still on: 
+IF_NOT:
+GOTO: #1
+
+
+#2: READAMPS
+COMMAND: MLPRO2 READAMPS
+CLICK_OK:
+READLINE: MLPRO2 READAMPS
+Returned Version is = %READAMPS%
+CLICK_OK:
+
+#3: Full load test - 4 output on at the same time 
+COMMAND: MLPRO2 RING 001111 1023
+CLICK_OK:
+COMMAND: MLPRO2 READAMPS
+READLINE: MLPRO2 READAMPS
+Returned Version is = %READAMPS%
+CLICK_OK:
+RANGE: %READAMPS% 950 50					// PASS if result is between 900 and 950
+IF:
+GOTO: #3.1: 
+The returned result is NOT as exected, investigate the fault and click RETRY to repeat the test.
+.
+.
+The expected result is not as expected.
+IMPORTANT: Test has FAILED                Test has FAILED                   Test has FAILED                   Test has FAILED
+COMMENT: If you want to continue fault-finding the rest of the PCB, click on ‘Skip’
+SKIP_FAIL: #3
+GOTO: #4
+
+
+#4: Test complete:
+COMMAND: MLPRO2 If#	// turn off any LEDs still on: 
+a. All tests instructions have been completed and a log file created.
+b. Click OK to finish and then power off the PSU and disconnect the PCB.
+CLICK_OK:
+
+#QUIT:
+COMMAND: MLPRO2 If#	// turn off any LEDs still on: 
+DISCONNECT: MLPRO2
+SAVE_LOG:

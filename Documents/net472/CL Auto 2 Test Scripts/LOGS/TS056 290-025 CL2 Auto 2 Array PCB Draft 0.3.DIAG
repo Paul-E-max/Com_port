@@ -1,0 +1,49 @@
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+13:42:35 Filename:  C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\CL Auto 2 Test Scripts\LOGS\TS056 290-025 CL2 Auto 2 Array PCB Draft 0.3.DIAG
+13:42:35 App name:  TEST_SEQUENCER.EXE - V1.01.41
+13:42:35 Test file: C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\CL Auto 2 Test Scripts\TS056 290-025 CL2 Auto 2 Array PCB Draft 0.3.TEST 19/09/2025 14:28:51
+13:42:35 Updated:   23.09.2025
+13:42:35 
+13:43:25 0.1: IC11 for temp and read AIN4 TH3 MSB & LSB for temperature: - RANGE: 3.301 2.50 0.15                                          
+13:43:25 Failure occurred on line 59 at 13:43:25 23.09.2025
+13:43:25 0.1: IC11 for temp and read AIN4 TH3 MSB & LSB for temperature:                                                                   
+13:43:25 Failure occurred on line 21 (TestPassOrFailCL2) at 13:43:25 23.09.2025
+13:43:55 0.1: IC11 for temp and read AIN5 TH1 MSB & LSB for temperature: - RANGE: 3.301 2.50 0.15                                          
+13:43:55 Failure occurred on line 75 at 13:43:55 23.09.2025
+13:43:55 0.1: IC11 for temp and read AIN5 TH1 MSB & LSB for temperature:                                                                   
+13:43:55 Failure occurred on line 21 (TestPassOrFailCL2) at 13:43:55 23.09.2025
+13:44:00 0.1: IC11 for temp and read AIN6 TH2 MSB & LSB for temperature: - RANGE: 3.301 2.50 0.15                                          
+13:44:00 Failure occurred on line 90 at 13:44:00 23.09.2025
+13:44:00 0.1: IC11 for temp and read AIN6 TH2 MSB & LSB for temperature:                                                                   
+13:44:00 Failure occurred on line 21 (TestPassOrFailCL2) at 13:44:00 23.09.2025
+13:44:10 9: AmberAD2. - RANGE: 16.00 10.73 0.05                                                                                          
+13:44:10 Failure occurred on line 123 at 13:44:10 23.09.2025
+13:44:10 9: AmberAD2.                                                                                                                    
+13:44:10 Failure occurred on line 21 (TestPassOrFailCL2) at 13:44:10 23.09.2025
+13:44:16 10: GreenAD2 - RANGE: 16.00 12.50 0.05                                                                                           
+13:44:16 Failure occurred on line 132 at 13:44:16 23.09.2025
+13:44:16 10: GreenAD2                                                                                                                     
+13:44:16 Failure occurred on line 21 (TestPassOrFailCL2) at 13:44:16 23.09.2025
+13:44:21 11: Blue GreenAD2 - RANGE: 16.00 13.00 0.05                                                                                      
+13:44:21 Failure occurred on line 141 at 13:44:21 23.09.2025
+13:44:21 11: Blue GreenAD2                                                                                                                
+13:44:21 Failure occurred on line 21 (TestPassOrFailCL2) at 13:44:21 23.09.2025
+13:44:27 12: UVAD2 - RANGE: 16.00 15.10 0.05                                                                                              
+13:44:27 Failure occurred on line 150 at 13:44:27 23.09.2025
+13:44:27 12: UVAD2                                                                                                                        
+13:44:27 Failure occurred on line 21 (TestPassOrFailCL2) at 13:44:27 23.09.2025
+13:44:32 13: VioletAD2 - RANGE: 16.00 13.89 0.05                                                                                          
+13:44:32 Failure occurred on line 159 at 13:44:32 23.09.2025
+13:44:32 13: VioletAD2                                                                                                                    
+13:44:32 Failure occurred on line 21 (TestPassOrFailCL2) at 13:44:32 23.09.2025
+13:44:38 14: BlueAD2 - RANGE: 16.00 12.95 0.05                                                                                            
+13:44:38 Failure occurred on line 168 at 13:44:38 23.09.2025
+13:44:38 14: BlueAD2                                                                                                                      
+13:44:38 Failure occurred on line 21 (TestPassOrFailCL2) at 13:44:38 23.09.2025
+13:44:44 15: RedAD2 - RANGE: 16.00 10.90 0.05                                                                                             
+13:44:44 Failure occurred on line 177 at 13:44:44 23.09.2025
+13:44:44 15: RedAD2                                                                                                                       
+13:44:44 Failure occurred on line 21 (TestPassOrFailCL2) at 13:44:44 23.09.2025
+13:44:50 
+13:44:50 Finished:  C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\CL Auto 2 Test Scripts\LOGS\TS056 290-025 CL2 Auto 2 Array PCB Draft 0.3.DIAG
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

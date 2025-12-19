@@ -413,6 +413,9 @@ namespace COMport
                         {
                             if (TlpmDevice.Connect(0)) // Connect to first scanned device
                             {
+                                // Configure device for proper readings
+                                TlpmDevice.ConfigureSettings(635, 10, true); // 635nm, avg=10, auto-range
+                                //
                                 connectedTo(true);
                                 string id = TlpmDevice.GetIdentification();
                                 this.Text += " ---> " + id;

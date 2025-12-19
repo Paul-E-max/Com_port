@@ -1,0 +1,17 @@
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Filename:	REENERANT.test
+// Project:		MVC FFLEX
+// Author:      Foster & Freeman Ltd - Michael Dodd
+// Modified:    04.01.2023, Test instruction.
+//
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+#REENERANT.1: calls itself!
+SET: DONE = [%DONE% + 1]
+This is in call %DONE% to itself (10th will fail) - click OK to continue
+CLICK_OK:
+SUB: REENTERANT
+
+//
+// Note that there is an implied RETURN at the end of a file . . .
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

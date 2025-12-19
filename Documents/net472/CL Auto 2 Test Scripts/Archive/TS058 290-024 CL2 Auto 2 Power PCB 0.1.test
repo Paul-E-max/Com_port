@@ -1,0 +1,129 @@
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Filename:	TS058 290-024 CL Auto 2 Power PCB.test
+// Project:		CL Auto 2
+// Author:      Foster & Freeman Ltd - Paul Evans
+// Modified:    10/09/25
+//
+// Description: 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+{0} force FAIL by default to avoid IMPORTANT message below.
+#1: Equipment Setup 1
+a. Connect the Bus Priate and PSU to the test PC.
+b. Connect the Bus Priate to TEXX test jig.
+c. Connect the TEXX power lead to the DC jack on the PCB.
+d. Connect the Red (TEXXX positive)lead to the + of channel 1 on the PSU.
+e. Connect the Black (TEXXX negitive)lead to the - of channel 1 on the PSU.
+f. Set the TENMA Programmable PSU power switch to on.
+CLICK_OK:
+CONNECT: TENMAPSU
+IF_NOT:
+GOTO: #1: 
+
+#2: Equipment Setup 2 & Configure the PSU
+a. Connect the UUT to the test battery.
+
+COMMAND: TENMAPSU OUT0
+COMMAND: TENMAPSU OCP1
+COMMAND: TENMAPSU OCPSET1:1.750
+COMMAND: TENMAPSU VSET1:15.00
+COMMAND: TENMAPSU ISET1:1.500
+CLICK_OK:
+
+
+#3: Connect and Configure the Bus Pirate
+CONNECT: BUS_PIRATE
+IF_NOT:
+GOTO: #3:
+COMMAND: BUS_PIRATE m4
+COMMAND: BUS_PIRATE 3
+COMMAND: BUS_PIRATE W // sets the power rail to on, and drives a voltage to pin 5 C_PWR_ON
+//COMMAND: BUS_PIRATE P
+
+#4: Press the power on button
+On the PCB, press the power on button.
+Check the battery voltage is showing on the voltage display ?
+CLICK_OK:
+
+#7: Check charging circuit - DC_PRESENT
+Check the charging LED is showing
+Check the voltage display is showing the PSU (DC) voltage 14.9-15V.
+COMMAND: TENMAPSU OUTCH1:1
+PASS_FAIL:
+
+#7.1: Check not charging circuit - DC_PRESENT
+COMMAND: BUS_PIRATE @
+READLINE: BUS_PIRATE AUX
+Expected result is = I2C>@AUX INPUT/HI-Z, READ: 0
+************************
+The returned current is =  %AUX%
+************************
+PASS_FAIL:
+
+#8: Check charging circuit -Not Charging goes low
+COMMAND: BUS_PIRATE d
+READLINE: BUS_PIRATE ADC
+Check that the returned Voltage is below 1V.
+************************
+The returned current is =  %ADC%
+************************
+PASS_FAIL:
+
+
+
+#9: Check the power switching 
+COMMAND: TENMAPSU OUT0
+Check the battery voltage is now showing on the voltage display.
+PASS_FAIL:
+
+#10: Check not charging circuit - DC_PRESENT
+COMMAND: BUS_PIRATE @
+READLINE: BUS_PIRATE AUX
+Expected result is = I2C>@AUX INPUT/HI-Z, READ: 1
+************************
+The returned current is =  %AUX%
+************************
+PASS_FAIL:
+
+#11: Check not charging circuit -Not Charging goes high
+COMMAND: BUS_PIRATE d
+READLINE: BUS_PIRATE ADC
+Check that the value is between: 2.30-2.40V
+************************
+The returned current is =  %ADC%
+************************
+PASS_FAIL:
+
+#12: Press and hold for ten seconds
+Check the voltage display turns off. 
+PASS_FAIL:
+
+#20: Test complete
+IF: %FAILED% > 0
+GOTO: #Failed:
+ELSE: #Passed:
+
+#Failed: A test failed
+a. This PCB has failed to pass all Tests
+b. Check the Log file for more details on the failed test(s).
+IMPORTANT: This PCB has failed to pass all Tests
+//DISPLAY: test_failed.png
+CLICK_OK:
+GOTO: #QUIT:
+
+#Passed: Test's Complete
+a. All tests instructions have been completed and a log file created.
+b. Click OK to finish and power OFF.
+//DISPLAY: AllTestsPassed.png
+CLICK_OK:
+
+#QUIT:
+COMMAND: TENMAPSU VSET1:0.00
+COMMAND: TENMAPSU ISET1:0.00
+COMMAND: TENMAPSU VSET2:0.00
+COMMAND: TENMAPSU ISET2:0.00
+COMMAND: TENMAPSU OUT0
+COMMAND: BUS_PIRATE w
+
+// End of file
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

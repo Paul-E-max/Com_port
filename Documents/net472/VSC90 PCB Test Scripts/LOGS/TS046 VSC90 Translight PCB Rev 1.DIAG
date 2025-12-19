@@ -1,0 +1,13 @@
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+10:52:29 Filename:  C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\VSC90 PCB Test Scripts\LOGS\TS046 VSC90 Translight PCB Rev 1.DIAG
+10:52:29 App name:  TEST_SEQUENCER.EXE - V1.01.35
+10:52:29 Test file: C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\VSC90 PCB Test Scripts\TS046 VSC90 Translight PCB Rev 1.TEST 29/08/2024 10:05:40
+10:52:29 Updated:   29.08.2024
+10:52:29 
+10:57:20 5: IR 850/860NM LEDs test: - RANGE: 0.059 0.600 0.015                                                                           
+10:57:20 Failure occurred on line 147 at 10:57:20 29.08.2024
+10:57:20 0.1:                                                                                                                                
+10:57:20 Failure occurred on line 21 (TestPassOrFail) at 10:57:20 29.08.2024
+10:57:26 
+10:57:26 Finished:  C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\VSC90 PCB Test Scripts\LOGS\TS046 VSC90 Translight PCB Rev 1.DIAG
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -1,0 +1,19 @@
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+09:04:37 Filename:  C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\VSC90 PCB Test Scripts\with relay for power button and relay for pickit\LOGS\TS047 VSC90 Front OVD PCB Draft 0.3_111.DIAG
+09:04:37 App name:  TEST_SEQUENCER.EXE - V1.01.33
+09:04:37 Test file: C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\VSC90 PCB Test Scripts\with relay for power button and relay for pickit\TS047 VSC90 Front OVD PCB Draft 0.3.TEST 30/07/2024 13:26:39
+09:04:37 Updated:   31.07.2024
+09:04:37 
+09:07:20 7: Tests the I2C to the EEPROM and 3.3V supply
+09:07:20 Failure occurred on line 21 (TestPassOrFail) at 15:13:34 30.07.2024
+09:07:20 9.1: Test filter wheel driver and hall sensor feedback. - RANGE: 1 0 0
+09:07:20 Failure occurred on line 175 at 15:13:53 30.07.2024
+09:07:20 9.1: Test filter wheel driver and hall sensor feedback.
+09:07:20 Failure occurred on line 21 (TestPassOrFail) at 15:13:53 30.07.2024
+09:07:20 0.1: Close up lens river and hall sensor feedback. - RANGE: 1 0 0
+09:07:20 Failure occurred on line 203 at 15:14:01 30.07.2024
+09:07:20 0.1: Close up lens river and hall sensor feedback.
+09:07:20 Failure occurred on line 21 (TestPassOrFail) at 15:14:01 30.07.2024
+09:07:20 
+09:07:20 Finished:  C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\VSC90 PCB Test Scripts\with relay for power button and relay for pickit\LOGS\TS047 VSC90 Front OVD PCB Draft 0.3_111.DIAG
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

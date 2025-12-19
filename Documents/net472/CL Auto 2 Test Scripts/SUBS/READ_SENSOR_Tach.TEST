@@ -1,0 +1,21 @@
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Filename:	READ_SENSOR_Tach.TEST
+// Project:		Reading of CLA 2 driver current sensor via Bus Pirate.
+// Author:      Foster & Freeman Ltd - Paul Evans
+// Modified:    09.12.2025 - Initial tests.
+//
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Reading the Bus Pirate . . .
+COMMAND: BUS_PIRATE { 0x5E 0x3E { 0x5F r:2  }// read the imu 
+READLINE: BUS_PIRATE WASTE
+READLINE: BUS_PIRATE WASTE
+READLINE: BUS_PIRATE WASTE
+READLINE: BUS_PIRATE WASTE
+READLINE: BUS_PIRATE WASTE
+READ: BUS_PIRATE WASTE RS_MSB RS_LSB
+SET: RESULT = [%RS_MSB%]
+//SET: RESULT = [%RS_LSB%]
+//
+// End of file
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

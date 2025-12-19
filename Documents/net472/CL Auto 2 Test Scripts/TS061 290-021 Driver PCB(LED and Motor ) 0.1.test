@@ -1,0 +1,248 @@
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Filename:	TS058 290-021 Driver PCB.test
+// Project:		CL Auto 2
+// Author:      Foster & Freeman Ltd - Paul Evans
+// Modified:    10/09/25
+//
+// Description: 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+{0} force FAIL by default to avoid IMPORTANT message below.
+#1: Equipment Setup 1
+a. Connect the 3v3 pull up and connect the GND to the Bus Priate cable.
+b. Connect the XXX lead to + of channel 1 on the PSU.
+c. Connect the XXXX lead to + of channel 2 on the PSU.
+d. Connect the VPWR lead to + of channel 3 on the PSU.
+e. Connect the GND's of channel 1, 2 & 3 together.
+e. Set the TENMA Programmable PSU power switch to on.
+//CLICK_OK:
+CONNECT: TENMAPSU
+IF_NOT:
+GOTO: #1: 
+
+#2: Equipment Setup 2 & Configure the PSU
+a. Connect the fan and motor).
+b. fit the PCB to the Test bed.
+c. Enter the PCB serial number.
+COMMAND:  TENMAPSU OUT0
+COMMAND: TENMAPSU OCP1
+COMMAND: TENMAPSU OCPSET1:1.000
+COMMAND: TENMAPSU OCPSET2:0.000
+COMMAND: TENMAPSU VSET1:12.00
+COMMAND: TENMAPSU ISET1:1.000
+COMMAND: TENMAPSU VSET2:0.00
+COMMAND: TENMAPSU ISET2:0.000
+//CLICK_OK:
+
+#3: Connect and Configure the Bus Pirate
+CONNECT: BUS_PIRATE
+IF_NOT:
+GOTO: #3:
+COMMAND: BUS_PIRATE m4
+COMMAND: BUS_PIRATE 3
+COMMAND: BUS_PIRATE W // sets the power rail to on, and drives a voltage to pin 5 C_PWR_ON
+COMMAND: BUS_PIRATE P
+
+#4: Power supply enabled.
+COMMAND: TENMAPSU OUTCH1:1
+CLICK_OK:
+
+#5: Driver config
+COMMAND: BUS_PIRATE {0x48 0x0A 0x80} {0x48 0x00 0xA3} {0x48 0x10 0x00} {0x48 0x1A 0x06} // configure the GPIO with without Array
+COMMAND: BUS_PIRATE {0x20 0x3F 0x34 0x00} // set the DAC to minimun
+COMMAND: BUS_PIRATE {0x48 0x1A 0x04} //Enable Driver 1
+CLICK_OK:
+
+#6: Test Driver 1 and test current measurement IC
+COMMAND: BUS_PIRATE { 0x82 0x05 0x02 0xF1 } //Driver1CurrentConfig
+SUB: READ_SENSOR_CurrentDriver1
+The returned current is = %RESULT% 
+RANGE: %RESULT% 2 0 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 
+SUB: TestPassOrFailCL2
+IF_NOT:
+IMPORTANT: This PCB is not reading  any current draw
+CLICK_OK:
+
+#7: Test Driver 2 and test current measurement IC
+COMMAND: BUS_PIRATE { 0x48 0x1A 0x06 }//Disable the drivers
+COMMAND: BUS_PIRATE { 0x48 0x1A 0x02 } //Enable driver 2
+COMMAND: BUS_PIRATE { 0x80 0x05 0x02 0xF1 } //Driver2CurrentConfig
+SUB: READ_SENSOR_CurrentDriver2
+The returned current is = %RESULT% 
+RANGE: %RESULT% 2 0 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 
+SUB: TestPassOrFailCL2
+IF_NOT:
+IMPORTANT: This PCB is not reading  any current draw
+CLICK_OK:
+COMMAND: BUS_PIRATE { 0x48 0x1A 0x06 } //Disable the drivers
+COMMAND: BUS_PIRATE m4
+COMMAND: BUS_PIRATE 3
+COMMAND: BUS_PIRATE W // sets the power rail to on, and drives a voltage to pin 5 C_PWR_ON
+COMMAND: BUS_PIRATE P
+
+#8: Arm Test White
+// TP 32 and 23 must be pull to GND for the LED output to be enable.
+COMMAND: BUS_PIRATE {0x44 0x00 0x11} //Configure the arm GPIOs 
+//COMMAND: BUS_PIRATE {0x48 0x0A 0x80} {0x48 0x00 0xA3} {0x48 0x10 0x00} {0x48 0x1A 0x06} // configure the GPIO with without Array
+//COMMAND: BUS_PIRATE {0x20 0x3F 0x34 0x00} // set the DAC to minimun
+COMMAND: BUS_PIRATE {0x44 0x0A 0xDD} // set the white LED to On
+COMMAND: BUS_PIRATE {0x48 0x1A 0x00} // enable the Drivers
+SUB: READ_SENSOR_CurrentDriver1
+The returned current is = %RESULT% 
+RANGE: %RESULT% 2 0 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 
+SUB: TestPassOrFailCL2
+IF_NOT:
+IMPORTANT: This PCB is not reading  any current draw
+DELAY: 3000
+COMMAND: BUS_PIRATE {0x48 0x1A 0x06}
+PASS_FAIL:
+
+
+#9: Arm test IR
+// TP 32 and 23 must be pull to GND for the LED output to be enable.
+COMMAND: BUS_PIRATE {0x44 0x00 0x11} //Configure the arm GPIOs 
+//COMMAND: BUS_PIRATE {0x48 0x0A 0x80} {0x48 0x00 0xA3} {0x48 0x10 0x00} {0x48 0x1A 0x06} // configure the GPIO with without Array
+//COMMAND: BUS_PIRATE {0x20 0x3F 0x34 0x00} // set the DAC to minimun
+COMMAND: BUS_PIRATE {0x44 0x0A 0xBB} // set the IR LED to On
+COMMAND: BUS_PIRATE {0x48 0x1A 0x00} // enable the Drivers
+SUB: READ_SENSOR_CurrentDriver1
+The returned current is = %RESULT% 
+RANGE: %RESULT% 2 0 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 
+SUB: TestPassOrFailCL2
+IF_NOT:
+IMPORTANT: This PCB is not reading  any current draw
+DELAY: 3000
+COMMAND: BUS_PIRATE {0x48 0x1A 0x06}
+PASS_FAIL:
+
+
+
+#10: Arm test UV
+// TP 32 and 23 must be pull to GND for the LED output to be enable.
+COMMAND: BUS_PIRATE {0x44 0x00 0x11} //Configure the arm GPIOs 
+//COMMAND: BUS_PIRATE {0x48 0x0A 0x80} {0x48 0x00 0xA3} {0x48 0x10 0x00} {0x48 0x1A 0x06} // configure the GPIO with without Array
+//COMMAND: BUS_PIRATE {0x20 0x3F 0x34 0x00} // set the DAC to minimun
+COMMAND: BUS_PIRATE {0x44 0x0A 0x77} // set the UV LED to On
+COMMAND: BUS_PIRATE {0x48 0x1A 0x00} // enable the Drivers
+SUB: READ_SENSOR_CurrentDriver1
+The returned current is = %RESULT% 
+RANGE: %RESULT% 2 0 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 
+SUB: TestPassOrFailCL2
+IF_NOT:
+IMPORTANT: This PCB is not reading  any current draw
+DELAY: 3000
+COMMAND: BUS_PIRATE {0x48 0x1A 0x06}
+PASS_FAIL:
+
+#11: Motor test
+Motor is moving?
+COMMAND: BUS_PIRATE { 0x48 0x00 0x00 0xBF } //Configure the GPIO, Sets Port A (Motor) and GPB6 (Wake) to Output.
+COMMAND: BUS_PIRATE { 0x48 0x12 0x01 0x40 } //set the states, GPA0-tp14-tp9 High (Enable), GPA1-tp15 Low (Dir), GPB6 High (Wake).
+COMMAND: BUS_PIRATE { 0x48 0x12 0x03 }// set the direction, Sets GPA1 High (Reverse) while keeping GPA0 (Enable) High.
+COMMAND: BUS_PIRATE g // using the BUS Aux pin to PWM the stepper driver
+COMMAND: BUS_PIRATE 1
+COMMAND: BUS_PIRATE 50
+CLICK_OK:
+Motor changed direction? 
+COMMAND: BUS_PIRATE {0x48 0x12 0x01 }// set the direction
+CLICK_OK:
+COMMAND: BUS_PIRATE g
+COMMAND: BUS_PIRATE { 0x48 0x12 0x00 } //Sets GPA0 Low (Disable Driver).
+
+#12: Fan test
+COMMAND: BUS_PIRATE { 0x48 0x00 0xBF } { 0x48 0x12 0x40 } //Configure the GPIO
+Check fan is at full power
+DELAY: 3000
+PASS_FAIL:
+COMMAND: BUS_PIRATE { 0x5E 0x30 0x80}
+check fan speed decreases 
+CLICK_OK:
+SUB: READ_SENSOR_Tach
+The returned current is = %RESULT% 
+RANGE: %RESULT% 55 5 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 
+SUB: TestPassOrFailCL2
+IF_NOT:
+IMPORTANT: This PCB is not reading the data from the fan-Tach
+CLICK_OK:
+COMMAND: BUS_PIRATE { 0x48 0x12 0x00 } Sets GPA0 Low (Disable Driver).
+Check fan is off.
+PASS_FAIL:
+ 
+
+#13: Cam PSU test
+//TP34
+COMMAND: BUS_PIRATE { 0x48 0x00 0xBF } //Configure the GPA4 to Output
+COMMAND: BUS_PIRATE { 0x48 0x00 0xBF } //Set GPA4 to High
+check the LED turned on
+PASS_FAIL:
+
+
+#11: IMU Sensor
+COMMAND: BUS_PIRATE { 0xD6 0x10 0x60 }// wake up the imu 
+//COMMAND: BUS_PIRATE { 0xD6 0x28 [ 0xD7 r:6 }// read the imu 
+SUB: READ_SENSOR_IMU
+The returned current is = %RESULT% 
+RANGE: %RESULT% 60 5 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 
+SUB: TestPassOrFailCL2
+IF_NOT:
+IMPORTANT: This PCB is not reading the data from the IMU
+CLICK_OK:
+move the PCB
+CLICK_OK:
+SUB: READ_SENSOR_IMU
+The returned current is = %RESULT% 
+check the result changes
+PASS_FAIL:
+
+
+#12: Hall Sensor test
+COMMAND: BUS_PIRATE D //Read the voltage on the hall Sensor
+READLINE: BUS_PIRATE Voltage
+Check the returned Voltage is 3.3V 
+Returned = %Voltage% 
+PASS_FAIL:
+
+#13: Hall Sensor activation
+Move the magnet arm over the hall Sensor.
+CLICK_OK:
+Check the Voltage is below 0.5V
+READLINE: BUS_PIRATE Voltage
+Returned = %Voltage% 
+PASS_FAIL:
+
+
+#14: Test complete
+IF: %FAILED% > 0
+GOTO: #Failed:
+ELSE: #Passed:
+
+#Failed: A test failed
+a. This PCB has failed to pass all Tests
+b. Check the Log file for more details on the failed test(s).
+IMPORTANT: This PCB has failed to pass all Tests
+//DISPLAY: test_failed.png
+CLICK_OK:
+GOTO: #QUIT:
+
+#Passed: Test's Complete
+a. All tests instructions have been completed and a log file created.
+b. Click OK to finish and power OFF.
+//DISPLAY: AllTestsPassed.png
+CLICK_OK:
+
+#QUIT:
+COMMAND: TENMAPSU VSET1:0.00
+COMMAND: TENMAPSU ISET1:0.00
+COMMAND: TENMAPSU VSET2:0.00
+COMMAND: TENMAPSU ISET2:0.00
+COMMAND: TENMAPSU OUT0
+COMMAND: BUS_PIRATE #
+//EXE: CloseWinCam.bat
+//PASS_FAIL: #5:
+// COMMAND: TENMAPSU IOUT1?
+// READLINE: TENMAPSU PSUcurrent
+// The returned current is =  %PSUcurrent%
+// RANGE: %PSUcurrent% 0.585 0.005 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+// SUB: TestPassOrFail
+// End of file
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

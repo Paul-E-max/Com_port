@@ -1,0 +1,102 @@
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Filename:	
+// Project:		
+// Author:      Foster & Freeman Ltd - Paul Evans
+// Modified:    5.1.2024
+//
+// Description: This script shows how to read a device and evaulate the return automatically by definng the correct output
+//
+// 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+[0] force FAIL by default to avoid IMPORTANT message below.
+#1: Connect to equipment
+CLICK_OK:
+CONNECT: MLPRO2 
+COMMAND: MLPRO2 If#	// turn off any LEDs still on: 
+IF_NOT:
+GOTO: #1
+
+
+#2: PCB communication check
+COMMAND: MLPRO2  BENUM
+READLINE: MLPRO2  BENUM 
+Returned result is = %BENUM%
+//IF: %BENUM% STR_EQ BL1,BL2,BR1,BR2,FL1,FL2,FR1,FR2,RS,RS1,RS2, //  a correct expected Return result 
+
+// this will cause a fail//
+IF: %BENUM% STR_EQ BL1,BL2,BR1,BR2,FL1,FL2,FR1,FR2,RS,RS1,RS2,?
+GOTO: #2.1: // if line 30 and 31 results match goto next test
+/
+The returned result is NOT as exected, investigate the fault and click RETRY to repeat the test.
+/
+/
+The expected result is = BL1,BL2,BR1,BR2,FL1,FL2,FR1,FR2,RS,RS1,RS2, 
+IMPORTANT: Test has FAILED                Test has FAILED                   Test has FAILED                   Test has FAILED
+COMMENT: If you want to continue fault-finding the rest of the PCB, click on ‘Skip’
+SKIP_FAIL: #2
+GOTO: #3
+
+#2.1: PCB communication check - test passed
+TEST: PASSED
+test passed
+CLICK_OK:
+
+
+
+
+#3: PCB Program version check
+COMMAND: MLPRO2  BUILD
+READLINE: MLPRO2  BUILD
+Check the Returned result is current version as per TD037 PCB Programming Data Register.
+.
+..
+...
+
+Returned Version is = %BUILD%
+ELSE:
+Bad result . . . no communication
+PASS_FAIL: #3
+
+
+
+#4: READVOLTS check
+COMMAND: MLPRO2  READVOLTS 
+READLINE: MLPRO2  READVOLTS 
+Returned Version is = %READVOLTS%
+IF: %READVOLTS% >= 12000
+// this will cause a fail//
+//IF: %READVOLTS% <= 12000
+
+GOTO: #4.1: // if line 30 and 31 results match goto next test
+/
+The returned result is NOT as exected, investigate the fault and click RETRY to repeat the test.
+/
+/
+The expected result is =  greater than 12V 
+IMPORTANT: Test has FAILED                Test has FAILED                   Test has FAILED                   Test has FAILED
+COMMENT: If you want to continue fault-finding the rest of the PCB, click on ‘Skip’
+SKIP_FAIL: #4
+GOTO: #5
+
+#4.1: PCB communication check - test passed
+TEST: PASSED
+test passed
+CLICK_OK:
+
+
+#5: Test complete
+COMMAND: MLPRO2 If#	// turn off any LEDs still on: 
+a. All tests instructions have been completed and a log file created.
+b. Click OK to finish and then power off the PSU and disconnect the PCB.
+CLICK_OK:
+
+#QUIT:
+SAVE_LOG:
+COMMAND: MLPRO2 If#	// turn off any LEDs still on: 
+DISCONNECT: MLPRO2
+// turn off any LEDs still on: 
+
+// End of file
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+

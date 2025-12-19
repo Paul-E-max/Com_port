@@ -1,0 +1,210 @@
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Filename:	 AS LED Driver PCB.test
+// Project:		VSC80,800,900,90
+// Author:      Foster & Freeman Ltd - Paul Evans
+// Modified:    16/07/24
+//
+// Description: Tests the Driver with a constance resistance using the TEMMA Programmable load.
+// the PCB Dept PSU is limited tp 3A so the code has been ajusted to work within this limit.
+// 15 LEDS per bank = 37.5V, CR = 11.20ohms, Current is approx 1A ( PCB to work upto 1A)
+//
+// * Steps 3 to 5 are steup for the test box itself*
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+[0] force FAIL by default to avoid IMPORTANT message below.
+#1: Enter operator initials and PCB serial number:
+a. Enter operator intials.
+b. Enter serial number into the box below.
+IMPORTANT: Observe ESD precautions for handling ESD sensitive devices. 
+DISPLAY: 260-038-CP-00.png
+CLICK_OK: 
+
+
+#2: Equipment Setup 1
+a. Connect the PSU to the VSC90 Controller Test Box(TE209).
+b. Connect the PC (via USB) to K5 on the VSC90 Controller Test Box(TE209).
+c. Connect the PC (via USB) to the TENMA Programmable Load.
+d. Connect the PC (via USB) to the TENMA Programmable PSU.
+DISPLAY: ASsetup.png
+COMMENT: *Example image below*
+CLICK_OK:
+
+#3: Equipment Setup 2
+a. Connect a 20 way ribbon cable to the UUT.   
+b. Connect the load lead(TE208) to the TENMA Programmable Load. 
+c. Set the TENMA Programmable Load power switch to on.
+d. Set the TENMA Programmable PSU power switch to on.
+CLICK_OK:
+CONNECT: I2C
+COMMAND: I2C OUT RA0 0 // TURN RELAY OFF
+CONNECT: TENMAPSU
+IF_NOT:
+GOTO: #3: 
+
+#4: Configure the PSU
+COMMAND: TENMAPSU OUT0
+COMMAND: TENMAPSU OCP1
+COMMAND: TENMAPSU OCPSET1:500
+COMMAND: TENMAPSU VSET1:12.00
+COMMAND: TENMAPSU ISET1:1.140
+COMMAND: TENMAPSU VSET2:5.00
+COMMAND: TENMAPSU ISET2:0.300
+COMMAND: TENMAPSU OUTCH1:1
+COMMAND: TENMAPSU OUTCH2:0
+
+#4.1: Power on the test box.
+COMMAND: I2C OUT RA0 1 //TURN RELAY ON
+DELAY: 500
+COMMAND: I2C OUT RA0 0 // TURN RELAY OFF
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned voltage is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.060 0.015 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+IF: //true result, current is good
+GOTO: #4.2: 
+
+IMPORTANT: This test has failed, check the power button has been pressed, power supply, USB connection and the ftdi chip.		
+PASS_FAIL: #4.1:
+
+
+#4.2: Connect to the test box
+IF, ERROR on line 65, CONNECT_ VSC90 - Not available message is displayed
+Click OK
+DELAY: 7000 // GIVE TIME FOR THE pc AND NEW ftdi TO WAKE
+CONNECT: VSC90 // test connection to the FDTI chip
+IF_NOT: // wrong FTDI porgram
+GOTO: #4.3: // reprogram the FTDI and PIC
+GOTO: #4.6: // FTDI is correct now check the PIC is programmed correctly 
+
+
+#4.3: program the FTDI 
+EXE: ftdi_programmer_vsc90.exe
+
+#4.3.1: program the PIC
+COMMAND: TENMAPSU OUTCH2:1
+EXE: VSC90FWself_powered.bat
+DELAY: 2000
+COMMAND: TENMAPSU OUTCH2:0
+COMMAND: TENMAPSU OUTCH1:0
+DELAY: 2000
+GOTO: #4.4: // 
+
+#4.3.2: program the PIC attempt 2 
+DISCONNECT: VSC90
+COMMAND: TENMAPSU OUTCH2:1
+EXE: VSC90FWself_powered.bat
+DELAY: 2000
+COMMAND: TENMAPSU OUTCH2:0
+COMMAND: TENMAPSU OUTCH1:0
+DELAY: 2000
+
+
+#4.4:  Press the I/O Power button and turn on the test box
+COMMAND: TENMAPSU OUTCH1:1
+COMMAND: I2C OUT RA0 1 //TURN RELAY ON
+DELAY: 500
+COMMAND: I2C OUT RA0 0 // TURN RELAY OFF
+COMMAND: TENMAPSU IOUT1?
+READLINE: TENMAPSU PSUcurrent
+The returned voltage is =  %PSUcurrent%
+RANGE: %PSUcurrent% 0.060 0.015 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 				
+IF_NOT: 
+GOTO: #4.4: // user didnt press the IO in time or there is fault 
+
+#4.5: Attempt Connect again.
+DELAY: 5000 // GIVE TIME FOR THE pc AND NEW ftdi TO WAKE
+CONNECT: VSC90
+IF_NOT: 
+GOTO: #4: // GO BACK TO THE START
+
+#4.6: PCB Program version check.
+COMMAND: VSC90  TYPE // Connection to the PIC chip
+READLINE: VSC90  TYPE
+Returned product is = %TYPE%
+[%TYPE% STR_EQ VSC90] // evaluates inside the [] and set true or false flag
+IF:
+GOTO: #5: // checks and programming complete goto the start of tests
+ELSE: // PIC is not programmed correctly still
+IMPORTANT: Cannot program the test box (PIC). Please check connections to the PIC Kit and PCB.
+CLICK_OK:
+GOTO: #4.3.2: // try programming the PIC again
+
+
+#5: Configure the TENMA Programmable Load 
+CONNECT: TENMALOAD
+IF_NOT:
+GOTO: #2:
+COMMAND: TENMALOAD :INPut OFF
+COMMAND: TENMALOAD :FUNC RES
+COMMAND: TENMALOAD :RESistance 11.2OHM
+COMMAND: TENMALOAD :INPut ON
+
+
+#6: Set to the test box to drive the bank AS1 
+COMMAND: VSC90 AS0
+COMMAND: VSC90 AS1
+COMMAND: VSC90 ASHIGH
+
+
+#7: Read the current from the TEMMALOAD and evaluate current for PASS or FAIL.
+DELAY: 5000 
+COMMAND: TENMALOAD :MEAS:CURR?
+READLINE: TENMALOAD TEMMAcurrent
+The returned voltage is =  %TEMMAcurrent%
+RANGE: %TEMMAcurrent% 1.0000 0.05 // set the range as per TS014_TEST_SEQUENCER_scripts.docx 						
+SUB: TestPassOrFail
+
+
+#8: Set to the test box to drive the AS2 bank
+COMMAND: VSC90 AS0
+COMMAND: VSC90 AS2
+COMMAND: VSC90 ASHIGH
+
+#9: Read the current from the TEMMALOAD and evaluate the current for PASS or FAIL.
+DELAY: 5000
+COMMAND: TENMALOAD :MEAS:CURR?
+READLINE: TENMALOAD TEMMAcurrent
+The returned voltage is =  %TEMMAcurrent%
+RANGE: %TEMMAcurrent% 1.0000 0.05						
+SUB: TestPassOrFail
+
+
+#10: Test complete
+COMMAND: VSC90 If#	// turn off any LEDs still on: 
+COMMAND: VSC90 AS0
+COMMAND: TENMALOAD :RESistance 0OHM
+COMMAND: TENMAPSU VSET1:0.00
+COMMAND: TENMAPSU ISET1:0.00
+COMMAND: TENMAPSU OUT0
+COMMAND: VSC90 AS0
+IF: %FAILED% > 0
+GOTO: #Failed:
+ELSE: #Passed:
+
+
+#Failed: A test failed
+a. This PCB has failed to pass all Tests
+b. Check the Log file for more details on the failed test(s).
+IMPORTANT: This PCB has failed to pass all Tests
+DISPLAY: test_failed.png
+CLICK_OK:
+GOTO: #QUIT:
+
+#Passed: Test's Complete
+a. All tests instructions have been completed and a log file created.
+b. Click OK to finish and power OFF.
+DISPLAY: AllTestsPassed.png
+CLICK_OK:
+
+#QUIT:
+COMMAND: VSC90 AS0
+COMMAND: TENMALOAD :INPut OFF
+COMMAND: TENMALOAD :RESistance 0OHM
+COMMAND: TENMAPSU VSET1:0.00
+COMMAND: TENMAPSU ISET1:0.00
+COMMAND: TENMAPSU VSET2:0.00
+COMMAND: TENMAPSU ISET2:0.00
+COMMAND: TENMAPSU OUT0
+DISCONNECT: VSC90
+// End of file
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

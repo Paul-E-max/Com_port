@@ -1,0 +1,19 @@
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Filename:	SUB1.test
+// Project:		MVC FFLEX
+// Author:      Foster & Freeman Ltd - Michael Dodd
+// Modified:    04.01.2023, Test instruction.
+//
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+#SUB1.1: In the subroutine
+This is subroutine SUB1 being run and in test step 1 - click OK to continue
+CLICK_OK:
+
+#SUB1.2: Another step in a subroutine
+This is still in a subroutine and in the next step - click OK to continue
+CLICK_OK:
+
+//
+// Note that there is an implied RETURN at the end of a file . . .
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

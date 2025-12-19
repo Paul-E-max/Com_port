@@ -1,0 +1,417 @@
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Filename:	ML PRO Funcional.test
+// Project:		ML PRO 2
+// Author:      Foster & Freeman Ltd - Paul Evans
+// Modified:    21.10.2023
+
+// Description: Tests for ml pro
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+// [0] force FAIL by default to avoid IMPORTANT message below.
+
+
+#Setup: Instructions
+IMPORTANT: Warning: Avoid looking directly at any of the lights.  Protect eyes and skin from exposure to UV & IR light.
+a. Enter operator initials.
+b. Enter serial number.
+c. Fit the ML Pro 2 to the test stand
+d. Connect the USB3 cable to the PC and ML Pro 2
+e. Connect the PSU to the ML PRO 2
+CLICK_OK:
+
+#1: I2C device test
+CONNECT: MLPRO2
+
+COMMAND: MLPRO2 BENUM
+COMMAND: MLPRO2 BSIDEIR 0
+COMMAND: MLPRO2 BSIDEWHITE 0
+COMMAND: MLPRO2 BSIDEUV 0
+COMMAND: MLPRO2 FLOOD 000000 0
+COMMAND: MLPRO2 RING 000000 0
+COMMAND: MLPRO2 FOCUSLED 0
+EXE: OpenWinCam.bat
+
+
+#2: PCB communication check
+COMMAND: MLPRO2  BENUM
+READLINE: MLPRO2  BENUM 
+
+Returned result is = %BENUM%
+IF: %BENUM% STR_EQ BL1,BL2,BR1,BR2,FL1,FL2,FR1,FR2,RS,RS1,RS2, //  a correct expected Return result 
+//IF: %BENUM% STR_EQ BL1,BL2,BR1,BR2,FL1,FL2,FR1,FR2,RS,RS1,RS2,? // this will cause a fail//
+GOTO: #2.1: // if line 30 and 31 results match goto next test
+/
+The returned result is NOT as exected, investigate the fault and click RETRY to repeat the test.
+/
+/
+The expected result is = BL1,BL2,BR1,BR2,FL1,FL2,FR1,FR2,RS,RS1,RS2, 
+IMPORTANT: Test has FAILED                Test has FAILED                   Test has FAILED                   Test has FAILED
+COMMENT: If you want to continue fault-finding the rest of the PCB, click on ‘Skip’
+SKIP_FAIL: #2
+GOTO: #3
+
+#2.1: PCB communication check - test passed
+TEST: PASSED
+
+#3: Range finder RIGHT side
+COMMAND: MLPRO2 RRF
+READLINE: MLPRO2 RRF 
+
+Returned result is = %RRF%
+IF: %RRF% <= 150 //  a correct expected Return result
+GOTO: #3.1: // if line 30 and 31 results match goto next test
+/
+The returned result is NOT as exected, investigate the fault and click RETRY to repeat the test.
+/
+/
+The expected result is = BL1,BL2,BR1,BR2,FL1,FL2,FR1,FR2,RS,RS1,RS2, 
+IMPORTANT: Test has FAILED                Test has FAILED                   Test has FAILED                   Test has FAILED
+COMMENT: If you want to continue fault-finding the rest of the PCB, click on ‘Skip’
+SKIP_FAIL: #3
+GOTO: #4
+
+#3.1: PCB communication check - test passed
+TEST: PASSED
+
+
+#4: Range finder RIGHT side
+COMMAND: MLPRO2  READVOLTS 
+READLINE: MLPRO2  READVOLTS 
+Returned Version is = %READVOLTS%
+RANGE: %READVOLTS% 12100 50		// PASS if TEMP is between 75 and 85
+IF:
+GOTO: #4.1: // if line 30 and 31 results match goto next test
+/
+The returned result is NOT as exected, investigate the fault and click RETRY to repeat the test.
+/
+/
+The expected result is = BL1,BL2,BR1,BR2,FL1,FL2,FR1,FR2,RS,RS1,RS2, 
+IMPORTANT: Test has FAILED                Test has FAILED                   Test has FAILED                   Test has FAILED
+COMMENT: If you want to continue fault-finding the rest of the PCB, click on ‘Skip’
+TEST: FAILED // Increments fail count and adds comment in log file
+GOTO: #20
+
+#4.1: PCB communication check - test passed
+TEST: PASSED
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#20: Range finder RIGHT side
+CHECK THAT IT READS between 120-145
+COMMAND: MLPRO2 RRF
+DELAY: 100
+READLINE: MLPRO2 RRF
+Range finder RIGHT side = %RRF%
+PASS_FAIL: #20
+
+#21: Range finder LEFT side
+CHECK THAT IT READS between 120-145
+COMMAND: MLPRO2 RRB
+DELAY: 100
+READLINE: MLPRO2 RRB
+Range finder LEFT side = %RRB%
+PASS_FAIL: #21
+
+#2:INSERT THE SMALL DOMED MIRROR
+a. Insert the small domed MIRROR
+b. Close the flap
+c. Fit the blackout cover to the ML PRO 2
+
+DISPLAY: WIN_20230922_14_56_03_Pro.jpg
+PASS_FAIL: #2
+
+#3: Side IR
+a. Check for 8 LED hot spots
+IMPORTANT: You will see light reflections
+b. Capture an image on the windows camera
+DELAY: 100
+COMMAND: MLPRO2 BSIDEIR 4095
+DISPLAY: WIN_20230922_15_23_29_Pro.jpg
+DELAY: 3000
+PASS_FAIL: #3
+
+#4: Side WHITE
+a. Check for 8 LED hot spots
+IMPORTANT: You will see light reflections
+b. Capture an image on the windows camera
+COMMAND: MLPRO2 BSIDEIR 0
+DELAY: 100
+COMMAND: MLPRO2 BSIDEWHITE 4095
+DISPLAY: WIN_20230922_15_23_07_Pro.jpg
+DELAY: 3000
+PASS_FAIL: #4
+
+#5: Side UV
+a. Check for 8 LED hot spots
+IMPORTANT: You will see light reflections
+b. Capture an image on the windows camera
+COMMAND: MLPRO2 BSIDEWHITE 0
+DELAY: 100
+COMMAND: MLPRO2 BSIDEUV 4095
+DISPLAY: WIN_20230922_15_23_14_Pro.jpg
+DELAY: 3000
+PASS_FAIL: #5
+
+#6: REMOVE THE SMALL DOMED MIRROR
+INSERT THE FLAT MIRROR 
+COMMAND: MLPRO2 BSIDEUV 0
+DELAY: 100
+PASS_FAIL: #6
+
+#7: RED
+a. Check for 8 LED hot spots
+IMPORTANT: You will see light reflections
+b. Capture an image on the windows camera
+DISPLAY: WIN_20230922_14_32_34_Pro.jpg
+COMMAND: MLPRO2 FLOOD 000000 4095
+DELAY: 100
+COMMAND: MLPRO2 FLOOD 100000 4095
+DELAY: 3000
+PASS_FAIL: #7
+
+#8: GREEN
+a. Check for 8 LED hot spots
+IMPORTANT: You will see light reflections
+b. Capture an image on the windows camera
+DISPLAY: WIN_20230922_14_32_41_Pro.jpg
+COMMAND: MLPRO2 FLOOD 000000 4095
+DELAY: 100
+COMMAND: MLPRO2 FLOOD 010000 4095
+DELAY: 3000
+PASS_FAIL: #8
+
+#9: BLUEGREEN
+a. Check for 8 LED hot spots
+IMPORTANT: You will see light reflections
+b. Capture an image on the windows camera
+DISPLAY: WIN_20230922_14_32_47_Pro.jpg
+COMMAND: MLPRO2 FLOOD 000000 4095
+DELAY: 100
+COMMAND: MLPRO2 FLOOD 001000 4095
+DELAY: 3000
+PASS_FAIL: #9
+
+#10: BLUE
+a. Check for 8 LED hot spots
+IMPORTANT: You will see light reflections
+b. Capture an image on the windows camera
+DISPLAY: WIN_20230922_14_32_54_Pro.jpg
+COMMAND: MLPRO2 FLOOD 000000 4095
+DELAY: 100
+COMMAND: MLPRO2 FLOOD 000100 4095
+DELAY: 3000
+PASS_FAIL: #10
+
+#11: VIOLET
+a. Check for 8 LED hot spots
+IMPORTANT: You will see light reflections
+b. Capture an image on the windows camera
+DISPLAY: WIN_20230922_14_32_59_Pro.jpg
+COMMAND: MLPRO2 FLOOD 000000 4095
+DELAY: 100
+COMMAND: MLPRO2 FLOOD 000010 4095
+DELAY: 3000
+PASS_FAIL: #11
+
+#12: UV
+a. Check for 8 LED hot spots
+IMPORTANT: You will see light reflections
+b. Capture an image on the windows camera
+DISPLAY: WIN_20230922_14_33_04_Pro.jpg
+COMMAND: MLPRO2 FLOOD 000000 4095
+DELAY: 100
+COMMAND: MLPRO2 FLOOD 000001 4095
+DELAY: 3000
+PASS_FAIL: #12
+
+#13: OFF
+COMMAND: MLPRO2 FLOOD 000000 0
+check all lights are off and click ok.
+CLICK_OK:
+
+
+#14: RING light RED
+a. Check for 4 LED hot spots
+IMPORTANT: You will see light reflections
+b. Capture an image on the windows camera
+DISPLAY: WIN_20230922_14_33_17_Pro.jpg
+COMMAND: MLPRO2 BSIDEIR 0
+DELAY: 100
+COMMAND: MLPRO2 RING 100000 4095
+DELAY: 3000
+PASS_FAIL: #14
+
+#15: RING LIGHT BLUEGREEN
+a. Check for 4 LED hot spots
+IMPORTANT: You will see light reflections
+b. Capture an image on the windows camera
+DISPLAY: WIN_20230922_14_33_27_Pro.jpg
+COMMAND: MLPRO2 RING 010000 0
+DELAY: 100
+COMMAND: MLPRO2 RING 001000 4095
+DELAY: 3000
+PASS_FAIL: #15
+
+#16: RING LIGHT BLUE
+a. Check for 4 LED hot spots
+IMPORTANT: You will see light reflections
+b. Capture an image on the windows camera
+DISPLAY: WIN_20230922_14_33_33_Pro.jpg
+COMMAND: MLPRO2 RING 001000 0
+DELAY: 100
+COMMAND: MLPRO2 RING 000100 4095
+DELAY: 3000
+PASS_FAIL: #16
+
+#17: RING LIGHT VIOLET
+a. Check for 4 LED hot spots
+IMPORTANT: You will see light reflections
+b. Capture an image on the windows camera
+DISPLAY: WIN_20230922_14_33_46_Pro.jpg
+COMMAND: MLPRO2 RING 000100 0
+DELAY: 100
+COMMAND: MLPRO2 RING 000010 4095
+DELAY: 3000
+PASS_FAIL: #17
+
+#18: RING LIGHT UV
+a. Check for 4 LED hot spots
+IMPORTANT: You will see light reflections
+b. Capture an image on the windows camera
+DISPLAY: WIN_20230922_14_33_54_Pro.jpg
+COMMAND: MLPRO2 RING 000010 0
+DELAY: 100
+COMMAND: MLPRO2 RING 000001 4095
+DELAY: 3000
+PASS_FAIL: #18
+
+#19: RING LIGHT GREEN
+a. Check for 4 LED hot spots
+IMPORTANT: You will see light reflections
+b. Capture an image on the windows camera
+DISPLAY: WIN_20230922_14_33_22_Pro.jpg
+COMMAND: MLPRO2 RING 100000 0
+DELAY: 100
+COMMAND: MLPRO2 RING 010000 4095
+DELAY: 3000
+PASS_FAIL: #19
+COMMAND: MLPRO2 RING 000000 4095
+DELAY: 100
+
+#20: Range finder RIGHT side
+CHECK THAT IT READS between 120-145
+COMMAND: MLPRO2 RRF
+DELAY: 100
+READLINE: MLPRO2 RRF
+Range finder RIGHT side = %RRF%
+PASS_FAIL: #20
+
+#21: Range finder LEFT side
+CHECK THAT IT READS between 120-145
+COMMAND: MLPRO2 RRB
+DELAY: 100
+READLINE: MLPRO2 RRB
+Range finder LEFT side = %RRB%
+PASS_FAIL: #21
+
+#22: LIGHT SENSOR LEFT side
+COMMAND: MLPRO2 BSIDEWHITE 4095
+CHECK THAT IT READS between 2-15
+COMMAND: MLPRO2 ALSF
+READLINE: MLPRO2 ALSF
+LIGHT SENSOR LEFT = %ALSF%
+PASS_FAIL: #22
+
+#23: LIGHT SENSOR RIGHT side
+CHECK THAT IT READS between 2-15
+COMMAND: MLPRO2 ALSB
+READLINE: MLPRO2 ALSB
+LIGHT SENSOR RIGHT = %ALSB%
+PASS_FAIL: #23
+COMMAND: MLPRO2 BSIDEWHITE 0
+
+#24: FOCUS LED
+a. Check for 1 LED hot spot
+IMPORTANT: You will see light reflections
+b. Capture an image on the windows camera
+DISPLAY: WIN_20230925_14_42_05_Pro.jpg
+COMMAND: MLPRO2 FOCUSLED 4095
+DELAY: 3000
+PASS_FAIL: #24
+
+#25: Save images and log file
+goto C:\Users\R&D\Pictures\Camera Roll
+a. create a new folder and rename it to the serial number of the MLPRO2 2
+b. CUT and paste all images into the folder
+go to C:\Users\R&D\Desktop\TEST_SEQUENCER V24\ML PRO 2\LOGS
+c. copy and paste the test log file into the folder you just created here
+goto C:\Users\R&D\Pictures\Camera Roll
+PASS_FAIL: #25
+
+#QUIT:
+COMMAND: MLPRO2 FOCUSLED 0
+EXE: CloseWinCam.bat
+COMMAND: MLPRO2 BSIDEIR 0
+COMMAND: MLPRO2 BSIDEWHITE 0
+COMMAND: MLPRO2 BSIDEUV 0
+COMMAND: MLPRO2 FLOOD 000000 0
+COMMAND: MLPRO2 RING 000000 0
+SAVE_LOG:
+DISCONNECT: MLPRO2
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+///////////////diagnostic//////////////////////////////////
+// 3 Ask WHAT i2c DEVICES ARE CONNECTED
+// COMMAND: MLPRO2 ENUM
+// READLINE: MLPRO2 ENUM
+// IF: 
+// Good result, ENUM = %ENUM%
+// ELSE:
+// Bad result . . . sorry
+// PASS_FAIL:
+////////////////////////////////////////////////////////
+//
+// End of file
+// - - - - - - - - - - - - -

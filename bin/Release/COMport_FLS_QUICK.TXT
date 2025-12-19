@@ -1,20 +1,20 @@
 ,,1
-"Command1"=OST 250\n
-"Command2"=OST 200\n
-"Command3"=OST 100\n
-"Command4"=OST 50\n
-"Command5"=OST -50\n
-"Command6"=OST -100\n
-"Command7"=OST -150\n
-"Command8"=\n
-"Command9"=BW-\n
-"Command10"=BW+\n
-"Command11"=SB-\n
-"Command12"=\n
+"Command1"=VER\n
+"Command2"=DATE\n
+"Command3"=SB-\n
+"Command4"=SB+\n
+"Command5"=S??\n
+"Command6"=CV?\n
+"Command7"=SB\n
+"Command8"=SB=15\n
+"Command9"=SX\n
+"Command10"=FAN 0\n
+"Command11"=FAN 200\n
+"Command12"=FAN 1023\n
 "Command13"=\n
 "Command14"=\n
 "Command15"=\n
 "Command16"=\n
 "Command17"=\n
 "Command18"=\n
-"Command19"=OST 10\n
+"Command19"=SETNM 

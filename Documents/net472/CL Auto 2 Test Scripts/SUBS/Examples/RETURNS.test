@@ -1,0 +1,17 @@
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Filename:	RETURNS.test
+// Project:		MVC FFLEX
+// Author:      Foster & Freeman Ltd - Michael Dodd
+// Modified:    05.01.2023, Test instruction.
+//
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+#RETURNS.1: In the subroutine
+JUST THIS LINE displayed by this subroutine - click OK to continue
+CLICK_OK:
+RETURN:
+This line should not appear because the above RETURN has been executed
+
+//
+// Note that there is an implied RETURN at the end of a file . . .
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

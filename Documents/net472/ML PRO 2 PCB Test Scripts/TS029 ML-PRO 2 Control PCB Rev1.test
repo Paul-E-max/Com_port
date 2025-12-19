@@ -1,0 +1,107 @@
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Filename:	MLPRO 2 Control PCB.test
+// Project:		MLPRO 2
+// Author:      Foster & Freeman Ltd - Paul Evans
+// Modified:    06.03.2024 Rev1
+//
+// Description: Tests the MLPRO 2 Control PCB
+// 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+[0] force FAIL by default to avoid IMPORTANT message below.
+#1: Enter operator initials and PCB serial number:
+a. Enter operator intials.
+b. Enter serial number into the box above.
+COMMENT: *Example image below*
+IMPORTANT: Observe ESD precautions for handling ESD sensitive devices.  
+DISPLAY: ControlSetup.jpg
+CLICK_OK:
+
+#2: Setup equipment 1
+a. Set the adjustable PSU output(1) to 12V ±0.1V, 1.5A ±0.1A and switch the output to off.
+b. Set the adjustable PSU output(2) to 5V ±0.1V , 0.2 A ±0.1A and switch the output to off.
+c. Using TE060, connect the PSU output(1) to FT1 & FT2 on the Control PCB. 
+d. Using TE195, connect the PSU output(2) to X10 on the Control PCB.
+COMMENT: *Example image below*
+DISPLAY: ControlSetup.jpg
+CLICK_OK:
+
+#3: Setup equipment 2
+a. Connect the TE001 I/O Power button to J4 on the Control PCB.
+b. Connect the PC (via Micro USB3 ) to the ML PRO 2 Control PCB (SK5 ).
+c. On the PSU press the Output button for both PSU outputs.
+d. Press the I/O Power button (TE001) to turn on the Control PCB.
+DISPLAY: ControlSetup.jpg
+COMMENT: *Example image below*
+CLICK_OK:
+CONNECT: MLPRO2 
+IF_NOT:
+GOTO: #2
+
+#4: PCB communication check
+COMMAND: MLPRO2  ENUM
+READLINE: MLPRO2  ENUM 
+
+Check the expected result is a match.
+Expected result is = EEPROM,
+Returned result is = %ENUM%
+IF: %ENUM% STR_EQ EEPROM,
+GOTO: #4.1
+
+IMPORTANT: This test has failed I2c is not working.
+COMMENT: If you wish to move to next test, click fail to continue.
+PASS_FAIL: #4
+GOTO: #5
+
+#4.1: PCB communication check 
+TEST: PASSED
+Result = Test Pass
+CLICK_OK:
+
+#5: PCB Program version check
+COMMAND: MLPRO2  BUILD
+READLINE: MLPRO2  BUILD
+IF:
+Check the Returned result is current version as per TD037 PCB Programming Data Register.
+.
+..
+...
+Returned Version is = %BUILD%
+ELSE:
+Bad result . . . no communication
+PASS_FAIL: #5
+
+#6: Voltage check
+COMMAND: MLPRO2  READVOLTS 
+READLINE: MLPRO2  READVOLTS 
+Returned Voltage is = %READVOLTS%
+
+RANGE: %READVOLTS% 12000 50					// ASS if value is between a range
+IF:											// IF a ture result the next line below actions
+GOTO: #6.1: 								// if results match goto next test
+IMPORTANT: This test has failed 
+The expected result is =   between 12050 and 12150 // print this for test log information
+PASS_FAIL: #6 								// Increments fail count and adds comment in log file
+GOTO: #7
+#6.1: Voltage check - test passed
+TEST: PASSED
+Result = Test Pass
+CLICK_OK:								// Increments PASS count and adds comment in log file
+
+#7: USB3 and USB2 ports test
+a. Test K6 using the USB tester (TE013) and check that USB3 enumerated is displayed.
+b. Test both ports on CONN6 using the USB tester (TE013) and check that USB2 enumerated is displayed. 
+PASS_FAIL: #7
+
+#8: Test complete:
+COMMAND: MLPRO2 If#	// turn off any LEDs still on: 
+a. All tests instructions have been completed and a log file created.
+b. Click OK to finish and then power off the PSU and disconnect the PCB.
+CLICK_OK:
+
+#QUIT:
+COMMAND: MLPRO2 BRESET
+DISCONNECT: MLPRO2
+// End of file
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+

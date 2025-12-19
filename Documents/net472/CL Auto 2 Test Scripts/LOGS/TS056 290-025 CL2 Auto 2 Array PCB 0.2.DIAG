@@ -1,0 +1,25 @@
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+10:35:05 Filename:  C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\CL Auto 2 Test Scripts\LOGS\TS056 290-025 CL2 Auto 2 Array PCB 0.2.DIAG
+10:35:05 App name:  TEST_SEQUENCER.EXE - V1.01.41
+10:35:05 Test file: C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\CL Auto 2 Test Scripts\TS056 290-025 CL2 Auto 2 Array PCB 0.2.TEST 19/09/2025 10:35:02
+10:35:05 Updated:   19.09.2025
+10:35:05 
+10:36:08 0.1: IC11 for temp and read AIN4 TH3 MSB & LSB for temperature: - RANGE: 2.358 2.55 0.15                                          
+10:36:08 Failure occurred on line 59 at 10:36:08 19.09.2025
+10:36:08 0.1: IC11 for temp and read AIN4 TH3 MSB & LSB for temperature:                                                                   
+10:36:08 Failure occurred on line 21 (TestPassOrFail) at 10:36:08 19.09.2025
+10:36:20 0.1: IC11 for temp and read AIN5 TH1 MSB & LSB for temperature: - RANGE: 2.358 2.55 0.15                                          
+10:36:20 Failure occurred on line 72 at 10:36:20 19.09.2025
+10:36:20 0.1: IC11 for temp and read AIN5 TH1 MSB & LSB for temperature:                                                                   
+10:36:20 Failure occurred on line 21 (TestPassOrFail) at 10:36:20 19.09.2025
+10:36:24 0.1: IC11 for temp and read AIN6 TH2 MSB & LSB for temperature: - RANGE: 2.368 2.55 0.15                                          
+10:36:24 Failure occurred on line 84 at 10:36:24 19.09.2025
+10:36:24 0.1: IC11 for temp and read AIN6 TH2 MSB & LSB for temperature:                                                                   
+10:36:24 Failure occurred on line 21 (TestPassOrFail) at 10:36:24 19.09.2025
+10:37:52 0.1: IC11 for temp and read AIN4 TH3 MSB & LSB for temperature: - RANGE: 1.426 2.55 0.15                                          
+10:37:52 Failure occurred on line 261 at 10:37:52 19.09.2025
+10:37:52 0.1: IC11 for temp and read AIN4 TH3 MSB & LSB for temperature:                                                                   
+10:37:52 Failure occurred on line 21 (TestPassOrFail) at 10:37:52 19.09.2025
+10:38:04 
+10:38:04 Finished:  C:\Users\paul-e\OneDrive - Foster & Freeman Ltd\Documents\GitHub\New folder\TS014_SCRIPTS\Product Test Scripts\CL Auto 2 Test Scripts\LOGS\TS056 290-025 CL2 Auto 2 Array PCB 0.2.DIAG
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

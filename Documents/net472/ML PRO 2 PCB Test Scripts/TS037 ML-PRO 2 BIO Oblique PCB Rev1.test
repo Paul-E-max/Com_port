@@ -1,0 +1,98 @@
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Filename:	MLPRO 2 BIO Oblique PCB.test
+// Project:		MLPRO 2
+// Author:      Foster & Freeman Ltd - Paul Evans
+// Modified:    06.03.2024 Rev1
+//
+// Description: Tests the MLPRO 2 BIO Oblique PCB.test
+// 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+[0] force FAIL by default to avoid IMPORTANT message below.
+
+#1: Enter operator initials and PCB serial number:
+a. Enter operator intials.
+b. Enter serial number into the box above.
+COMMENT: *Example image below*
+IMPORTANT: Observe ESD precautions for handling ESD sensitive devices.  
+DISPLAY: obliquePCB.jpg
+CLICK_OK:
+
+#2: Setup equipment 1
+a. Set adjustable PSU output 1 to 12V ±0.1V, 1.5A ±0.1A and switch the output off.
+b. Using TE159, connect the PSU to the ML PRO 2 Controller Test Box (TE192).
+c. Connect the PC (via USB) to K5 on the ML PRO 2 Controller Test Box (TE192).
+d. Connect the USB cable from the LED Test Box with Web Camera (TE086) to the PC. 
+COMMENT: *Example image below*
+DISPLAY: TE192Setup.jpg
+CLICK_OK:
+
+
+#3: Setup equipment 2
+a. Using the flat flex ribbon cable connect the Oblique PCB to TE-069 (conn1-conn2).
+b. Fit the Test PCB and the Oblique PCB to the ML PRO PCB Fixture 1 (TE190).
+c. Using the 20-way ribbon cable connect the TE-069 (PL1) to the ML PRO 2 Controller Test Box (TE192). 
+d. Place the TE190 inside the LED Test Box with Web Camera (TE086).
+e. Switch the output of the adjustable PSU on and power on the ML PRO 2 Controller Test Box (TE192).
+DISPLAY: ObliqueSetup1.jpg
+COMMENT: Set the address is set to position 2.*Example image below*
+CLICK_OK:
+CONNECT: MLPRO2 
+IF_NOT:
+GOTO: #2
+
+#4: TE-069 PCB communication check
+
+COMMAND: MLPRO2  BENUM
+READLINE: MLPRO2  BENUM 
+
+Check the expected result is a match.
+Expected result is = BL1,BL2
+Returned result is = %BENUM%
+IF: %BENUM% STR_EQ BL1,BL2,
+GOTO: #4.1
+
+COMMENT: Check the address is set to position 1
+PASS_FAIL: #4
+GOTO: #5
+
+#4.1: TE-069 PCB communication check - test passed
+TEST: PASSED
+Result = Test Pass
+CLICK_OK:
+EXE: OpenWinCam.bat
+
+
+#5: White LED test
+COMMAND: MLPRO2 SIDEWHITE 1024
+a. View the windows camera feed and check for 2 LED hot spots.
+PASS_FAIL: #5
+COMMAND: MLPRO2 SIDEWHITE 0
+
+#6:IR LED test
+COMMAND: MLPRO2 SIDEIR 1024
+a. View the windows camera feed and check for 2 LED hot spots.
+PASS_FAIL: #6
+COMMAND: MLPRO2 SIDEIR 0
+
+#7: UV LED test
+COMMAND: MLPRO2 SIDEUV 1024
+a. View the windows camera feed and check for 2 LED hot spots.
+PASS_FAIL: #7
+COMMAND: MLPRO2 SIDEUV 0
+
+#8: Test complete:
+COMMAND: MLPRO2 If#	// turn off any LEDs still on: 
+a. All tests instructions have been completed and a log file created.
+b. Click OK to finish and then power off the PSU and disconnect the PCB.
+CLICK_OK:
+
+#QUIT:
+COMMAND: MLPRO2 If#	// turn off any LEDs still on: 
+DISCONNECT: MLPRO2
+EXE: CloseWinCam.bat
+// turn off any LEDs still on: 
+
+// End of file
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+

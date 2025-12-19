@@ -1,0 +1,23 @@
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Filename:	READ_SENSOR.test
+// Project:		Paul's reading of U1 via Bus Pirate.
+// Author:      Foster & Freeman Ltd - Michael Dodd
+// Modified:    15.08.2025 - Initial tests.
+//
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Reading the Bus Pirate . . .
+COMMAND: BUS_PIRATE {0x22 0x08 0x11 0x05}{0x23 r r}
+READLINE: BUS_PIRATE WASTE
+READLINE: BUS_PIRATE WASTE
+READLINE: BUS_PIRATE WASTE
+READLINE: BUS_PIRATE WASTE
+READLINE: BUS_PIRATE WASTE
+READLINE: BUS_PIRATE WASTE
+READLINE: BUS_PIRATE WASTE
+READLINE: BUS_PIRATE WASTE
+READ: BUS_PIRATE WASTE RS_MSB WASTE WASTE WASTE RS_LSB
+SET: RESULT = [%RS_MSB% * 256 + %RS_LSB%]
+//
+// End of file
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
