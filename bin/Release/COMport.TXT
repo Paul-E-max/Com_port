@@ -74,7 +74,10 @@
   PDi+,				9600,	,			,			VERSION,	,				  Yes,			0x0A,		10
   Rotronic-HP32,	19200	                                                      	
   TENMALOAD,		9600,	,			,			*IDN?,		TENMA 72-13210,	  Yes,		    0x0A
-  THORLABS_PM,		115200,	,			,			*IDN?,		THORLABS,		  Yes,			0x0A
+; Thorlabs Power Meter (requires TLPM driver type)
+; Commands: MEAS:POW? (read power), *IDN? (get ID), SENS:CORR:WAV <nm> (set wavelength)
+  ThorlabsPM,		TLPM,	,			,			*IDN?,		Thorlabs,		  Yes
+  PM100USB,			TLPM,	,			,			*IDN?,		PM100USB,		  Yes
   TENMAPSU,			9600,	,			,			*IDN?,		TENMA 72-2645,	  Yes,			0x0A
   UVSPEC,			9600,	,			,			VERSION,	5.0,			  Yes,			0x0A
   VSC80,			D2XX,	,			,			TYPE,		,				  Yes,			0x0A

@@ -42,6 +42,10 @@
       <Private>True</Private>
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
+    <Reference Include="Thorlabs.TLPM_64.Interop">
+      <HintPath>TLPM\Thorlabs.TLPM_64.Interop.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms.DataVisualization" />
@@ -63,6 +67,7 @@
       <DependentUpon>COMport.cs</DependentUpon>
     </Compile>
     <Compile Include="comms_D2XX.cs" />
+    <Compile Include="comms_TLPM.cs" />
     <Compile Include="EnterLabel.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -121,6 +126,15 @@
   <ItemGroup>
     <Content Include="COMport.ico" />
     <EmbeddedResource Include="FTDI\FTD2XX_NET.dll" />
+    <Content Include="TLPM\TLPM_64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TLPM\TLPMX_64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TLPM\Thorlabs.TLPM_64.Interop.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

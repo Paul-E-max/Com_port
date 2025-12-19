@@ -198,6 +198,14 @@ namespace COMport
         byte[] D2XX_inputs = new byte[RING_BUFFER_SIZE];
         int D2XX_inputs_length = 0;
 
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        // Thorlabs Power Meter (TLPM) specific items
+        //
+        const string TLPM_SELECTION = "TLPM";
+        bool TLPM_mode = false;
+        TLPM TlpmDevice;
+        System.Windows.Forms.Timer TLPM_MeasurementTimer;
+
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         /// <summary>
         /// Main entry point into COMport application code.
@@ -237,6 +245,12 @@ namespace COMport
         private void COMportForm_Load(object sender, EventArgs e)
         {
             D2xxDevice = new D2XX();        // Need to delay the actual initialisation of D2XX until after the FTDI DLL has been loaded!
+            TlpmDevice = new TLPM();        // Initialize TLPM device handler.
+            //
+            // Setup TLPM measurement timer (100ms = 10Hz)
+            TLPM_MeasurementTimer = new System.Windows.Forms.Timer();
+            TLPM_MeasurementTimer.Interval = 100;
+            TLPM_MeasurementTimer.Tick += TLPM_MeasurementTimer_Tick;
             //
             this.Text = APP_NAME + " - " + VERSION;
             loadProjectInfo();              // Fills in any project information available, but doesn't affect the GUI selections.
@@ -392,7 +406,26 @@ namespace COMport
                     //
                     // Attempt to connect to the selected port.
                     //
-                    if ((COMportComboBox.Text.Substring(0, 3) == "COM") || (FTDI_D2XX == FTDI_mode))
+                    if (TLPM_mode)
+                    {
+                        // Connect to Thorlabs Power Meter
+                        try
+                        {
+                            if (TlpmDevice.Connect(0)) // Connect to first scanned device
+                            {
+                                connectedTo(true);
+                                string id = TlpmDevice.GetIdentification();
+                                this.Text += " ---> " + id;
+                                TLPM_MeasurementTimer.Enabled = true;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"[TLPM] Connect error: {ex.Message}");
+                        }
+                        CommsTextBox.Focus();
+                    }
+                    else if ((COMportComboBox.Text.Substring(0, 3) == "COM") || (FTDI_D2XX == FTDI_mode))
                     {
                         try // The following is sensitive to communication errors, and will abandon the task if one occurs.
                         {
@@ -466,7 +499,13 @@ namespace COMport
                 // DISCONNECTING PORT
                 // ------------------
                 //
-                if (FTDI_D2XX == FTDI_mode)
+                if (TLPM_mode)
+                {
+                    TLPM_MeasurementTimer.Enabled = false;
+                    TlpmDevice.Disconnect();
+                    connectedTo(false);
+                }
+                else if (FTDI_D2XX == FTDI_mode)
                 {
                     D2xxDevice.Close();
                     D2XX_RXcharacterTimer.Enabled = false;
@@ -1108,9 +1147,14 @@ namespace COMport
                 {
                     VersionComboBox.Text = project.name;
                     //
-                    // Baudrate field may indicate that this project uses D2XX mode only.
+                    // Baudrate field may indicate that this project uses D2XX or TLPM mode.
                     //
-                    if (D2XX_SELECTION == project.baudrate) setModeToD2XX(); else setModeToVCP(project.COMport, project.baudrate);
+                    if (D2XX_SELECTION == project.baudrate)
+                        setModeToD2XX();
+                    else if (TLPM_SELECTION == project.baudrate)
+                        setModeToTLPM();
+                    else
+                        setModeToVCP(project.COMport, project.baudrate);
                     EchoOff = project.echoOff;
                     EchoOn = project.echoOn;
                     GetID = project.getID;
@@ -1195,6 +1239,30 @@ namespace COMport
                 COMportComboBox.Text = "N/A";
             }
             COMportComboBox.Enabled = true; // Allow user to modify the COM port selected.
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Set the mode to TLPM (Thorlabs Power Meter).
+        /// </summary>
+        private void setModeToTLPM()
+        {
+            FTDI_mode = FTDI_VCP; // Not using FTDI
+            TLPM_mode = true;
+            //
+            BaudComboBox.Text = "N/A";
+            BaudComboBox.Enabled = false;
+            COMportComboBox.Text = TLPM_SELECTION;
+            COMportComboBox.Enabled = false;
+            //
+            // Scan for TLPM devices and populate the VersionComboBox with found devices
+            //
+            int deviceCount = TlpmDevice.ScanDevices();
+            if (deviceCount > 0)
+            {
+                var devices = TlpmDevice.GetDeviceList();
+                // Use first device's display name in title bar when connected
+            }
         }
 
         /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1642,6 +1710,35 @@ namespace COMport
                 {
                     processRXcharacters(D2XX_inputs, D2XX_inputs_length);
                     D2XX_inputs_length = 0;
+                }
+            }
+        }
+
+        /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        /// <summary>
+        /// Timer tick handler for TLPM power measurements.
+        /// Reads power at 10Hz and displays in CommsTextBox + Plot.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TLPM_MeasurementTimer_Tick(object sender, EventArgs e)
+        {
+            if (!TlpmDevice.IsConnected) return;
+
+            double power;
+            if (TlpmDevice.ReadPower(out power))
+            {
+                // Format the power reading with auto-scaling
+                string powerStr = TlpmDevice.ReadPowerString();
+                
+                // Display in CommsTextBox
+                string display = power.ToString("E4") + Environment.NewLine;
+                updateCommsTextBox(display);
+                
+                // Forward to plot if open
+                if (plotForm != null && plotForm.Visible)
+                {
+                    plotForm.ProcessData(display);
                 }
             }
         }
